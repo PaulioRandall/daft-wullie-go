@@ -15,25 +15,32 @@ type RuneReader interface {
 }
 
 func Parse(rr RuneReader) types.Notes {
+
 	panic("Not implemented yet")
 }
 
-func parseNotes() types.Phrase {
+/*
+func parseHeading(rr RuneReader) types.Phrase {
 	panic("Not implemented yet")
 }
 
-func parseLine() types.Phrase {
+func parseNotes(rr RuneReader) types.Phrase {
 	panic("Not implemented yet")
 }
 
-func parseNode() types.NodePhrase {
+func parseLine(rr RuneReader) types.Phrase {
 	panic("Not implemented yet")
 }
 
-func parsePhrase() types.Phrase {
+func parseNode(rr RuneReader) types.NodePhrase {
 	panic("Not implemented yet")
 }
 
-func parseTime() types.TimePhrase {
+func parsePhrase(rr RuneReader) types.Phrase {
 	panic("Not implemented yet")
 }
+
+func parseTime(rr RuneReader) types.TimePhrase {
+	panic("Not implemented yet")
+}
+*/

@@ -1,126 +1,161 @@
 package types
 
 import (
+	"fmt"
 	"strings"
 	"time"
 )
 
-type PhraseType int
-
-const (
-	UNDEFINED PhraseType = iota
-
-	TITLE     // #
-	TOPIC     // ##
-	SUB_TOPIC // ###
-
-	LIST_ITEM     // .
-	NUM_LIST_ITEM // 1.
-
-	QUOTE    // "" -
-	QUESTION // ?
-
-	POS_PHRASE  // +
-	NEG_PHRASE  // -
-	STR_PHRASE  // *
-	KEY_PRASE   // {}
-	CODE_PHRASE // ``
-
-	PLACE    // &
-	DATETIME // @
-)
-
-func (t PhraseType) String() string {
-	switch t {
-	case TITLE:
-		return "TITLE"
-	case TOPIC:
-		return "TOPIC"
-	case SUB_TOPIC:
-		return "SUB_TOPIC"
-
-	case LIST_ITEM:
-		return "LIST_ITEM"
-	case NUM_LIST_ITEM:
-		return "NUM_LIST_ITEM"
-
-	case QUOTE:
-		return "QUOTE"
-	case QUESTION:
-		return "QUESTION"
-
-	case POS_PHRASE:
-		return "POS_PHRASE"
-	case NEG_PHRASE:
-		return "NEG_PHRASE"
-	case STR_PHRASE:
-		return "STR_PHRASE"
-	case KEY_PRASE:
-		return "KEY_PRASE"
-	case CODE_PHRASE:
-		return "CODE_PHRASE"
-
-	case PLACE:
-		return "PLACE"
-	case DATETIME:
-		return "DATETIME"
+type (
+	Position interface {
+		GetLine() int
+		GetStart() int
+		GetEnd() int
 	}
 
-	return "UNDEFINED"
-}
+	Phrase interface {
+		GetPos() Pos
+		GetText() string
+	}
+
+	NodePhrase interface {
+		Phrase
+		GetPhrases() []Phrase
+	}
+)
 
 type (
-	Phrase interface {
-		Type() PhraseType
-		String() string
-		phrase()
+	Pos struct{ Line, Start, End int }
+
+	Text struct {
+		Pos
+		Text string
 	}
 
-	Notes struct {
-		lines []Phrase
+	Node struct {
+		Pos
+		Phrases []Phrase
 	}
 
-	NodePhrase struct {
-		PhraseType
-		phrases []Phrase
+	Notes     struct{ Lines []Phrase }
+	EmptyLine struct{ Text }
+
+	Title    struct{ Text }
+	Topic    struct{ Text }
+	SubTopic struct{ Text }
+
+	KeyPhrase   struct{ Text }
+	CodeSnippet struct{ Text }
+	Place       struct{ Text }
+
+	BulletItem struct{ Node }
+	NumberItem struct{ Node }
+	Question   struct{ Node }
+
+	Positive struct{ Node }
+	Negative struct{ Node }
+	Strong   struct{ Node }
+
+	Time struct {
+		Pos
+		Text string
+		Time time.Time
 	}
 
-	TextPhrase struct {
-		PhraseType
-		text string
-	}
-
-	TimePhrase struct {
-		PhraseType
-		text string
-		time time.Time
+	Quote struct {
+		Pos
+		Words Text
+		Src   Text
 	}
 )
 
-func MakeNotes(lines []Phrase) Notes { return Notes{lines: lines} }
-func (n Notes) Lines() []Phrase      { return n.lines }
-func (n Notes) String() string       { return concat(n.lines, "\n") }
+func (p Pos) GetLine() int  { return p.Line }
+func (p Pos) GetStart() int { return p.Start }
+func (p Pos) GetEnd() int   { return p.End }
 
-func MakeNode(phrases []Phrase) NodePhrase { return NodePhrase{phrases: phrases} }
-func (n NodePhrase) phrase()               {}
-func (p NodePhrase) Type() PhraseType      { return p.PhraseType }
-func (p NodePhrase) Phrases() []Phrase     { return p.phrases }
-func (p NodePhrase) String() string        { return concat(p.phrases, " ") }
+func (t Text) GetPos() Pos     { return t.Pos }
+func (t Text) GetText() string { return t.Text }
 
-func MakeText(text string) TextPhrase { return TextPhrase{text: text} }
-func (n TextPhrase) phrase()          {}
-func (p TextPhrase) Type() PhraseType { return p.PhraseType }
-func (p TextPhrase) Text() string     { return p.text }
-func (p TextPhrase) String() string   { return p.text }
+func (n Node) GetPos() Pos          { return n.Pos }
+func (n Node) GetText() string      { return concat(n.Phrases, " ") }
+func (n Node) GetPhrases() []Phrase { return n.Phrases }
 
-func MakeTime(text string, time time.Time) TimePhrase {
-	return TimePhrase{text: text, time: time}
+func (n Notes) GetLines() []Phrase { return n.Lines }
+func (n Notes) GetText() string    { return concat(n.Lines, "\n") }
+func (n Notes) String() string     { return concat(n.Lines, "\n") }
+
+func (t Time) GetPos() Pos     { return t.Pos }
+func (t Time) GetText() string { return t.Text }
+
+func (q Quote) GetPos() Pos { return q.Pos }
+func (q Quote) GetText() string {
+	return fmt.Sprintf("\"%s\" - %s", q.Words.GetText(), q.Src.GetText())
 }
-func (n TimePhrase) phrase()          {}
-func (p TimePhrase) Type() PhraseType { return p.PhraseType }
-func (p TimePhrase) Text() string     { return p.text }
-func (p TimePhrase) Time() time.Time  { return p.time }
-func (p TimePhrase) String() string   { return p.text }
+
+func DebugNotesString(notes Notes) string {
+	return DebugPhrasesString(0, notes.Lines)
+}
+
+func DebugPhrasesString(indent int, ps []Phrase) string {
+	s := ""
+	for _, p := range ps {
+		s += DebugPhraseString(indent, p)
+	}
+	s += "\n"
+	return s
+}
+
+func DebugPhraseString(indent int, p Phrase) string {
+
+	textStr := func(name string, p Phrase) string {
+		return strings.Repeat(" ", indent) + "[" + name + "] " + p.GetText()
+	}
+
+	nodeStr := func(name string, n NodePhrase) string {
+		return textStr(name, n) + DebugPhrasesString(indent+2, n.GetPhrases())
+	}
+
+	switch v := p.(type) {
+	case EmptyLine:
+		return ""
+	case Title:
+		return textStr("title", v)
+
+	case Topic:
+		return textStr("topic", v)
+	case SubTopic:
+		return textStr("sub-topic", v)
+
+	case KeyPhrase:
+		return textStr("key-phrase", v)
+	case CodeSnippet:
+		return textStr("snippet", v)
+	case Place:
+		return textStr("place", v)
+
+	case BulletItem:
+		return nodeStr("bullet", v)
+	case NumberItem:
+		return nodeStr("numbered", v)
+	case Question:
+		return nodeStr("question", v)
+
+	case Positive:
+		return nodeStr("positive", v)
+	case Negative:
+		return nodeStr("negative", v)
+	case Strong:
+		return nodeStr("strong", v)
+
+	case Time:
+		return textStr("time", v)
+	case Quote:
+		return textStr("quote", v)
+
+	default:
+		panic("Unknown phrase type")
+	}
+}
 
 func concat(list interface{}, sep string) string {
 
@@ -139,32 +174,36 @@ func concat(list interface{}, sep string) string {
 	return s
 }
 
-func NotesString(notes Notes) string {
-	return PhrasesString(0, notes.lines)
-}
+func _enforceTypes() {
 
-func PhrasesString(indent int, phrases []Phrase) string {
-	s := ""
-	for _, p := range phrases {
-		s += PhraseString(indent, p)
-	}
-	s += "\n"
-	return s
-}
+	var pos Position
+	var p Phrase
+	var n NodePhrase
 
-func PhraseString(indent int, node interface{}) string {
+	pos = Pos{}
+	pos, p = Text{}, Text{}
+	pos, p, n = Node{}, Node{}, Node{}
 
-	s := strings.Repeat(" ", indent)
+	pos, p = EmptyLine{}, EmptyLine{}
 
-	switch v := node.(type) {
-	case NodePhrase:
-		return s + v.Type().String() +
-			PhrasesString(indent+2, v.phrases)
-	case TextPhrase:
-		return s + v.Type().String()
-	case TimePhrase:
-		return s + v.Type().String()
-	default:
-		panic("Unknown phrase type")
-	}
+	pos, p = Title{}, Title{}
+	pos, p = Topic{}, Topic{}
+	pos, p = SubTopic{}, SubTopic{}
+
+	pos, p = KeyPhrase{}, KeyPhrase{}
+	pos, p = CodeSnippet{}, CodeSnippet{}
+	pos, p = Place{}, Place{}
+
+	pos, p = Quote{}, Quote{}
+	pos, p = Time{}, Time{}
+
+	pos, p, n = BulletItem{}, BulletItem{}, BulletItem{}
+	pos, p, n = NumberItem{}, NumberItem{}, NumberItem{}
+	pos, p, n = Question{}, Question{}, Question{}
+
+	pos, p, n = Positive{}, Positive{}, Positive{}
+	pos, p, n = Negative{}, Negative{}, Negative{}
+	pos, p, n = Strong{}, Strong{}, Strong{}
+
+	_, _, _ = pos, p, n
 }
