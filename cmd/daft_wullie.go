@@ -1,4 +1,4 @@
-package cmd
+package main
 
 import (
 	"github.com/PaulioRandall/daft-wullie-go/cmd/reader"

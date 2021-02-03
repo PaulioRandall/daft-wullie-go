@@ -15,8 +15,7 @@ type RuneReader interface {
 }
 
 func Parse(rr RuneReader) types.Notes {
-	lines := []types.Phrase{}
-	return types.MakeNotes(lines)
+	panic("Not implemented yet")
 }
 
 func parseNotes() types.Phrase {
