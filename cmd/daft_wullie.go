@@ -1,18 +1,21 @@
 package main
 
 import (
-//"github.com/PaulioRandall/daft-wullie-go/cmd/reader"
-//"github.com/PaulioRandall/daft-wullie-go/parser"
-//"github.com/PaulioRandall/daft-wullie-go/types"
+	"github.com/PaulioRandall/daft-wullie-go/cmd/reader"
+	"github.com/PaulioRandall/daft-wullie-go/parser"
+	"github.com/PaulioRandall/daft-wullie-go/types"
 )
 
+const testData = `
+# Title
+`
+
 func main() {
-	s := "# Title\n"
-	parse(s)
+	parse(testData)
 }
 
 func parse(s string) {
-	//rr := reader.NewReader(s)
-	//notes := parser.Parse(rr)
-	//println(types.NotesString(notes))
+	rr := reader.NewReader(s)
+	notes := parser.Parse(rr)
+	println(types.DebugNotesString(notes))
 }

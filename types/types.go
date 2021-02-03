@@ -44,9 +44,8 @@ type (
 	Topic    struct{ Text }
 	SubTopic struct{ Text }
 
-	KeyPhrase   struct{ Text }
-	CodeSnippet struct{ Text }
-	Place       struct{ Text }
+	KeyPhrase struct{ Text }
+	Snippet   struct{ Text }
 
 	BulletItem struct{ Node }
 	NumberItem struct{ Node }
@@ -55,6 +54,11 @@ type (
 	Positive struct{ Node }
 	Negative struct{ Node }
 	Strong   struct{ Node }
+
+	Place struct {
+		Pos
+		Parts []string
+	}
 
 	Time struct {
 		Pos
@@ -83,6 +87,9 @@ func (n Node) GetPhrases() []Phrase { return n.Phrases }
 func (n Notes) GetLines() []Phrase { return n.Lines }
 func (n Notes) GetText() string    { return concat(n.Lines, "\n") }
 func (n Notes) String() string     { return concat(n.Lines, "\n") }
+
+func (p Place) GetPos() Pos     { return p.Pos }
+func (p Place) GetText() string { return concat(p.Parts, ",") }
 
 func (t Time) GetPos() Pos     { return t.Pos }
 func (t Time) GetText() string { return t.Text }
@@ -128,10 +135,8 @@ func DebugPhraseString(indent int, p Phrase) string {
 
 	case KeyPhrase:
 		return textStr("key-phrase", v)
-	case CodeSnippet:
+	case Snippet:
 		return textStr("snippet", v)
-	case Place:
-		return textStr("place", v)
 
 	case BulletItem:
 		return nodeStr("bullet", v)
@@ -147,6 +152,8 @@ func DebugPhraseString(indent int, p Phrase) string {
 	case Strong:
 		return nodeStr("strong", v)
 
+	case Place:
+		return textStr("place", v)
 	case Time:
 		return textStr("time", v)
 	case Quote:
@@ -191,11 +198,7 @@ func _enforceTypes() {
 	pos, p = SubTopic{}, SubTopic{}
 
 	pos, p = KeyPhrase{}, KeyPhrase{}
-	pos, p = CodeSnippet{}, CodeSnippet{}
-	pos, p = Place{}, Place{}
-
-	pos, p = Quote{}, Quote{}
-	pos, p = Time{}, Time{}
+	pos, p = Snippet{}, Snippet{}
 
 	pos, p, n = BulletItem{}, BulletItem{}, BulletItem{}
 	pos, p, n = NumberItem{}, NumberItem{}, NumberItem{}
@@ -204,6 +207,10 @@ func _enforceTypes() {
 	pos, p, n = Positive{}, Positive{}, Positive{}
 	pos, p, n = Negative{}, Negative{}, Negative{}
 	pos, p, n = Strong{}, Strong{}, Strong{}
+
+	pos, p = Place{}, Place{}
+	pos, p = Time{}, Time{}
+	pos, p = Quote{}, Quote{}
 
 	_, _, _ = pos, p, n
 }

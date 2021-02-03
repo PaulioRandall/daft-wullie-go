@@ -16,7 +16,7 @@ func (rr *runeReader) More() bool {
 	return len(rr.runes) > 0
 }
 
-func (rr *runeReader) match(start int, s string) bool {
+func (rr *runeReader) Match(start int, s string) bool {
 
 	needle := []rune(s)
 	if len(rr.runes) < len(needle) {
@@ -33,7 +33,7 @@ func (rr *runeReader) match(start int, s string) bool {
 }
 
 func (rr *runeReader) Accept(s string) bool {
-	if rr.match(0, s) {
+	if rr.Match(0, s) {
 		rr.Read(len([]rune(s)))
 		return true
 	}
@@ -41,7 +41,7 @@ func (rr *runeReader) Accept(s string) bool {
 }
 
 func (rr *runeReader) MatchNewline() bool {
-	return rr.match(0, "\n") || rr.match(0, "\r\n")
+	return rr.Match(0, "\n") || rr.Match(0, "\r\n")
 }
 
 func (rr *runeReader) AcceptNewline() bool {
@@ -73,12 +73,12 @@ func (rr *runeReader) ReadLine() parser.RuneReader {
 
 	for i = range rr.runes {
 
-		if rr.match(i, "\n") {
+		if rr.Match(i, "\n") {
 			defer rr.Read(1)
 			break
 		}
 
-		if rr.match(i, "\r\n") {
+		if rr.Match(i, "\r\n") {
 			defer rr.Read(2)
 			break
 		}
