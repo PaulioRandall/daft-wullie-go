@@ -107,8 +107,8 @@ func DebugPhrasesString(indent int, ps []Phrase) string {
 	s := ""
 	for _, p := range ps {
 		s += DebugPhraseString(indent, p)
+		s += "\n"
 	}
-	s += "\n"
 	return s
 }
 

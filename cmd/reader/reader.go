@@ -1,14 +1,10 @@
 package reader
 
-import (
-	"github.com/PaulioRandall/daft-wullie-go/parser"
-)
-
 type runeReader struct {
 	runes []rune
 }
 
-func NewReader(s string) parser.RuneReader {
+func NewReader(s string) *runeReader {
 	return &runeReader{runes: []rune(s)}
 }
 
@@ -19,12 +15,12 @@ func (rr *runeReader) More() bool {
 func (rr *runeReader) Match(start int, s string) bool {
 
 	needle := []rune(s)
-	if len(rr.runes) < len(needle) {
+	if len(rr.runes)+start < len(needle) {
 		return false
 	}
 
 	for i, ru := range needle {
-		if rr.runes[i] != ru {
+		if rr.runes[i+start] != ru {
 			return false
 		}
 	}
@@ -34,7 +30,7 @@ func (rr *runeReader) Match(start int, s string) bool {
 
 func (rr *runeReader) Accept(s string) bool {
 	if rr.Match(0, s) {
-		rr.Read(len([]rune(s)))
+		rr.ReadMany(len([]rune(s)))
 		return true
 	}
 	return false
@@ -49,10 +45,21 @@ func (rr *runeReader) AcceptNewline() bool {
 }
 
 func (rr *runeReader) Drain() []rune {
-	return rr.Read(len(rr.runes))
+	return rr.ReadMany(len(rr.runes))
 }
 
-func (rr *runeReader) Read(n int) []rune {
+func (rr *runeReader) Read() rune {
+
+	if len(rr.runes) == 0 {
+		panic("Index out of range, reading too many runes")
+	}
+
+	r := rr.runes[0]
+	rr.runes = rr.runes[1:]
+	return r
+}
+
+func (rr *runeReader) ReadMany(n int) []rune {
 
 	if len(rr.runes) < n {
 		panic("Index out of range, reading too many runes")
@@ -67,22 +74,11 @@ func (rr *runeReader) Read(n int) []rune {
 	return r
 }
 
-func (rr *runeReader) ReadLine() parser.RuneReader {
-
-	i := 0
-
-	for i = range rr.runes {
-
-		if rr.Match(i, "\n") {
-			defer rr.Read(1)
-			break
-		}
-
-		if rr.Match(i, "\r\n") {
-			defer rr.Read(2)
-			break
+func (rr *runeReader) ReadLine() []rune {
+	for i := 0; i < len(rr.runes); i++ {
+		if rr.Match(i, "\n") || rr.Match(i, "\r\n") {
+			return rr.ReadMany(i)
 		}
 	}
-
-	return &runeReader{runes: rr.Read(i)}
+	return rr.Drain()
 }

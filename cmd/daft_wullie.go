@@ -8,6 +8,8 @@ import (
 
 const testData = `
 # Title
+## Topic
+### Sub-topic
 `
 
 func main() {

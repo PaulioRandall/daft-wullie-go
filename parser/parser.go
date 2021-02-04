@@ -1,6 +1,8 @@
 package parser
 
 import (
+	"strings"
+
 	"github.com/PaulioRandall/daft-wullie-go/types"
 )
 
@@ -11,32 +13,26 @@ type RuneReader interface {
 	MatchNewline() bool     // True if the next symbol represents a newline
 	AcceptNewline() bool    // MatchNewline() + slices off the newline
 	Drain() []rune          // Slices off all remaining runes
-	Read(int) []rune        // Slices off the amount of runes
-	ReadLine() RuneReader   // Slices the current line of runes, returns it as a RuneReader
+	Read() rune             // Slices off the amount of runes
+	ReadMany(int) []rune    // Slices off some amount of runes
+	ReadLine() []rune       // Slices off the current line of runes
 }
 
 func Parse(rr RuneReader) types.Notes {
 	return parseNotes(rr)
 }
 
-func matchAny(rr RuneReader, pats ...string) bool {
-	for _, pat := range pats {
-		if rr.Match(0, pat) {
-			return true
-		}
-	}
-	return false
-}
-
 func parseNotes(rr RuneReader) types.Notes {
+
 	n := types.Notes{Lines: []types.Phrase{}}
 
 	for rr.More() {
 		if rr.AcceptNewline() {
-			n.Lines = append(n.Lines, types.EmptyLine{}) // Add one empty line only
-			for rr.AcceptNewline() {                     // Discard consecutive empty lines
+			for rr.AcceptNewline() {
+				// Discard consecutive empty lines
+				// Only one empty line at a time
 			}
-			continue
+			n.Lines = append(n.Lines, types.EmptyLine{})
 		}
 
 		p := parseLine(rr)
@@ -117,7 +113,9 @@ func parseText(rr RuneReader) types.Text {
 }
 
 func parseTextLine(rr RuneReader) types.Text {
-	panic("Not implemented yet")
+	text := string(rr.ReadLine())
+	text = strings.TrimSpace(text)
+	return types.Text{Text: text}
 }
 
 func parseNode(rr RuneReader) types.Node {
@@ -154,4 +152,13 @@ func parseTime(rr RuneReader) types.Time {
 
 func maybeQuestion(rr RuneReader, left types.Phrase) types.Phrase {
 	panic("Not implemented yet")
+}
+
+func matchAny(rr RuneReader, pats ...string) bool {
+	for _, pat := range pats {
+		if rr.Match(0, pat) {
+			return true
+		}
+	}
+	return false
 }
