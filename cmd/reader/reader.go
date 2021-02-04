@@ -12,10 +12,14 @@ func (rr *runeReader) More() bool {
 	return len(rr.runes) > 0
 }
 
+func (rr *runeReader) InRange(i int) bool {
+	return i < len(rr.runes)
+}
+
 func (rr *runeReader) Match(start int, s string) bool {
 
 	needle := []rune(s)
-	if len(rr.runes)+start < len(needle) {
+	if !rr.InRange(len(needle) + start) {
 		return false
 	}
 

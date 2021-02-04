@@ -47,9 +47,9 @@ type (
 	KeyPhrase struct{ Text }
 	Snippet   struct{ Text }
 
-	BulletItem struct{ Node }
-	NumberItem struct{ Node }
-	Question   struct{ Node }
+	BulletPoint struct{ Node }
+	NumberItem  struct{ Node }
+	Question    struct{ Node }
 
 	Positive struct{ Node }
 	Negative struct{ Node }
@@ -89,7 +89,7 @@ func (n Notes) GetText() string    { return concat(n.Lines, "\n") }
 func (n Notes) String() string     { return concat(n.Lines, "\n") }
 
 func (p Place) GetPos() Pos     { return p.Pos }
-func (p Place) GetText() string { return concat(p.Parts, ",") }
+func (p Place) GetText() string { return strings.Join(p.Parts, ",") }
 
 func (t Time) GetPos() Pos     { return t.Pos }
 func (t Time) GetText() string { return t.Text }
@@ -99,35 +99,37 @@ func (q Quote) GetText() string {
 	return fmt.Sprintf("\"%s\" - %s", q.Words.GetText(), q.Src.GetText())
 }
 
-func DebugNotesString(notes Notes) string {
-	return DebugPhrasesString(0, notes.Lines)
+func NotesString(notes Notes) string {
+	return PhrasesString(0, notes.Lines)
 }
 
-func DebugPhrasesString(indent int, ps []Phrase) string {
+func PhrasesString(indent int, ps []Phrase) string {
 	s := ""
 	for _, p := range ps {
-		s += DebugPhraseString(indent, p)
+		s += PhraseString(indent, p)
 		s += "\n"
 	}
 	return s
 }
 
-func DebugPhraseString(indent int, p Phrase) string {
+func PhraseString(indent int, p Phrase) string {
 
 	textStr := func(name string, p Phrase) string {
 		return strings.Repeat(" ", indent) + "[" + name + "] " + p.GetText()
 	}
 
 	nodeStr := func(name string, n NodePhrase) string {
-		return textStr(name, n) + DebugPhrasesString(indent+2, n.GetPhrases())
+		return textStr(name, n) + PhrasesString(indent+2, n.GetPhrases())
 	}
 
 	switch v := p.(type) {
+	case Text:
+		return textStr("text", v)
 	case EmptyLine:
-		return ""
+		return textStr("empty", v)
+
 	case Title:
 		return textStr("title", v)
-
 	case Topic:
 		return textStr("topic", v)
 	case SubTopic:
@@ -138,7 +140,7 @@ func DebugPhraseString(indent int, p Phrase) string {
 	case Snippet:
 		return textStr("snippet", v)
 
-	case BulletItem:
+	case BulletPoint:
 		return nodeStr("bullet", v)
 	case NumberItem:
 		return nodeStr("numbered", v)
@@ -164,18 +166,20 @@ func DebugPhraseString(indent int, p Phrase) string {
 	}
 }
 
-func concat(list interface{}, sep string) string {
+func concat(ps []Phrase, sep string) string {
 
 	type stringer interface {
 		String() string
 	}
 
 	s := ""
-	for i, v := range list.([]interface{}) {
+	for i, p := range ps {
 		if i != 0 {
 			s += sep
 		}
-		s += v.(stringer).String()
+		if v, ok := p.(stringer); ok {
+			s += v.String()
+		}
 	}
 
 	return s
@@ -200,7 +204,7 @@ func _enforceTypes() {
 	pos, p = KeyPhrase{}, KeyPhrase{}
 	pos, p = Snippet{}, Snippet{}
 
-	pos, p, n = BulletItem{}, BulletItem{}, BulletItem{}
+	pos, p, n = BulletPoint{}, BulletPoint{}, BulletPoint{}
 	pos, p, n = NumberItem{}, NumberItem{}, NumberItem{}
 	pos, p, n = Question{}, Question{}, Question{}
 

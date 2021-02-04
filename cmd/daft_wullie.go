@@ -10,6 +10,8 @@ const testData = `
 # Title
 ## Topic
 ### Sub-topic
+
+. This is a bullet point
 `
 
 func main() {
@@ -19,5 +21,5 @@ func main() {
 func parse(s string) {
 	rr := reader.NewReader(s)
 	notes := parser.Parse(rr)
-	println(types.DebugNotesString(notes))
+	println(types.NotesString(notes))
 }

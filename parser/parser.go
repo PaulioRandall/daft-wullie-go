@@ -8,6 +8,7 @@ import (
 
 type RuneReader interface {
 	More() bool             // True if more runes remain
+	InRange(int) bool       // True if the index is within range
 	Match(int, string) bool // True if the string was matched
 	Accept(string) bool     // True if the string was matched and sliced off
 	MatchNewline() bool     // True if the next symbol represents a newline
@@ -61,9 +62,9 @@ func parseLine(rr RuneReader) types.Phrase {
 		return types.Title{Text: parseTextLine(rr)}
 
 	case rr.Accept("."):
-		return types.BulletItem{Node: parseNodeLine(rr)}
+		return types.BulletPoint{Node: parseNodeLine(rr)}
 
-	case matchAny(rr, "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"):
+	case matchAny(rr, 0, "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"):
 		return parseNumItem(rr)
 
 	case rr.Match(0, `"`):
@@ -79,7 +80,7 @@ func parsePhrase(rr RuneReader) types.Phrase {
 	case !rr.More():
 		panic("Unexpected end of file")
 
-	case rr.Accept("/"):
+	case rr.Accept(`\`):
 		return parseText(rr)
 
 	case rr.Accept("+"):
@@ -109,7 +110,28 @@ func parsePhrase(rr RuneReader) types.Phrase {
 }
 
 func parseText(rr RuneReader) types.Text {
-	panic("Not implemented yet")
+
+	text := []rune{}
+
+	for rr.More() {
+		switch {
+		case rr.MatchNewline():
+			goto BREAK
+		case rr.Accept(`\`):
+			if !rr.More() {
+				panic("Escape without following symbol")
+			}
+			text = append(text, rr.Read())
+		case matchAny(rr, 0, "+", "-", "*", "{", "}", "`", "@"):
+			goto BREAK
+		}
+	}
+
+BREAK:
+	t := string(text)
+	t = strings.TrimSpace(t)
+	t = strings.ReplaceAll(t, `\`, "")
+	return types.Text{Text: t}
 }
 
 func parseTextLine(rr RuneReader) types.Text {
@@ -123,7 +145,12 @@ func parseNode(rr RuneReader) types.Node {
 }
 
 func parseNodeLine(rr RuneReader) types.Node {
-	panic("Not implemented yet")
+	n := types.Node{Phrases: []types.Phrase{}}
+	for !rr.MatchNewline() {
+		p := parsePhrase(rr)
+		n.Phrases = append(n.Phrases, p)
+	}
+	return n
 }
 
 func parseNumItem(rr RuneReader) types.Node {
@@ -154,9 +181,9 @@ func maybeQuestion(rr RuneReader, left types.Phrase) types.Phrase {
 	panic("Not implemented yet")
 }
 
-func matchAny(rr RuneReader, pats ...string) bool {
+func matchAny(rr RuneReader, start int, pats ...string) bool {
 	for _, pat := range pats {
-		if rr.Match(0, pat) {
+		if rr.Match(start, pat) {
 			return true
 		}
 	}
