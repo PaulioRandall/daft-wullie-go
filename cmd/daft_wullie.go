@@ -15,12 +15,5 @@ const testData = `
 `
 
 func main() {
-	panic("Not implemented yet!")
-	//parse(testData)
-}
-
-func parse(s string) {
-	//rr := reader.NewReader(s)
-	//notes := parser.Parse(rr)
-	//println(types.NotesString(notes))
+	panic("Nest: write a full script test for the parser")
 }
