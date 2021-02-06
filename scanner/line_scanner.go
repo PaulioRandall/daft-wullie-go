@@ -29,13 +29,13 @@ func (ls *lineScanner) scanLine() []token.Lexeme {
 
 	switch {
 	case ls.matchStr("###"):
-		return []token.Lexeme{ls.slice(token.HEADING, 3), ls.scanTextLine()}
+		return []token.Lexeme{ls.slice(token.H3, 3), ls.scanTextLine()}
 
 	case ls.matchStr("##"):
-		return []token.Lexeme{ls.slice(token.SUB_TOPIC, 2), ls.scanTextLine()}
+		return []token.Lexeme{ls.slice(token.H2, 2), ls.scanTextLine()}
 
 	case ls.matchStr("#"):
-		return []token.Lexeme{ls.slice(token.TOPIC, 1), ls.scanTextLine()}
+		return []token.Lexeme{ls.slice(token.H1, 1), ls.scanTextLine()}
 
 	case ls.matchStr(">"):
 		r := []token.Lexeme{ls.slice(token.QUOTE, 1)}

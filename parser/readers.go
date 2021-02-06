@@ -16,10 +16,6 @@ type (
 	}
 )
 
-func newLineReader(lines [][]token.Lexeme) *lineReader {
-	return &lineReader{lines: lines}
-}
-
 func (r *lineReader) more() bool {
 	return r.idx < len(r.lines)
 }
@@ -52,6 +48,14 @@ func (r *tokenReader) read() token.Lexeme {
 	lx := r.tks[r.idx]
 	r.idx++
 	return lx
+}
+
+func (r *tokenReader) accept(tk token.Token) bool {
+	if r.match(tk) {
+		r.read()
+		return true
+	}
+	return false
 }
 
 func (r *tokenReader) backup() {

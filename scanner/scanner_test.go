@@ -17,7 +17,7 @@ func TestTopic_1(t *testing.T) {
 	in := `  #  Topic  `
 	exp := [][]token.Lexeme{
 		[]token.Lexeme{
-			lex(token.TOPIC, "#"),
+			lex(token.H1, "#"),
 			lex(token.TEXT, "  Topic  "),
 		},
 	}
@@ -31,7 +31,7 @@ func TestSubTopic_1(t *testing.T) {
 	in := `## Sub topic`
 	exp := [][]token.Lexeme{
 		[]token.Lexeme{
-			lex(token.SUB_TOPIC, "##"),
+			lex(token.H2, "##"),
 			lex(token.TEXT, " Sub topic"),
 		},
 	}
@@ -45,7 +45,7 @@ func TestHeading_1(t *testing.T) {
 	in := `### Heading`
 	exp := [][]token.Lexeme{
 		[]token.Lexeme{
-			lex(token.HEADING, "###"),
+			lex(token.H3, "###"),
 			lex(token.TEXT, " Heading"),
 		},
 	}
@@ -154,7 +154,7 @@ func TestLines_1(t *testing.T) {
 	exp := [][]token.Lexeme{
 		emptyLine(),
 		line(
-			lex(token.HEADING, "###"),
+			lex(token.H3, "###"),
 			lex(token.TEXT, " Trees:"),
 		),
 		emptyLine(),

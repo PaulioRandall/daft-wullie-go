@@ -9,25 +9,23 @@ import (
 type ScanLine func() ([]token.Lexeme, ScanLine)
 
 func NewScanner(s string) ScanLine {
-	ss := &scriptScanner{
-		lines: splitLines(s),
+	ss := &scriptScanner{lines: splitLines(s)}
+	if !ss.more() {
+		return nil
 	}
 	return scanner(ss)
 }
 
 func ScanAll(s string) [][]token.Lexeme {
-
 	var (
 		f   = NewScanner(s)
 		r   = [][]token.Lexeme{}
 		lxs []token.Lexeme
 	)
-
 	for f != nil {
 		lxs, f = f()
 		r = append(r, lxs)
 	}
-
 	return r
 }
 

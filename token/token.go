@@ -11,9 +11,9 @@ type (
 const (
 	UNDEFINED Token = iota
 	TEXT
-	TOPIC
-	SUB_TOPIC
-	HEADING
+	H1
+	H2
+	H3
 	BUL_POINT
 	NUM_POINT
 	QUOTE
@@ -31,12 +31,12 @@ func (tk Token) String() string {
 	case TEXT:
 		return "TEXT"
 
-	case TOPIC:
-		return "TOPIC"
-	case SUB_TOPIC:
-		return "SUB_TOPIC"
-	case HEADING:
-		return "HEADING"
+	case H1:
+		return "H1"
+	case H2:
+		return "H2"
+	case H3:
+		return "H3"
 
 	case BUL_POINT:
 		return "BUL_POINT"
