@@ -2,6 +2,8 @@ package scanner
 
 import (
 	"unicode"
+
+	"github.com/PaulioRandall/daft-wullie-go/token"
 )
 
 type lineScanner struct{ text []rune }
@@ -10,37 +12,37 @@ var digits = []string{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"}
 var key_symbols = []string{"\\", "+", "-", "*", "`", "?"}
 var key_tokens = []struct {
 	sym string
-	tk  Token
+	tk  token.Token
 }{
-	{"\\", ESCAPE},
-	{"**", KEY_PHRASE},
-	{"+", POSITIVE},
-	{"-", NEGATIVE},
-	{"*", STRONG},
-	{"`", SNIPPET},
-	{"?", QUESTION},
+	{"\\", token.ESCAPE},
+	{"**", token.KEY_PHRASE},
+	{"+", token.POSITIVE},
+	{"-", token.NEGATIVE},
+	{"*", token.STRONG},
+	{"`", token.SNIPPET},
+	{"?", token.QUESTION},
 }
 
-func (ls *lineScanner) scanLine() []Lexeme {
+func (ls *lineScanner) scanLine() []token.Lexeme {
 
 	ls.discardSpace()
 
 	switch {
 	case ls.matchStr("###"):
-		return []Lexeme{ls.slice(HEADING, 3), ls.scanTextLine()}
+		return []token.Lexeme{ls.slice(token.HEADING, 3), ls.scanTextLine()}
 
 	case ls.matchStr("##"):
-		return []Lexeme{ls.slice(SUB_TOPIC, 2), ls.scanTextLine()}
+		return []token.Lexeme{ls.slice(token.SUB_TOPIC, 2), ls.scanTextLine()}
 
 	case ls.matchStr("#"):
-		return []Lexeme{ls.slice(TOPIC, 1), ls.scanTextLine()}
+		return []token.Lexeme{ls.slice(token.TOPIC, 1), ls.scanTextLine()}
 
 	case ls.matchStr(">"):
-		r := []Lexeme{ls.slice(QUOTE, 1)}
+		r := []token.Lexeme{ls.slice(token.QUOTE, 1)}
 		return append(r, ls.scanNodes()...)
 
 	case ls.matchStr("."):
-		r := []Lexeme{ls.slice(BUL_POINT, 1)}
+		r := []token.Lexeme{ls.slice(token.BUL_POINT, 1)}
 		return append(r, ls.scanNodes()...)
 
 	case ls.matchNumPoint():
@@ -51,8 +53,8 @@ func (ls *lineScanner) scanLine() []Lexeme {
 	}
 }
 
-func (ls *lineScanner) scanNodes() []Lexeme {
-	r := []Lexeme{}
+func (ls *lineScanner) scanNodes() []token.Lexeme {
+	r := []token.Lexeme{}
 	for ls.inRange(0) {
 		lx := ls.scanNode()
 		r = append(r, lx)
@@ -60,7 +62,7 @@ func (ls *lineScanner) scanNodes() []Lexeme {
 	return r
 }
 
-func (ls *lineScanner) scanNode() Lexeme {
+func (ls *lineScanner) scanNode() token.Lexeme {
 	for _, v := range key_tokens {
 		if ls.matchStr(v.sym) {
 			return ls.slice(v.tk, len(v.sym))
@@ -69,16 +71,16 @@ func (ls *lineScanner) scanNode() Lexeme {
 	return ls.scanText()
 }
 
-func (ls *lineScanner) scanTextLine() Lexeme {
-	return ls.sliceBy(TEXT, anyMatcher)
+func (ls *lineScanner) scanTextLine() token.Lexeme {
+	return ls.sliceBy(token.TEXT, anyMatcher)
 }
 
-func (ls *lineScanner) scanText() Lexeme {
-	return ls.sliceBy(TEXT, nonKeyMatcher)
+func (ls *lineScanner) scanText() token.Lexeme {
+	return ls.sliceBy(token.TEXT, nonKeyMatcher)
 }
 
-func (ls *lineScanner) scanNumPoint() []Lexeme {
-	r := []Lexeme{ls.sliceBy(NUM_POINT, newNumPointMatcher())}
+func (ls *lineScanner) scanNumPoint() []token.Lexeme {
+	r := []token.Lexeme{ls.sliceBy(token.NUM_POINT, newNumPointMatcher())}
 	return append(r, ls.scanNodes()...)
 }
 
@@ -122,19 +124,19 @@ func (ls *lineScanner) matchNumPoint() bool {
 }
 
 func (ls *lineScanner) discardSpace() {
-	ls.sliceBy(UNDEFINED, spaceMatcher)
+	ls.sliceBy(token.UNDEFINED, spaceMatcher)
 }
 
-func (ls *lineScanner) slice(tk Token, n int) Lexeme {
+func (ls *lineScanner) slice(tk token.Token, n int) token.Lexeme {
 	val := ls.text[:n]
 	ls.text = ls.text[n:]
-	return Lexeme{
+	return token.Lexeme{
 		Token: tk,
 		Val:   string(val),
 	}
 }
 
-func (ls *lineScanner) sliceBy(tk Token, f func(rune) bool) Lexeme {
+func (ls *lineScanner) sliceBy(tk token.Token, f func(rune) bool) token.Lexeme {
 	i := 0
 	for ; ls.inRange(i) && f(ls.text[i]); i++ {
 	}

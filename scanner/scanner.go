@@ -2,16 +2,18 @@ package scanner
 
 import (
 	"strings"
+
+	"github.com/PaulioRandall/daft-wullie-go/token"
 )
 
-type ScanLine func() ([]Lexeme, ScanLine)
+type ScanLine func() ([]token.Lexeme, ScanLine)
 
-func ScanAll(s string) [][]Lexeme {
+func ScanAll(s string) [][]token.Lexeme {
 
 	var (
 		f   = NewScanner(s)
-		r   = [][]Lexeme{}
-		lxs []Lexeme
+		r   = [][]token.Lexeme{}
+		lxs []token.Lexeme
 	)
 
 	for f != nil {
@@ -30,7 +32,7 @@ func NewScanner(s string) ScanLine {
 }
 
 func scanner(ss *scriptScanner) ScanLine {
-	return func() ([]Lexeme, ScanLine) {
+	return func() ([]token.Lexeme, ScanLine) {
 		tks := ss.scanLine()
 		if ss.more() {
 			return tks, scanner(ss)

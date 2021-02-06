@@ -3,20 +3,22 @@ package scanner
 import (
 	"testing"
 
+	"github.com/PaulioRandall/daft-wullie-go/token"
+
 	"github.com/stretchr/testify/require"
 )
 
-func lex(tk Token, val string) Lexeme {
-	return Lexeme{Token: tk, Val: val}
+func lex(tk token.Token, val string) token.Lexeme {
+	return token.Lexeme{Token: tk, Val: val}
 }
 
 func TestTopic_1(t *testing.T) {
 
 	in := `  #  Topic  `
-	exp := [][]Lexeme{
-		[]Lexeme{
-			lex(TOPIC, "#"),
-			lex(TEXT, "  Topic  "),
+	exp := [][]token.Lexeme{
+		[]token.Lexeme{
+			lex(token.TOPIC, "#"),
+			lex(token.TEXT, "  Topic  "),
 		},
 	}
 
@@ -27,10 +29,10 @@ func TestTopic_1(t *testing.T) {
 func TestSubTopic_1(t *testing.T) {
 
 	in := `## Sub topic`
-	exp := [][]Lexeme{
-		[]Lexeme{
-			lex(SUB_TOPIC, "##"),
-			lex(TEXT, " Sub topic"),
+	exp := [][]token.Lexeme{
+		[]token.Lexeme{
+			lex(token.SUB_TOPIC, "##"),
+			lex(token.TEXT, " Sub topic"),
 		},
 	}
 
@@ -41,10 +43,10 @@ func TestSubTopic_1(t *testing.T) {
 func TestHeading_1(t *testing.T) {
 
 	in := `### Heading`
-	exp := [][]Lexeme{
-		[]Lexeme{
-			lex(HEADING, "###"),
-			lex(TEXT, " Heading"),
+	exp := [][]token.Lexeme{
+		[]token.Lexeme{
+			lex(token.HEADING, "###"),
+			lex(token.TEXT, " Heading"),
 		},
 	}
 
@@ -55,10 +57,10 @@ func TestHeading_1(t *testing.T) {
 func TestBulletPoint_1(t *testing.T) {
 
 	in := `. Point`
-	exp := [][]Lexeme{
-		[]Lexeme{
-			lex(BUL_POINT, "."),
-			lex(TEXT, " Point"),
+	exp := [][]token.Lexeme{
+		[]token.Lexeme{
+			lex(token.BUL_POINT, "."),
+			lex(token.TEXT, " Point"),
 		},
 	}
 
@@ -69,10 +71,10 @@ func TestBulletPoint_1(t *testing.T) {
 func TestNumberPoint_1(t *testing.T) {
 
 	in := `123. Point`
-	exp := [][]Lexeme{
-		[]Lexeme{
-			lex(NUM_POINT, "123."),
-			lex(TEXT, " Point"),
+	exp := [][]token.Lexeme{
+		[]token.Lexeme{
+			lex(token.NUM_POINT, "123."),
+			lex(token.TEXT, " Point"),
 		},
 	}
 
@@ -83,10 +85,10 @@ func TestNumberPoint_1(t *testing.T) {
 func TestQuote_1(t *testing.T) {
 
 	in := `> Fly high through apocalypse skies`
-	exp := [][]Lexeme{
-		[]Lexeme{
-			lex(QUOTE, ">"),
-			lex(TEXT, " Fly high through apocalypse skies"),
+	exp := [][]token.Lexeme{
+		[]token.Lexeme{
+			lex(token.QUOTE, ">"),
+			lex(token.TEXT, " Fly high through apocalypse skies"),
 		},
 	}
 
@@ -97,14 +99,14 @@ func TestQuote_1(t *testing.T) {
 func TestNodes_1(t *testing.T) {
 
 	in := "**+-*`?"
-	exp := [][]Lexeme{
-		[]Lexeme{
-			lex(KEY_PHRASE, "**"),
-			lex(POSITIVE, "+"),
-			lex(NEGATIVE, "-"),
-			lex(STRONG, "*"),
-			lex(SNIPPET, "`"),
-			lex(QUESTION, "?"),
+	exp := [][]token.Lexeme{
+		[]token.Lexeme{
+			lex(token.KEY_PHRASE, "**"),
+			lex(token.POSITIVE, "+"),
+			lex(token.NEGATIVE, "-"),
+			lex(token.STRONG, "*"),
+			lex(token.SNIPPET, "`"),
+			lex(token.QUESTION, "?"),
 		},
 	}
 
@@ -115,19 +117,19 @@ func TestNodes_1(t *testing.T) {
 func TestNodes_2(t *testing.T) {
 
 	in := "* +positive+ and -negative- *"
-	exp := [][]Lexeme{
-		[]Lexeme{
-			lex(STRONG, "*"),
-			lex(TEXT, " "),
-			lex(POSITIVE, "+"),
-			lex(TEXT, "positive"),
-			lex(POSITIVE, "+"),
-			lex(TEXT, " and "),
-			lex(NEGATIVE, "-"),
-			lex(TEXT, "negative"),
-			lex(NEGATIVE, "-"),
-			lex(TEXT, " "),
-			lex(STRONG, "*"),
+	exp := [][]token.Lexeme{
+		[]token.Lexeme{
+			lex(token.STRONG, "*"),
+			lex(token.TEXT, " "),
+			lex(token.POSITIVE, "+"),
+			lex(token.TEXT, "positive"),
+			lex(token.POSITIVE, "+"),
+			lex(token.TEXT, " and "),
+			lex(token.NEGATIVE, "-"),
+			lex(token.TEXT, "negative"),
+			lex(token.NEGATIVE, "-"),
+			lex(token.TEXT, " "),
+			lex(token.STRONG, "*"),
 		},
 	}
 
@@ -137,8 +139,8 @@ func TestNodes_2(t *testing.T) {
 
 func TestLines_1(t *testing.T) {
 
-	line := func(lxs ...Lexeme) []Lexeme { return lxs }
-	emptyLine := func() []Lexeme { return []Lexeme{} }
+	line := func(lxs ...token.Lexeme) []token.Lexeme { return lxs }
+	emptyLine := func() []token.Lexeme { return []token.Lexeme{} }
 
 	in := `
 ### Trees:
@@ -149,37 +151,37 @@ func TestLines_1(t *testing.T) {
 .+ Fun to climb
 .- Can fall over
 `
-	exp := [][]Lexeme{
+	exp := [][]token.Lexeme{
 		emptyLine(),
 		line(
-			lex(HEADING, "###"),
-			lex(TEXT, " Trees:"),
+			lex(token.HEADING, "###"),
+			lex(token.TEXT, " Trees:"),
 		),
 		emptyLine(),
 		emptyLine(),
 		line(
-			lex(BUL_POINT, "."),
-			lex(TEXT, " Burnable "),
-			lex(NEGATIVE, "-"),
-			lex(TEXT, "(Wildfires)"),
-			lex(NEGATIVE, "-"),
+			lex(token.BUL_POINT, "."),
+			lex(token.TEXT, " Burnable "),
+			lex(token.NEGATIVE, "-"),
+			lex(token.TEXT, "(Wildfires)"),
+			lex(token.NEGATIVE, "-"),
 		),
 		line(
-			lex(BUL_POINT, "."),
-			lex(TEXT, " Central to "),
-			lex(STRONG, "*"),
-			lex(TEXT, "ecosystems"),
-			lex(STRONG, "*"),
+			lex(token.BUL_POINT, "."),
+			lex(token.TEXT, " Central to "),
+			lex(token.STRONG, "*"),
+			lex(token.TEXT, "ecosystems"),
+			lex(token.STRONG, "*"),
 		),
 		line(
-			lex(BUL_POINT, "."),
-			lex(POSITIVE, "+"),
-			lex(TEXT, " Fun to climb"),
+			lex(token.BUL_POINT, "."),
+			lex(token.POSITIVE, "+"),
+			lex(token.TEXT, " Fun to climb"),
 		),
 		line(
-			lex(BUL_POINT, "."),
-			lex(NEGATIVE, "-"),
-			lex(TEXT, " Can fall over"),
+			lex(token.BUL_POINT, "."),
+			lex(token.NEGATIVE, "-"),
+			lex(token.TEXT, " Can fall over"),
 		),
 		emptyLine(),
 	}
@@ -190,22 +192,22 @@ func TestLines_1(t *testing.T) {
 
 func TestLines_2(t *testing.T) {
 
-	line := func(lxs ...Lexeme) []Lexeme { return lxs }
-	emptyLine := func() []Lexeme { return []Lexeme{} }
+	line := func(lxs ...token.Lexeme) []token.Lexeme { return lxs }
+	emptyLine := func() []token.Lexeme { return []token.Lexeme{} }
 
 	in := `
 > I aten't ded
 A quote by whom?
 `
-	exp := [][]Lexeme{
+	exp := [][]token.Lexeme{
 		emptyLine(),
 		line(
-			lex(QUOTE, ">"),
-			lex(TEXT, " I aten't ded"),
+			lex(token.QUOTE, ">"),
+			lex(token.TEXT, " I aten't ded"),
 		),
 		line(
-			lex(TEXT, "A quote by whom"),
-			lex(QUESTION, "?"),
+			lex(token.TEXT, "A quote by whom"),
+			lex(token.QUESTION, "?"),
 		),
 		emptyLine(),
 	}
