@@ -1,4 +1,4 @@
-package parser
+package node
 
 type (
 	Node interface {

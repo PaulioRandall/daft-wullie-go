@@ -1,7 +1,6 @@
 package parser
 
 import (
-	//"github.com/PaulioRandall/daft-wullie-go/types"
 	"github.com/PaulioRandall/daft-wullie-go/token"
 )
 
