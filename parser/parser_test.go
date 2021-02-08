@@ -23,8 +23,8 @@ func neverNil(nodes []node.Node) []node.Node {
 func h1(text string) node.H1                      { return node.H1{M_Text: text} }
 func h2(text string) node.H2                      { return node.H2{M_Text: text} }
 func h3(text string) node.H3                      { return node.H3{M_Text: text} }
-func quote___(text string) node.Quote             { return node.Quote{M_Text: text} }
-func fmtLine_(nodes ...node.Node) node.FmtLine    { return node.FmtLine{M_Nodes: neverNil(nodes)} }
+func quote____(text string) node.Quote            { return node.Quote{M_Text: text} }
+func fmtLine__(nodes ...node.Node) node.FmtLine   { return node.FmtLine{M_Nodes: neverNil(nodes)} }
 func keyPhrase(nodes ...node.Node) node.KeyPhrase { return node.KeyPhrase{M_Nodes: neverNil(nodes)} }
 func positive_(nodes ...node.Node) node.Positive  { return node.Positive{M_Nodes: neverNil(nodes)} }
 func negative_(nodes ...node.Node) node.Negative  { return node.Negative{M_Nodes: neverNil(nodes)} }
@@ -74,7 +74,7 @@ func TestQuote_1(t *testing.T) {
 	}
 
 	exp := []node.Node{
-		quote___("The Turtle Moves!"),
+		quote____("The Turtle Moves!"),
 	}
 
 	act := ParseAll(in)
@@ -96,11 +96,11 @@ func TestNestableNodes_1(t *testing.T) {
 	}
 
 	exp := []node.Node{
-		fmtLine_(keyPhrase()),
-		fmtLine_(positive_()),
-		fmtLine_(negative_()),
-		fmtLine_(strong___()),
-		fmtLine_(snippet__()),
+		fmtLine__(keyPhrase()),
+		fmtLine__(positive_()),
+		fmtLine__(negative_()),
+		fmtLine__(strong___()),
+		fmtLine__(snippet__()),
 	}
 
 	act := ParseAll(in)
@@ -160,8 +160,8 @@ func TestScript_1(t *testing.T) {
 
 	exp := []node.Node{ // Lines
 		h1("Cheese"),
-		quote___("Cheese is a dairy product, derived from milk and produced in wide ranges of flavors, textures and forms by coagulation of the milk protein casein."),
-		fmtLine_(
+		quote____("Cheese is a dairy product, derived from milk and produced in wide ranges of flavors, textures and forms by coagulation of the milk protein casein."),
+		fmtLine__(
 			strong___(
 				phrase___("Cheese is "),
 				positive_(phrase___("very tasty")),
