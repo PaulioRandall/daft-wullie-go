@@ -57,10 +57,3 @@ func (r *tokenReader) accept(tk token.Token) bool {
 	}
 	return false
 }
-
-func (r *tokenReader) backup() {
-	if r.idx == 0 {
-		panic("Colunm index out of range")
-	}
-	r.idx--
-}

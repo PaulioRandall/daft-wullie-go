@@ -15,5 +15,5 @@ const testData = `
 `
 
 func main() {
-	panic("Nest: write a full script test for the parser")
+	panic("Next: finish writing full script test for the parser")
 }
