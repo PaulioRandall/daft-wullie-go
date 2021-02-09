@@ -13,31 +13,6 @@ func lex(tk token.Token, val string) token.Lexeme {
 	return token.Lexeme{Token: tk, Val: val}
 }
 
-func neverNil(nodes []node.Node) []node.Node {
-	if nodes == nil {
-		return []node.Node{}
-	}
-	return nodes
-}
-
-func emptyLine() node.Empty { return node.Empty{} }
-
-func h1(text string) node.H1 { return node.H1{M_Text: text} }
-func h2(text string) node.H2 { return node.H2{M_Text: text} }
-func h3(text string) node.H3 { return node.H3{M_Text: text} }
-
-func quote(text string) node.Quote              { return node.Quote{M_Text: text} }
-func fmtLine(nodes ...node.Node) node.FmtLine   { return node.FmtLine{M_Nodes: neverNil(nodes)} }
-func bulPoint(nodes ...node.Node) node.BulPoint { return node.BulPoint{M_Nodes: neverNil(nodes)} }
-func numPoint(nodes ...node.Node) node.NumPoint { return node.NumPoint{M_Nodes: neverNil(nodes)} }
-
-func keyPhrase(nodes ...node.Node) node.KeyPhrase { return node.KeyPhrase{M_Nodes: neverNil(nodes)} }
-func positive(nodes ...node.Node) node.Positive   { return node.Positive{M_Nodes: neverNil(nodes)} }
-func negative(nodes ...node.Node) node.Negative   { return node.Negative{M_Nodes: neverNil(nodes)} }
-func strong(nodes ...node.Node) node.Strong       { return node.Strong{M_Nodes: neverNil(nodes)} }
-func snippet(nodes ...node.Node) node.Snippet     { return node.Snippet{M_Nodes: neverNil(nodes)} }
-func phrase(text string) node.Phrase              { return node.Phrase{M_Text: text} }
-
 func TestHeadings_1(t *testing.T) {
 
 	in := [][]token.Lexeme{
@@ -47,9 +22,9 @@ func TestHeadings_1(t *testing.T) {
 	}
 
 	exp := []node.Node{
-		h1(""),
-		h2(""),
-		h3(""),
+		node.MakeH1(""),
+		node.MakeH2(""),
+		node.MakeH3(""),
 	}
 
 	act := ParseAll(in)
@@ -66,7 +41,7 @@ func TestQuote_1(t *testing.T) {
 	}
 
 	exp := []node.Node{
-		quote("The Turtle Moves!"),
+		node.MakeQuote("The Turtle Moves!"),
 	}
 
 	act := ParseAll(in)
@@ -79,24 +54,18 @@ func TestNestableNodes_1(t *testing.T) {
 		return []token.Lexeme{lex(tk, v), lex(tk, v)}
 	}
 
-	in := [][]token.Lexeme{
-		lxs(token.KEY_PHRASE, "**"),
-		lxs(token.POSITIVE, "+"),
-		lxs(token.NEGATIVE, "-"),
-		lxs(token.STRONG, "*"),
-		lxs(token.SNIPPET, "`"),
+	doTest := func(in []token.Lexeme, exp node.Node) {
+		input := [][]token.Lexeme{in}
+		expect := []node.Node{exp}
+		act := ParseAll(input)
+		require.Equal(t, expect, act)
 	}
 
-	exp := []node.Node{
-		fmtLine(keyPhrase()),
-		fmtLine(positive()),
-		fmtLine(negative()),
-		fmtLine(strong()),
-		fmtLine(snippet()),
-	}
-
-	act := ParseAll(in)
-	require.Equal(t, exp, act)
+	doTest(lxs(token.KEY_PHRASE, "**"), node.MakeFmtLine(node.MakeKeyPhrase()))
+	doTest(lxs(token.POSITIVE, "+"), node.MakeFmtLine(node.MakePositive()))
+	doTest(lxs(token.NEGATIVE, "-"), node.MakeFmtLine(node.MakeNegative()))
+	doTest(lxs(token.STRONG, "*"), node.MakeFmtLine(node.MakeStrong()))
+	doTest(lxs(token.SNIPPET, "`"), node.MakeFmtLine(node.MakeSnippet()))
 }
 
 func TestScript_1(t *testing.T) {
@@ -211,74 +180,74 @@ func TestScript_1(t *testing.T) {
 	}
 
 	exp := []node.Node{ // Lines
-		h1("Cheese"),
-		quote("Cheese is a dairy product, derived from milk and produced in wide ranges of flavors, textures and forms by coagulation of the milk protein casein."),
-		fmtLine(
-			strong(
-				phrase("Cheese is "),
-				positive(
-					phrase("very tasty"),
+		node.MakeH1("Cheese"),
+		node.MakeQuote("Cheese is a dairy product, derived from milk and produced in wide ranges of flavors, textures and forms by coagulation of the milk protein casein."),
+		node.MakeFmtLine(
+			node.MakeStrong(
+				node.MakePhrase("Cheese is "),
+				node.MakePositive(
+					node.MakePhrase("very tasty"),
 				),
-				phrase(" but also quite "),
-				negative(
-					phrase("smelly"),
+				node.MakePhrase(" but also quite "),
+				node.MakeNegative(
+					node.MakePhrase("smelly"),
 				),
-				phrase(", "),
-				positive(
-					phrase("good on pizza"),
+				node.MakePhrase(", "),
+				node.MakePositive(
+					node.MakePhrase("good on pizza"),
 				),
 			),
 		),
-		emptyLine(),
+		node.MakeEmptyLine(),
 
-		h2("History"),
-		fmtLine(phrase("Who knows.")),
-		emptyLine(),
-		emptyLine(),
-		emptyLine(),
+		node.MakeH2("History"),
+		node.MakeFmtLine(node.MakePhrase("Who knows.")),
+		node.MakeEmptyLine(),
+		node.MakeEmptyLine(),
+		node.MakeEmptyLine(),
 
-		h2("Types"),
-		bulPoint(phrase("Chedder")),
-		bulPoint(phrase("Brie")),
-		bulPoint(phrase("Mozzarella")),
-		bulPoint(phrase("Stilton")),
-		bulPoint(phrase("etc")),
-		emptyLine(),
+		node.MakeH2("Types"),
+		node.MakeBulPoint(node.MakePhrase("Chedder")),
+		node.MakeBulPoint(node.MakePhrase("Brie")),
+		node.MakeBulPoint(node.MakePhrase("Mozzarella")),
+		node.MakeBulPoint(node.MakePhrase("Stilton")),
+		node.MakeBulPoint(node.MakePhrase("etc")),
+		node.MakeEmptyLine(),
 
-		h2("Process"),
-		numPoint(phrase("Curdling")),
-		numPoint(phrase("Curd processing")),
-		numPoint(phrase("Ripening")),
-		emptyLine(),
+		node.MakeH2("Process"),
+		node.MakeNumPoint(node.MakePhrase("Curdling")),
+		node.MakeNumPoint(node.MakePhrase("Curd processing")),
+		node.MakeNumPoint(node.MakePhrase("Ripening")),
+		node.MakeEmptyLine(),
 
-		h2("Safety"),
-		h3("Bacteria"),
-		fmtLine(
-			phrase("Milk used should be "),
-			keyPhrase(phrase("pasteurized")),
-			phrase(" to kill infectious diseases"),
+		node.MakeH2("Safety"),
+		node.MakeH3("Bacteria"),
+		node.MakeFmtLine(
+			node.MakePhrase("Milk used should be "),
+			node.MakeKeyPhrase(node.MakePhrase("pasteurized")),
+			node.MakePhrase(" to kill infectious diseases"),
 		),
-		emptyLine(),
+		node.MakeEmptyLine(),
 
-		h3("Heart disease"),
-		fmtLine(
-			negative(
-				phrase("Recommended that cheese consumption be minimised"),
+		node.MakeH3("Heart disease"),
+		node.MakeFmtLine(
+			node.MakeNegative(
+				node.MakePhrase("Recommended that cheese consumption be minimised"),
 			),
 		),
-		fmtLine(
-			negative(
-				phrase("There isn't any "),
-				strong(phrase("convincing")),
-				phrase(" evidence that cheese lowers heart disease"),
+		node.MakeFmtLine(
+			node.MakeNegative(
+				node.MakePhrase("There isn't any "),
+				node.MakeStrong(node.MakePhrase("convincing")),
+				node.MakePhrase(" evidence that cheese lowers heart disease"),
 			),
 		),
-		emptyLine(),
+		node.MakeEmptyLine(),
 
-		fmtLine(
-			phrase("Source [2021-02-06]: https://en.wikipedia.org/wiki/Cheese"),
+		node.MakeFmtLine(
+			node.MakePhrase("Source [2021-02-06]: https://en.wikipedia.org/wiki/Cheese"),
 		),
-		emptyLine(),
+		node.MakeEmptyLine(),
 	}
 
 	act := ParseAll(in)

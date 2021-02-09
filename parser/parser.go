@@ -50,36 +50,36 @@ func parseLine(r *tokenReader) node.Node {
 		return node.Empty{}
 
 	case r.accept(token.H1):
-		return node.H1{M_Text: parseTextLine(r)}
+		return node.H1{Phrase: node.Phrase{M_Text: parseTextLine(r)}}
 
 	case r.accept(token.H2):
-		return node.H2{M_Text: parseTextLine(r)}
+		return node.H2{Phrase: node.Phrase{M_Text: parseTextLine(r)}}
 
 	case r.accept(token.H3):
-		return node.H3{M_Text: parseTextLine(r)}
+		return node.H3{Phrase: node.Phrase{M_Text: parseTextLine(r)}}
 
 	case r.accept(token.QUOTE):
-		return node.Quote{M_Text: parseTextLine(r)}
+		return node.Quote{Phrase: node.Phrase{M_Text: parseTextLine(r)}}
 
 	case r.accept(token.BUL_POINT):
-		return node.BulPoint{M_Nodes: parseNodeLine(r)}
+		return node.BulPoint{HubNode: parseNodeLine(r)}
 
 	case r.accept(token.NUM_POINT):
-		return node.NumPoint{M_Nodes: parseNodeLine(r)}
+		return node.NumPoint{HubNode: parseNodeLine(r)}
 
 	default:
-		return node.FmtLine{M_Nodes: parseNodeLine(r)}
+		return node.FmtLine{HubNode: parseNodeLine(r)}
 	}
 }
 
 // NODE_LINE := {NODE} *EOF*
-func parseNodeLine(r *tokenReader) []node.Node {
-	ns := []node.Node{}
+func parseNodeLine(r *tokenReader) node.HubNode {
+	h := node.HubNode{M_Nodes: []node.Node{}}
 	for r.more() {
 		n := parseNode(r)
-		ns = append(ns, n)
+		h.M_Nodes = append(h.M_Nodes, n)
 	}
-	return ns
+	return h
 }
 
 // NODE := KEY_PHRASE {NODE} [KEY_PHRASE]
@@ -91,19 +91,29 @@ func parseNodeLine(r *tokenReader) []node.Node {
 func parseNode(r *tokenReader) node.Node {
 	switch {
 	case r.accept(token.KEY_PHRASE):
-		return node.KeyPhrase{M_Nodes: parseNodesUntil(r, token.KEY_PHRASE)}
+		return node.KeyPhrase{
+			HubNode: node.HubNode{M_Nodes: parseNodesUntil(r, token.KEY_PHRASE)},
+		}
 
 	case r.accept(token.POSITIVE):
-		return node.Positive{M_Nodes: parseNodesUntil(r, token.POSITIVE)}
+		return node.Positive{
+			HubNode: node.HubNode{M_Nodes: parseNodesUntil(r, token.POSITIVE)},
+		}
 
 	case r.accept(token.NEGATIVE):
-		return node.Negative{M_Nodes: parseNodesUntil(r, token.NEGATIVE)}
+		return node.Negative{
+			HubNode: node.HubNode{M_Nodes: parseNodesUntil(r, token.NEGATIVE)},
+		}
 
 	case r.accept(token.STRONG):
-		return node.Strong{M_Nodes: parseNodesUntil(r, token.STRONG)}
+		return node.Strong{
+			HubNode: node.HubNode{M_Nodes: parseNodesUntil(r, token.STRONG)},
+		}
 
 	case r.accept(token.SNIPPET):
-		return node.Snippet{M_Nodes: parseNodesUntil(r, token.SNIPPET)}
+		return node.Snippet{
+			HubNode: node.HubNode{M_Nodes: parseNodesUntil(r, token.SNIPPET)},
+		}
 
 	default:
 		return node.Phrase{M_Text: parseText(r)}
