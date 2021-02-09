@@ -15,5 +15,5 @@ const testData = `
 `
 
 func main() {
-	panic("Next: add empty lines")
+	panic("Next: add util functionality")
 }
