@@ -1,16 +1,16 @@
 package node
 
+import (
+	"strings"
+)
+
 type (
 	Node interface {
+		Text() string
 		node()
 	}
 
-	TextNode interface {
-		Node
-		Text() string
-	}
-
-	ParentNode interface {
+	Parent interface {
 		Node
 		Nodes() []Node
 	}
@@ -67,36 +67,43 @@ func (p Phrase) node()  {}
 func (p HubNode) node() {}
 func (p Empty) node()   {}
 
-func (p Phrase) Text() string   { return p.M_Text }
+func (p Phrase) Text() string { return p.M_Text }
+func (p Empty) Text() string  { return "" }
+func (p HubNode) Text() string {
+	sb := strings.Builder{}
+	for _, n := range p.M_Nodes {
+		sb.WriteString(n.Text())
+	}
+	return sb.String()
+}
+
 func (p HubNode) Nodes() []Node { return p.M_Nodes }
-func (p Empty) Text() string    { return "" }
 
 func _enforceTypes() {
 
 	var (
-		n  Node
-		tn TextNode
-		pn ParentNode
+		n Node
+		p Parent
 	)
 
-	n, tn = Phrase{}, Phrase{}
-	n, tn = Empty{}, Empty{}
+	n = Phrase{}
+	n = Empty{}
 
-	n, tn = H1{}, H1{}
-	n, tn = H2{}, H2{}
-	n, tn = H3{}, H3{}
+	n = H1{}
+	n = H2{}
+	n = H3{}
 
-	n, tn = Quote{}, Quote{}
+	n = Quote{}
 
-	n, pn = FmtLine{}, FmtLine{}
-	n, pn = BulPoint{}, BulPoint{}
-	n, pn = NumPoint{}, NumPoint{}
+	n, p = FmtLine{}, FmtLine{}
+	n, p = BulPoint{}, BulPoint{}
+	n, p = NumPoint{}, NumPoint{}
 
-	n, pn = KeyPhrase{}, KeyPhrase{}
-	n, pn = Positive{}, Positive{}
-	n, pn = Negative{}, Negative{}
-	n, pn = Strong{}, Strong{}
-	n, pn = Snippet{}, Snippet{}
+	n, p = KeyPhrase{}, KeyPhrase{}
+	n, p = Positive{}, Positive{}
+	n, p = Negative{}, Negative{}
+	n, p = Strong{}, Strong{}
+	n, p = Snippet{}, Snippet{}
 
-	_, _, _ = n, tn, pn
+	_, _ = n, p
 }
