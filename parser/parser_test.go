@@ -20,6 +20,8 @@ func neverNil(nodes []node.Node) []node.Node {
 	return nodes
 }
 
+func emptyLine() node.Empty { return node.Empty{} }
+
 func h1(text string) node.H1 { return node.H1{M_Text: text} }
 func h2(text string) node.H2 { return node.H2{M_Text: text} }
 func h3(text string) node.H3 { return node.H3{M_Text: text} }
@@ -35,20 +37,6 @@ func negative(nodes ...node.Node) node.Negative   { return node.Negative{M_Nodes
 func strong(nodes ...node.Node) node.Strong       { return node.Strong{M_Nodes: neverNil(nodes)} }
 func snippet(nodes ...node.Node) node.Snippet     { return node.Snippet{M_Nodes: neverNil(nodes)} }
 func phrase(text string) node.Phrase              { return node.Phrase{M_Text: text} }
-
-/*
-func TestEmptyLine_1(t *testing.T) {
-
-	in := [][]token.Lexeme{}
-
-	exp := []node.Node{
-		node.Empty{},
-	}
-
-	act := ParseAll(in)
-	require.Equal(t, exp, act)
-}
-*/
 
 func TestHeadings_1(t *testing.T) {
 
@@ -120,6 +108,8 @@ func TestScript_1(t *testing.T) {
 	// ## History
 	// Who knows.
 	//
+	//
+	//
 	// ## Types
 	// . Chedder
 	// . Brie
@@ -166,9 +156,13 @@ func TestScript_1(t *testing.T) {
 			lex(token.TEXT, "good on pizza"),
 			lex(token.POSITIVE, "+"),
 		},
+		[]token.Lexeme{},
 
 		[]token.Lexeme{lex(token.H2, "##"), lex(token.TEXT, "History")},
 		[]token.Lexeme{lex(token.TEXT, "Who knows.")},
+		[]token.Lexeme{},
+		[]token.Lexeme{},
+		[]token.Lexeme{},
 
 		[]token.Lexeme{lex(token.H2, "##"), lex(token.TEXT, "Types")},
 		[]token.Lexeme{lex(token.BUL_POINT, "."), lex(token.TEXT, "Chedder")},
@@ -176,11 +170,13 @@ func TestScript_1(t *testing.T) {
 		[]token.Lexeme{lex(token.BUL_POINT, "."), lex(token.TEXT, "Mozzarella")},
 		[]token.Lexeme{lex(token.BUL_POINT, "."), lex(token.TEXT, "Stilton")},
 		[]token.Lexeme{lex(token.BUL_POINT, "."), lex(token.TEXT, "etc")},
+		[]token.Lexeme{},
 
 		[]token.Lexeme{lex(token.H2, "##"), lex(token.TEXT, "Process")},
 		[]token.Lexeme{lex(token.NUM_POINT, "1."), lex(token.TEXT, "Curdling")},
 		[]token.Lexeme{lex(token.NUM_POINT, "2."), lex(token.TEXT, "Curd processing")},
 		[]token.Lexeme{lex(token.NUM_POINT, "3."), lex(token.TEXT, "Ripening")},
+		[]token.Lexeme{},
 
 		[]token.Lexeme{lex(token.H2, "##"), lex(token.TEXT, "Safety")},
 		[]token.Lexeme{lex(token.H3, "###"), lex(token.TEXT, "Bacteria")},
@@ -191,6 +187,7 @@ func TestScript_1(t *testing.T) {
 			lex(token.KEY_PHRASE, "**"),
 			lex(token.TEXT, " to kill infectious diseases"),
 		},
+		[]token.Lexeme{},
 
 		[]token.Lexeme{lex(token.H3, "###"), lex(token.TEXT, "Heart disease")},
 		[]token.Lexeme{
@@ -205,10 +202,12 @@ func TestScript_1(t *testing.T) {
 			lex(token.STRONG, "*"),
 			lex(token.TEXT, " evidence that cheese lowers heart disease"),
 		},
+		[]token.Lexeme{},
 
 		[]token.Lexeme{
 			lex(token.TEXT, "Source [2021-02-06]: https://en.wikipedia.org/wiki/Cheese"),
 		},
+		[]token.Lexeme{},
 	}
 
 	exp := []node.Node{ // Lines
@@ -230,9 +229,13 @@ func TestScript_1(t *testing.T) {
 				),
 			),
 		),
+		emptyLine(),
 
 		h2("History"),
 		fmtLine(phrase("Who knows.")),
+		emptyLine(),
+		emptyLine(),
+		emptyLine(),
 
 		h2("Types"),
 		bulPoint(phrase("Chedder")),
@@ -240,11 +243,13 @@ func TestScript_1(t *testing.T) {
 		bulPoint(phrase("Mozzarella")),
 		bulPoint(phrase("Stilton")),
 		bulPoint(phrase("etc")),
+		emptyLine(),
 
 		h2("Process"),
 		numPoint(phrase("Curdling")),
 		numPoint(phrase("Curd processing")),
 		numPoint(phrase("Ripening")),
+		emptyLine(),
 
 		h2("Safety"),
 		h3("Bacteria"),
@@ -253,6 +258,7 @@ func TestScript_1(t *testing.T) {
 			keyPhrase(phrase("pasteurized")),
 			phrase(" to kill infectious diseases"),
 		),
+		emptyLine(),
 
 		h3("Heart disease"),
 		fmtLine(
@@ -267,10 +273,12 @@ func TestScript_1(t *testing.T) {
 				phrase(" evidence that cheese lowers heart disease"),
 			),
 		),
+		emptyLine(),
 
 		fmtLine(
 			phrase("Source [2021-02-06]: https://en.wikipedia.org/wiki/Cheese"),
 		),
+		emptyLine(),
 	}
 
 	act := ParseAll(in)
