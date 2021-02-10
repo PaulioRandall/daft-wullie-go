@@ -73,7 +73,7 @@ func (p HubNode) node()   {}
 func (p EmptyLine) node() {}
 
 func (p Phrase) Text() string    { return p.M_Text }
-func (p EmptyLine) Text() string { return "" }
+func (p EmptyLine) Text() string { return "\n" }
 func (p HubNode) Text() string {
 	sb := strings.Builder{}
 	for _, n := range p.M_Nodes {

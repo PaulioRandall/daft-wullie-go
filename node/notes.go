@@ -2,6 +2,7 @@ package node
 
 import (
 	"strings"
+	//"unicode"
 )
 
 type Notes []Node
@@ -28,28 +29,23 @@ func RemoveExtraLines(n Notes) Notes {
 func PlainString(notes Notes) string {
 	sb := strings.Builder{}
 	for _, n := range notes {
-		if _, ok := n.(EmptyLine); ok {
-			sb.WriteRune('\n')
-		} else {
-			sb.WriteString(n.Text())
-		}
+		s := strings.TrimSpace(n.Text())
+		sb.WriteString(s)
+		sb.WriteString("\n")
 	}
 	return sb.String()
 }
 
 func FmtString(notes Notes) string {
-	sb := strings.Builder{}
+	sb := &strings.Builder{}
 	for _, n := range notes {
-		if _, ok := n.(EmptyLine); ok {
-			sb.WriteRune('\n')
-			continue
-		}
 		fmtNodeString(sb, n)
+		sb.WriteString("\n")
 	}
 	return sb.String()
 }
 
-func fmtNodeString(sb strings.Builder, n Node) {
+func fmtNodeString(sb *strings.Builder, n Node) {
 
 	hubString := func(h HubNode) {
 		for _, sub := range h.M_Nodes {
