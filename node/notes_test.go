@@ -46,15 +46,15 @@ func TestRemoveExtraLines_2(t *testing.T) {
 		MakeEmptyLine(),
 		MakeEmptyLine(),
 		MakeEmptyLine(),
-		MakeH1("H1"),
+		MakeH1(MakePhrase("H1")),
 		MakeEmptyLine(),
 		MakeEmptyLine(),
 		MakeEmptyLine(),
-		MakeH2("H2"),
+		MakeH2(MakePhrase("H2")),
 		MakeEmptyLine(),
 		MakeEmptyLine(),
 		MakeEmptyLine(),
-		MakeH3("H3"),
+		MakeH3(MakePhrase("H3")),
 		MakeEmptyLine(),
 		MakeEmptyLine(),
 		MakeEmptyLine(),
@@ -62,11 +62,11 @@ func TestRemoveExtraLines_2(t *testing.T) {
 
 	exp := Notes{
 		MakeEmptyLine(),
-		MakeH1("H1"),
+		MakeH1(MakePhrase("H1")),
 		MakeEmptyLine(),
-		MakeH2("H2"),
+		MakeH2(MakePhrase("H2")),
 		MakeEmptyLine(),
-		MakeH3("H3"),
+		MakeH3(MakePhrase("H3")),
 		MakeEmptyLine(),
 	}
 

@@ -50,13 +50,13 @@ func parseLine(r *tokenReader) node.Node {
 		return node.MakeEmptyLine()
 
 	case r.accept(token.H1):
-		return node.MakeH1(parseTextLine(r))
+		return node.MakeH1(parseNodeLine(r)...)
 
 	case r.accept(token.H2):
-		return node.MakeH2(parseTextLine(r))
+		return node.MakeH2(parseNodeLine(r)...)
 
 	case r.accept(token.H3):
-		return node.MakeH3(parseTextLine(r))
+		return node.MakeH3(parseNodeLine(r)...)
 
 	case r.accept(token.QUOTE):
 		return node.MakeQuote(parseTextLine(r))

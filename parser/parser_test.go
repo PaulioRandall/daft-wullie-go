@@ -16,15 +16,15 @@ func lex(tk token.Token, val string) token.Lexeme {
 func TestHeadings_1(t *testing.T) {
 
 	in := [][]token.Lexeme{
-		[]token.Lexeme{lex(token.H1, "#"), lex(token.TEXT, "")},
-		[]token.Lexeme{lex(token.H2, "##"), lex(token.TEXT, "")},
-		[]token.Lexeme{lex(token.H3, "###"), lex(token.TEXT, "")},
+		[]token.Lexeme{lex(token.H1, "#"), lex(token.TEXT, "1")},
+		[]token.Lexeme{lex(token.H2, "##"), lex(token.TEXT, "2")},
+		[]token.Lexeme{lex(token.H3, "###"), lex(token.TEXT, "3")},
 	}
 
 	exp := []node.Node{
-		node.MakeH1(""),
-		node.MakeH2(""),
-		node.MakeH3(""),
+		node.MakeH1(node.MakePhrase("1")),
+		node.MakeH2(node.MakePhrase("2")),
+		node.MakeH3(node.MakePhrase("3")),
 	}
 
 	act := ParseAll(in)
@@ -219,7 +219,9 @@ func TestScript_1(t *testing.T) {
 	}
 
 	exp := []node.Node{ // Lines
-		node.MakeH1("Cheese"),
+		node.MakeH1(
+			node.MakePhrase("Cheese"),
+		),
 		node.MakeQuote("Cheese is a dairy product, derived from milk and produced in wide ranges of flavors, textures and forms by coagulation of the milk protein casein."),
 		node.MakeFmtLine(
 			node.MakeStrong(
@@ -239,13 +241,17 @@ func TestScript_1(t *testing.T) {
 		),
 		node.MakeEmptyLine(),
 
-		node.MakeH2("History"),
+		node.MakeH2(
+			node.MakePhrase("History"),
+		),
 		node.MakeFmtLine(node.MakePhrase("Who knows.")),
 		node.MakeEmptyLine(),
 		node.MakeEmptyLine(),
 		node.MakeEmptyLine(),
 
-		node.MakeH2("Types"),
+		node.MakeH2(
+			node.MakePhrase("Types"),
+		),
 		node.MakeBulPoint(node.MakePhrase("Chedder")),
 		node.MakeBulPoint(node.MakePhrase("Brie")),
 		node.MakeBulPoint(node.MakePhrase("Mozzarella")),
@@ -253,14 +259,20 @@ func TestScript_1(t *testing.T) {
 		node.MakeBulPoint(node.MakePhrase("etc")),
 		node.MakeEmptyLine(),
 
-		node.MakeH2("Process"),
+		node.MakeH2(
+			node.MakePhrase("Process"),
+		),
 		node.MakeNumPoint("1", node.MakePhrase("Curdling")),
 		node.MakeNumPoint("2", node.MakePhrase("Curd processing")),
 		node.MakeNumPoint("3", node.MakePhrase("Ripening")),
 		node.MakeEmptyLine(),
 
-		node.MakeH2("Safety"),
-		node.MakeH3("Bacteria"),
+		node.MakeH2(
+			node.MakePhrase("Safety"),
+		),
+		node.MakeH3(
+			node.MakePhrase("Bacteria"),
+		),
 		node.MakeFmtLine(
 			node.MakePhrase("Milk used should be "),
 			node.MakeKeyPhrase(node.MakePhrase("pasteurized")),
@@ -268,7 +280,9 @@ func TestScript_1(t *testing.T) {
 		),
 		node.MakeEmptyLine(),
 
-		node.MakeH3("Heart disease"),
+		node.MakeH3(
+			node.MakePhrase("Heart disease"),
+		),
 		node.MakeFmtLine(
 			node.MakeNegative(
 				node.MakePhrase("Recommended that cheese consumption be minimised"),
