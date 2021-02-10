@@ -47,29 +47,29 @@ func parser(r *lineReader) ParseLine {
 func parseLine(r *tokenReader) node.Node {
 	switch {
 	case !r.more():
-		return node.EmptyLine{}
+		return node.MakeEmptyLine()
 
 	case r.accept(token.H1):
-		return node.H1{M_Text: parseTextLine(r)}
+		return node.MakeH1(parseTextLine(r))
 
 	case r.accept(token.H2):
-		return node.H2{M_Text: parseTextLine(r)}
+		return node.MakeH2(parseTextLine(r))
 
 	case r.accept(token.H3):
-		return node.H3{M_Text: parseTextLine(r)}
+		return node.MakeH3(parseTextLine(r))
 
 	case r.accept(token.QUOTE):
-		return node.Quote{M_Text: parseTextLine(r)}
+		return node.MakeQuote(parseTextLine(r))
 
 	case r.accept(token.BUL_POINT):
-		return node.BulPoint{M_Nodes: parseNodeLine(r)}
+		return node.MakeBulPoint(parseNodeLine(r)...)
 
 	case r.match(token.NUM_POINT):
 		num := parseNum(r)
-		return node.NumPoint{Num: num, M_Nodes: parseNodeLine(r)}
+		return node.MakeNumPoint(num, parseNodeLine(r)...)
 
 	default:
-		return node.FmtLine{M_Nodes: parseNodeLine(r)}
+		return node.MakeFmtLine(parseNodeLine(r)...)
 	}
 }
 
@@ -92,26 +92,26 @@ func parseNodeLine(r *tokenReader) []node.Node {
 func parseNode(r *tokenReader) node.Node {
 	switch {
 	case r.accept(token.KEY_PHRASE):
-		return node.KeyPhrase{M_Nodes: parseNodesUntil(r, token.KEY_PHRASE)}
+		return node.MakeKeyPhrase(parseNodesUntil(r, token.KEY_PHRASE)...)
 
 	case r.accept(token.POSITIVE):
-		return node.Positive{M_Nodes: parseNodesUntil(r, token.POSITIVE)}
+		return node.MakePositive(parseNodesUntil(r, token.POSITIVE)...)
 
 	case r.accept(token.NEGATIVE):
-		return node.Negative{M_Nodes: parseNodesUntil(r, token.NEGATIVE)}
+		return node.MakeNegative(parseNodesUntil(r, token.NEGATIVE)...)
 
 	case r.accept(token.STRONG):
-		return node.Strong{M_Nodes: parseNodesUntil(r, token.STRONG)}
+		return node.MakeStrong(parseNodesUntil(r, token.STRONG)...)
 
 	case r.accept(token.SNIPPET):
-		return node.Snippet{M_Nodes: parseNodesUntil(r, token.SNIPPET)}
+		return node.MakeSnippet(parseTextUntil(r, token.SNIPPET))
 
 	default:
 		return node.Phrase{M_Text: parseText(r)}
 	}
 }
 
-// parseNodesUntil Parses child nodes until the end of the line or the
+// parseNodesUntil parses child nodes until the end of the line or the
 // specified 'delim' is encountered. Upon which, the delim is read and
 // discarded before the children are returned.
 //
@@ -125,6 +125,18 @@ func parseNodesUntil(r *tokenReader, delim token.Token) []node.Node {
 		ns = append(ns, n)
 	}
 	return ns
+}
+
+// parseTextUntil parses text until the end of the line or the specified
+// 'delim' is encountered. Upon which, the delim is read and discarded before
+// the text is returned.
+func parseTextUntil(r *tokenReader, delim token.Token) string {
+	sb := strings.Builder{}
+	for r.more() && !r.accept(delim) {
+		s := r.read().Val
+		sb.WriteString(s)
+	}
+	return sb.String()
 }
 
 // TEXT_LINE := {TEXT} *EOF*

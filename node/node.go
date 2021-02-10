@@ -32,7 +32,7 @@ type (
 	Positive  struct{ M_Nodes []Node }
 	Negative  struct{ M_Nodes []Node }
 	Strong    struct{ M_Nodes []Node }
-	Snippet   struct{ M_Nodes []Node }
+	Snippet   struct{ M_Text string }
 )
 
 func orEmpty(nodes []Node) []Node {
@@ -60,7 +60,7 @@ func MakeKeyPhrase(nodes ...Node) KeyPhrase { return KeyPhrase{M_Nodes: orEmpty(
 func MakePositive(nodes ...Node) Positive   { return Positive{M_Nodes: orEmpty(nodes)} }
 func MakeNegative(nodes ...Node) Negative   { return Negative{M_Nodes: orEmpty(nodes)} }
 func MakeStrong(nodes ...Node) Strong       { return Strong{M_Nodes: orEmpty(nodes)} }
-func MakeSnippet(nodes ...Node) Snippet     { return Snippet{M_Nodes: orEmpty(nodes)} }
+func MakeSnippet(text string) Snippet       { return Snippet{M_Text: text} }
 
 func (n Phrase) node()    {}
 func (n EmptyLine) node() {}
@@ -90,7 +90,7 @@ func (n KeyPhrase) Text() string { return joinTexts(n.M_Nodes) }
 func (n Positive) Text() string  { return joinTexts(n.M_Nodes) }
 func (n Negative) Text() string  { return joinTexts(n.M_Nodes) }
 func (n Strong) Text() string    { return joinTexts(n.M_Nodes) }
-func (n Snippet) Text() string   { return joinTexts(n.M_Nodes) }
+func (n Snippet) Text() string   { return n.M_Text }
 
 func (n FmtLine) Nodes() []Node   { return n.M_Nodes }
 func (n BulPoint) Nodes() []Node  { return n.M_Nodes }
@@ -99,7 +99,6 @@ func (n KeyPhrase) Nodes() []Node { return n.M_Nodes }
 func (n Positive) Nodes() []Node  { return n.M_Nodes }
 func (n Negative) Nodes() []Node  { return n.M_Nodes }
 func (n Strong) Nodes() []Node    { return n.M_Nodes }
-func (n Snippet) Nodes() []Node   { return n.M_Nodes }
 
 func joinTexts(nodes []Node) string {
 	sb := strings.Builder{}
@@ -133,7 +132,7 @@ func _enforceTypes() {
 	n, p = Positive{}, Positive{}
 	n, p = Negative{}, Negative{}
 	n, p = Strong{}, Strong{}
-	n, p = Snippet{}, Snippet{}
+	n = Snippet{}
 
 	_, _ = n, p
 }

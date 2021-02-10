@@ -104,7 +104,7 @@ func TestNestableNodes_1(t *testing.T) {
 	doTest(lxs(token.POSITIVE, "+"), node.MakeFmtLine(node.MakePositive()))
 	doTest(lxs(token.NEGATIVE, "-"), node.MakeFmtLine(node.MakeNegative()))
 	doTest(lxs(token.STRONG, "*"), node.MakeFmtLine(node.MakeStrong()))
-	doTest(lxs(token.SNIPPET, "`"), node.MakeFmtLine(node.MakeSnippet()))
+	doTest(lxs(token.SNIPPET, "`"), node.MakeFmtLine(node.MakeSnippet("")))
 }
 
 func TestScript_1(t *testing.T) {

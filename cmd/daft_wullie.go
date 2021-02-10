@@ -16,14 +16,16 @@ const example = `
 1. Numbered point
 > Quote
 
-**Key phrase**
-+Positive+
--Negative-
-*Strong*
-` + "`Snippet`"
+**Key phrase
++Positive
+-Negative
+*Strong
+` + "`Snippet"
 
 func main() {
 	println("\nTODO: Handle symbol escaping")
+	println("TODO: Change H1, H2, & H3 so they may be formatted")
+
 	tks := scanner.ScanAll(example)
 	notes := parser.ParseAll(tks)
 	s := node.FmtString(notes)
