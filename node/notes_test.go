@@ -29,29 +29,7 @@ func TestRemoveExtraLines_2(t *testing.T) {
 
 	//
 	//
-	// # Tree
 	//
-	//
-	in := Notes{
-		MakeEmptyLine(),
-		MakeEmptyLine(),
-		MakeH1("Tree"),
-		MakeEmptyLine(),
-		MakeEmptyLine(),
-	}
-
-	exp := Notes{
-		MakeEmptyLine(),
-		MakeH1("Tree"),
-		MakeEmptyLine(),
-	}
-
-	act := RemoveExtraLines(in)
-	require.Equal(t, exp, act)
-}
-
-func TestRemoveExtraLines_3(t *testing.T) {
-
 	// # H1
 	//
 	//
@@ -61,7 +39,13 @@ func TestRemoveExtraLines_3(t *testing.T) {
 	//
 	//
 	// ## H3
+	//
+	//
+	//
 	in := Notes{
+		MakeEmptyLine(),
+		MakeEmptyLine(),
+		MakeEmptyLine(),
 		MakeH1("H1"),
 		MakeEmptyLine(),
 		MakeEmptyLine(),
@@ -71,14 +55,19 @@ func TestRemoveExtraLines_3(t *testing.T) {
 		MakeEmptyLine(),
 		MakeEmptyLine(),
 		MakeH3("H3"),
+		MakeEmptyLine(),
+		MakeEmptyLine(),
+		MakeEmptyLine(),
 	}
 
 	exp := Notes{
+		MakeEmptyLine(),
 		MakeH1("H1"),
 		MakeEmptyLine(),
 		MakeH2("H2"),
 		MakeEmptyLine(),
 		MakeH3("H3"),
+		MakeEmptyLine(),
 	}
 
 	act := RemoveExtraLines(in)

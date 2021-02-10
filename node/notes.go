@@ -47,8 +47,8 @@ func FmtString(notes Notes) string {
 
 func fmtNodeString(sb *strings.Builder, n Node) {
 
-	hubString := func(h HubNode) {
-		for _, sub := range h.M_Nodes {
+	hubString := func(ns []Node) {
+		for _, sub := range ns {
 			fmtNodeString(sb, sub)
 		}
 	}
@@ -58,9 +58,9 @@ func fmtNodeString(sb *strings.Builder, n Node) {
 		sb.WriteString(n.Text())
 	}
 
-	writeGroup := func(prefix string, h HubNode, suffix string) {
+	writeGroup := func(prefix string, ns []Node, suffix string) {
 		sb.WriteString(prefix)
-		hubString(h)
+		hubString(ns)
 		sb.WriteString(suffix)
 	}
 
@@ -77,21 +77,21 @@ func fmtNodeString(sb *strings.Builder, n Node) {
 		writeLine(">", n)
 
 	case FmtLine:
-		hubString(v.HubNode)
+		hubString(v.M_Nodes)
 	case BulPoint:
-		writeGroup(".", v.HubNode, "")
+		writeGroup(".", v.M_Nodes, "")
 	case NumPoint:
-		writeGroup(v.Num+".", v.HubNode, "")
+		writeGroup(v.Num+".", v.M_Nodes, "")
 
 	case KeyPhrase:
-		writeGroup("**", v.HubNode, "**")
+		writeGroup("**", v.M_Nodes, "**")
 	case Positive:
-		writeGroup("+", v.HubNode, "+")
+		writeGroup("+", v.M_Nodes, "+")
 	case Negative:
-		writeGroup("-", v.HubNode, "-")
+		writeGroup("-", v.M_Nodes, "-")
 	case Strong:
-		writeGroup("*", v.HubNode, "*")
+		writeGroup("*", v.M_Nodes, "*")
 	case Snippet:
-		writeGroup("`", v.HubNode, "`")
+		writeGroup("`", v.M_Nodes, "`")
 	}
 }

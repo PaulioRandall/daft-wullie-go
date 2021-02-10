@@ -23,6 +23,7 @@ const example = `
 ` + "`Snippet`"
 
 func main() {
+	println("\nTODO: Handle symbol escaping")
 	tks := scanner.ScanAll(example)
 	notes := parser.ParseAll(tks)
 	s := node.FmtString(notes)

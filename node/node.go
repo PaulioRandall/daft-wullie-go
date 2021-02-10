@@ -16,73 +16,98 @@ type (
 	}
 
 	Phrase    struct{ M_Text string }
-	HubNode   struct{ M_Nodes []Node }
 	EmptyLine struct{}
 
-	H1 struct{ Phrase }
-	H2 struct{ Phrase }
-	H3 struct{ Phrase }
-
-	Quote struct{ Phrase }
-
-	FmtLine  struct{ HubNode }
-	BulPoint struct{ HubNode }
+	H1       struct{ M_Text string }
+	H2       struct{ M_Text string }
+	H3       struct{ M_Text string }
+	Quote    struct{ M_Text string }
+	FmtLine  struct{ M_Nodes []Node }
+	BulPoint struct{ M_Nodes []Node }
 	NumPoint struct {
-		Num string
-		HubNode
+		Num     string
+		M_Nodes []Node
 	}
-
-	KeyPhrase struct{ HubNode }
-	Positive  struct{ HubNode }
-	Negative  struct{ HubNode }
-	Strong    struct{ HubNode }
-	Snippet   struct{ HubNode }
+	KeyPhrase struct{ M_Nodes []Node }
+	Positive  struct{ M_Nodes []Node }
+	Negative  struct{ M_Nodes []Node }
+	Strong    struct{ M_Nodes []Node }
+	Snippet   struct{ M_Nodes []Node }
 )
 
-func neverNil(nodes []Node) []Node {
+func orEmpty(nodes []Node) []Node {
 	if nodes == nil {
 		return []Node{}
 	}
 	return nodes
 }
 
-func MakePhrase(text string) Phrase    { return Phrase{M_Text: text} }
-func MakeHubNode(nodes []Node) HubNode { return HubNode{M_Nodes: neverNil(nodes)} }
-func MakeEmptyLine() EmptyLine         { return EmptyLine{} }
+func MakePhrase(text string) Phrase { return Phrase{M_Text: text} }
+func MakeEmptyLine() EmptyLine      { return EmptyLine{} }
 
-func MakeH1(text string) H1 { return H1{Phrase: MakePhrase(text)} }
-func MakeH2(text string) H2 { return H2{Phrase: MakePhrase(text)} }
-func MakeH3(text string) H3 { return H3{Phrase: MakePhrase(text)} }
+func MakeH1(text string) H1       { return H1{M_Text: text} }
+func MakeH2(text string) H2       { return H2{M_Text: text} }
+func MakeH3(text string) H3       { return H3{M_Text: text} }
+func MakeQuote(text string) Quote { return Quote{M_Text: text} }
 
-func MakeQuote(text string) Quote { return Quote{Phrase: MakePhrase(text)} }
-
-func MakeFmtLine(nodes ...Node) FmtLine   { return FmtLine{HubNode: MakeHubNode(nodes)} }
-func MakeBulPoint(nodes ...Node) BulPoint { return BulPoint{HubNode: MakeHubNode(nodes)} }
+func MakeFmtLine(nodes ...Node) FmtLine   { return FmtLine{M_Nodes: orEmpty(nodes)} }
+func MakeBulPoint(nodes ...Node) BulPoint { return BulPoint{M_Nodes: orEmpty(nodes)} }
 func MakeNumPoint(num string, nodes ...Node) NumPoint {
-	return NumPoint{Num: num, HubNode: MakeHubNode(nodes)}
+	return NumPoint{Num: num, M_Nodes: orEmpty(nodes)}
 }
 
-func MakeKeyPhrase(nodes ...Node) KeyPhrase { return KeyPhrase{HubNode: MakeHubNode(nodes)} }
-func MakePositive(nodes ...Node) Positive   { return Positive{HubNode: MakeHubNode(nodes)} }
-func MakeNegative(nodes ...Node) Negative   { return Negative{HubNode: MakeHubNode(nodes)} }
-func MakeStrong(nodes ...Node) Strong       { return Strong{HubNode: MakeHubNode(nodes)} }
-func MakeSnippet(nodes ...Node) Snippet     { return Snippet{HubNode: MakeHubNode(nodes)} }
+func MakeKeyPhrase(nodes ...Node) KeyPhrase { return KeyPhrase{M_Nodes: orEmpty(nodes)} }
+func MakePositive(nodes ...Node) Positive   { return Positive{M_Nodes: orEmpty(nodes)} }
+func MakeNegative(nodes ...Node) Negative   { return Negative{M_Nodes: orEmpty(nodes)} }
+func MakeStrong(nodes ...Node) Strong       { return Strong{M_Nodes: orEmpty(nodes)} }
+func MakeSnippet(nodes ...Node) Snippet     { return Snippet{M_Nodes: orEmpty(nodes)} }
 
-func (p Phrase) node()    {}
-func (p HubNode) node()   {}
-func (p EmptyLine) node() {}
+func (n Phrase) node()    {}
+func (n EmptyLine) node() {}
+func (n H1) node()        {}
+func (n H2) node()        {}
+func (n H3) node()        {}
+func (n Quote) node()     {}
+func (n FmtLine) node()   {}
+func (n BulPoint) node()  {}
+func (n NumPoint) node()  {}
+func (n KeyPhrase) node() {}
+func (n Positive) node()  {}
+func (n Negative) node()  {}
+func (n Strong) node()    {}
+func (n Snippet) node()   {}
 
-func (p Phrase) Text() string    { return p.M_Text }
-func (p EmptyLine) Text() string { return "\n" }
-func (p HubNode) Text() string {
+func (n Phrase) Text() string    { return n.M_Text }
+func (n EmptyLine) Text() string { return "\n" }
+func (n H1) Text() string        { return n.M_Text }
+func (n H2) Text() string        { return n.M_Text }
+func (n H3) Text() string        { return n.M_Text }
+func (n Quote) Text() string     { return n.M_Text }
+func (n FmtLine) Text() string   { return joinTexts(n.M_Nodes) }
+func (n BulPoint) Text() string  { return joinTexts(n.M_Nodes) }
+func (n NumPoint) Text() string  { return joinTexts(n.M_Nodes) }
+func (n KeyPhrase) Text() string { return joinTexts(n.M_Nodes) }
+func (n Positive) Text() string  { return joinTexts(n.M_Nodes) }
+func (n Negative) Text() string  { return joinTexts(n.M_Nodes) }
+func (n Strong) Text() string    { return joinTexts(n.M_Nodes) }
+func (n Snippet) Text() string   { return joinTexts(n.M_Nodes) }
+
+func (n FmtLine) Nodes() []Node   { return n.M_Nodes }
+func (n BulPoint) Nodes() []Node  { return n.M_Nodes }
+func (n NumPoint) Nodes() []Node  { return n.M_Nodes }
+func (n KeyPhrase) Nodes() []Node { return n.M_Nodes }
+func (n Positive) Nodes() []Node  { return n.M_Nodes }
+func (n Negative) Nodes() []Node  { return n.M_Nodes }
+func (n Strong) Nodes() []Node    { return n.M_Nodes }
+func (n Snippet) Nodes() []Node   { return n.M_Nodes }
+
+func joinTexts(nodes []Node) string {
 	sb := strings.Builder{}
-	for _, n := range p.M_Nodes {
+	for _, n := range nodes {
 		sb.WriteString(n.Text())
 	}
 	return sb.String()
 }
-
-func (p HubNode) Nodes() []Node { return p.M_Nodes }
 
 func _enforceTypes() {
 
