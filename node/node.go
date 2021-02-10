@@ -15,9 +15,9 @@ type (
 		Nodes() []Node
 	}
 
-	Phrase  struct{ M_Text string }
-	HubNode struct{ M_Nodes []Node }
-	Empty   struct{}
+	Phrase    struct{ M_Text string }
+	HubNode   struct{ M_Nodes []Node }
+	EmptyLine struct{}
 
 	H1 struct{ Phrase }
 	H2 struct{ Phrase }
@@ -27,7 +27,10 @@ type (
 
 	FmtLine  struct{ HubNode }
 	BulPoint struct{ HubNode }
-	NumPoint struct{ HubNode }
+	NumPoint struct {
+		Num string
+		HubNode
+	}
 
 	KeyPhrase struct{ HubNode }
 	Positive  struct{ HubNode }
@@ -45,7 +48,7 @@ func neverNil(nodes []Node) []Node {
 
 func MakePhrase(text string) Phrase    { return Phrase{M_Text: text} }
 func MakeHubNode(nodes []Node) HubNode { return HubNode{M_Nodes: neverNil(nodes)} }
-func MakeEmptyLine() Empty             { return Empty{} }
+func MakeEmptyLine() EmptyLine         { return EmptyLine{} }
 
 func MakeH1(text string) H1 { return H1{Phrase: MakePhrase(text)} }
 func MakeH2(text string) H2 { return H2{Phrase: MakePhrase(text)} }
@@ -55,7 +58,9 @@ func MakeQuote(text string) Quote { return Quote{Phrase: MakePhrase(text)} }
 
 func MakeFmtLine(nodes ...Node) FmtLine   { return FmtLine{HubNode: MakeHubNode(nodes)} }
 func MakeBulPoint(nodes ...Node) BulPoint { return BulPoint{HubNode: MakeHubNode(nodes)} }
-func MakeNumPoint(nodes ...Node) NumPoint { return NumPoint{HubNode: MakeHubNode(nodes)} }
+func MakeNumPoint(num string, nodes ...Node) NumPoint {
+	return NumPoint{Num: num, HubNode: MakeHubNode(nodes)}
+}
 
 func MakeKeyPhrase(nodes ...Node) KeyPhrase { return KeyPhrase{HubNode: MakeHubNode(nodes)} }
 func MakePositive(nodes ...Node) Positive   { return Positive{HubNode: MakeHubNode(nodes)} }
@@ -63,12 +68,12 @@ func MakeNegative(nodes ...Node) Negative   { return Negative{HubNode: MakeHubNo
 func MakeStrong(nodes ...Node) Strong       { return Strong{HubNode: MakeHubNode(nodes)} }
 func MakeSnippet(nodes ...Node) Snippet     { return Snippet{HubNode: MakeHubNode(nodes)} }
 
-func (p Phrase) node()  {}
-func (p HubNode) node() {}
-func (p Empty) node()   {}
+func (p Phrase) node()    {}
+func (p HubNode) node()   {}
+func (p EmptyLine) node() {}
 
-func (p Phrase) Text() string { return p.M_Text }
-func (p Empty) Text() string  { return "" }
+func (p Phrase) Text() string    { return p.M_Text }
+func (p EmptyLine) Text() string { return "" }
 func (p HubNode) Text() string {
 	sb := strings.Builder{}
 	for _, n := range p.M_Nodes {
@@ -87,7 +92,7 @@ func _enforceTypes() {
 	)
 
 	n = Phrase{}
-	n = Empty{}
+	n = EmptyLine{}
 
 	n = H1{}
 	n = H2{}

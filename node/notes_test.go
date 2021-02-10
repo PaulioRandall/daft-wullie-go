@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestRemoveDuplicateLines_1(t *testing.T) {
+func TestRemoveExtraLines_1(t *testing.T) {
 
 	//
 	//
@@ -21,11 +21,11 @@ func TestRemoveDuplicateLines_1(t *testing.T) {
 		MakeEmptyLine(),
 	}
 
-	act := RemoveDuplicateLines(in)
+	act := RemoveExtraLines(in)
 	require.Equal(t, exp, act)
 }
 
-func TestRemoveDuplicateLines_2(t *testing.T) {
+func TestRemoveExtraLines_2(t *testing.T) {
 
 	//
 	//
@@ -46,11 +46,11 @@ func TestRemoveDuplicateLines_2(t *testing.T) {
 		MakeEmptyLine(),
 	}
 
-	act := RemoveDuplicateLines(in)
+	act := RemoveExtraLines(in)
 	require.Equal(t, exp, act)
 }
 
-func TestRemoveDuplicateLines_3(t *testing.T) {
+func TestRemoveExtraLines_3(t *testing.T) {
 
 	// # H1
 	//
@@ -81,6 +81,6 @@ func TestRemoveDuplicateLines_3(t *testing.T) {
 		MakeH3("H3"),
 	}
 
-	act := RemoveDuplicateLines(in)
+	act := RemoveExtraLines(in)
 	require.Equal(t, exp, act)
 }

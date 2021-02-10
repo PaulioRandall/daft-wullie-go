@@ -47,7 +47,7 @@ func parser(r *lineReader) ParseLine {
 func parseLine(r *tokenReader) node.Node {
 	switch {
 	case !r.more():
-		return node.Empty{}
+		return node.EmptyLine{}
 
 	case r.accept(token.H1):
 		return node.H1{Phrase: node.Phrase{M_Text: parseTextLine(r)}}
@@ -64,8 +64,9 @@ func parseLine(r *tokenReader) node.Node {
 	case r.accept(token.BUL_POINT):
 		return node.BulPoint{HubNode: parseNodeLine(r)}
 
-	case r.accept(token.NUM_POINT):
-		return node.NumPoint{HubNode: parseNodeLine(r)}
+	case r.match(token.NUM_POINT):
+		num := parseNum(r)
+		return node.NumPoint{Num: num, HubNode: parseNodeLine(r)}
 
 	default:
 		return node.FmtLine{HubNode: parseNodeLine(r)}
@@ -154,4 +155,11 @@ func parseText(r *tokenReader) string {
 		sb.WriteString(s)
 	}
 	return sb.String()
+}
+
+// NUMBER := 0-9 {0-9}
+func parseNum(r *tokenReader) string {
+	n := r.read().Val
+	n = n[:len(n)-1] // Remove trailing dot '.'
+	return n
 }

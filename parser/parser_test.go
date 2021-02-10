@@ -48,6 +48,45 @@ func TestQuote_1(t *testing.T) {
 	require.Equal(t, exp, act)
 }
 
+func TestBulPoint_1(t *testing.T) {
+
+	in := [][]token.Lexeme{
+		[]token.Lexeme{
+			lex(token.BUL_POINT, "."),
+			lex(token.TEXT, "The Turtle Moves!"),
+		},
+	}
+
+	exp := []node.Node{
+		node.MakeBulPoint(
+			node.MakePhrase("The Turtle Moves!"),
+		),
+	}
+
+	act := ParseAll(in)
+	require.Equal(t, exp, act)
+}
+
+func TestNumPoint_1(t *testing.T) {
+
+	in := [][]token.Lexeme{
+		[]token.Lexeme{
+			lex(token.NUM_POINT, "9."),
+			lex(token.TEXT, "The Turtle Moves!"),
+		},
+	}
+
+	exp := []node.Node{
+		node.MakeNumPoint(
+			"9",
+			node.MakePhrase("The Turtle Moves!"),
+		),
+	}
+
+	act := ParseAll(in)
+	require.Equal(t, exp, act)
+}
+
 func TestNestableNodes_1(t *testing.T) {
 
 	lxs := func(tk token.Token, v string) []token.Lexeme {
@@ -215,9 +254,9 @@ func TestScript_1(t *testing.T) {
 		node.MakeEmptyLine(),
 
 		node.MakeH2("Process"),
-		node.MakeNumPoint(node.MakePhrase("Curdling")),
-		node.MakeNumPoint(node.MakePhrase("Curd processing")),
-		node.MakeNumPoint(node.MakePhrase("Ripening")),
+		node.MakeNumPoint("1", node.MakePhrase("Curdling")),
+		node.MakeNumPoint("2", node.MakePhrase("Curd processing")),
+		node.MakeNumPoint("3", node.MakePhrase("Ripening")),
 		node.MakeEmptyLine(),
 
 		node.MakeH2("Safety"),
