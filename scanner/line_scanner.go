@@ -189,8 +189,8 @@ func normalise(lxs []token.Lexeme) []token.Lexeme {
 //
 // The following are some experimental documentation formats:
 //
-// Descriptive list definition of behaviour:
-// - input must not be empty
+// Descriptive definition of behaviour:
+// - input must not be empty or nil
 // - the symbol immediately after an escape token is always converted to text
 // - a '\\' will be converted to the text '\'
 // - all escape symbols are discarded except escaped escape symbols
@@ -198,9 +198,9 @@ func normalise(lxs []token.Lexeme) []token.Lexeme {
 //
 // Axiomatic definition of behaviour:
 // - ANY := non-ESCAPE token
-// - ESCAPE ANY    -> TEXT(ANY)
-// - ESCAPE ESCAPE -> TEXT(ESCAPE)
-// - ESCAPE EOF    -> EOF
+// - ESCAPE ANY      -> TEXT(ANY)
+// - ESCAPE1 ESCAPE2 -> TEXT(ESCAPE2)
+// - ESCAPE EOF      -> EOF
 func applyEscaping(in []token.Lexeme) []token.Lexeme {
 
 	size := len(in)
@@ -226,26 +226,34 @@ func applyEscaping(in []token.Lexeme) []token.Lexeme {
 }
 
 // mergeLexemes merges lexemes where possible, i.e. merging sections of text
-// that appear next to each other in the input. Assumes the input is not empty.
+// that appear next to each other in the input.
+//
+// The following are some experimental documentation formats:
+//
+// Descriptive definition of behaviour:
+// - input must not be empty or nil
+// - all text tokens in series are merged into one
+//
+// Axiomatic definition of behaviour:
+// - TEXT1 TEXT2 -> TEXT(TEXT1 + TEXT2)
 func mergeLexemes(in []token.Lexeme) []token.Lexeme {
 
 	size := len(in)
 	out := make([]token.Lexeme, 0, size)
-	tryMerge := func(lx token.Lexeme) bool {
-		last := len(out) - 1
-		if lx.Token == token.TEXT && out[last].Token == token.TEXT {
-			out[last].Val += lx.Val
-			return true
-		}
-		return false
-	}
 
 	out = append(out, in[0])
+	last := 0
+
 	for i := 1; i < size; i++ {
 		lx := in[i]
-		if !tryMerge(lx) {
-			out = append(out, lx)
+
+		if lx.Token == token.TEXT && out[last].Token == token.TEXT {
+			out[last].Val += lx.Val // Merge
+			continue
 		}
+
+		out = append(out, lx)
+		last++
 	}
 
 	return out
