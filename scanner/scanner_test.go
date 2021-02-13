@@ -98,7 +98,7 @@ func TestQuote_1(t *testing.T) {
 
 func TestNodes_1(t *testing.T) {
 
-	in := "**+-*`?"
+	in := "**+-*`"
 	exp := [][]token.Lexeme{
 		[]token.Lexeme{
 			lex(token.KEY_PHRASE, "**"),
@@ -106,7 +106,6 @@ func TestNodes_1(t *testing.T) {
 			lex(token.NEGATIVE, "-"),
 			lex(token.STRONG, "*"),
 			lex(token.SNIPPET, "`"),
-			lex(token.QUESTION, "?"),
 		},
 	}
 
@@ -206,8 +205,7 @@ A quote by whom?
 			lex(token.TEXT, " I aten't ded"),
 		),
 		line(
-			lex(token.TEXT, "A quote by whom"),
-			lex(token.QUESTION, "?"),
+			lex(token.TEXT, "A quote by whom?"),
 		),
 		emptyLine(),
 	}

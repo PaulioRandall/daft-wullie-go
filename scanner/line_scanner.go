@@ -9,7 +9,7 @@ import (
 type lineScanner struct{ text []rune }
 
 var digits = []string{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"}
-var key_symbols = []string{"\\", "+", "-", "*", "`", "?"}
+var key_symbols = []string{"\\", "+", "-", "*", "`"}
 var key_tokens = []struct {
 	sym string
 	tk  token.Token
@@ -20,7 +20,6 @@ var key_tokens = []struct {
 	{"-", token.NEGATIVE},
 	{"*", token.STRONG},
 	{"`", token.SNIPPET},
-	{"?", token.QUESTION},
 }
 
 func (ls *lineScanner) scanLine() []token.Lexeme {
