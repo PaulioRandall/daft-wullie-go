@@ -46,12 +46,12 @@ checkExitCode() {
 # printUsage needs no explanation
 printUsage() {
   println "Usage:"
+  println "\t" "./godo [help]  " "\t" "Show usage"
   println "\t" "./godo clean   " "\t" "Delete build directory"
   println "\t" "./godo build   " "\t" "Build -> format"
   println "\t" "./godo test    " "\t" "Build -> format -> test"
   println "\t" "./godo run     " "\t" "Build -> format -> test -> run"
   println "\t" "./godo compress" "\t" "Compress binary if 'upx' is installed"
-  println "\t" "./godo help    " "\t" "Show help"
 }
 
 # begin prepares the console
@@ -128,14 +128,15 @@ upxCompress() {
   cd $ROOT_DIR
 }
 
-# If you want to remove the build directories.
+# Remove the build directories
 if [[ "$1" == "clean" ]]; then
   clean
   println
   exit 0
 fi
 
-# If you want to build the project.
+
+# Build and format the project
 if [[ "$1" == "build" ]]; then
   begin
   setupBuildDir
@@ -144,7 +145,7 @@ if [[ "$1" == "build" ]]; then
   exit 0
 fi
 
-# If you want to build and test the project.
+# Build, format, and test the project
 if [[ "$1" == "test" ]]; then
   begin
   setupBuildDir
@@ -154,7 +155,7 @@ if [[ "$1" == "test" ]]; then
   exit 0
 fi
 
-# If you want to run a Scarlet CLI command.
+# Build, format, test, and run a Scarlet CLI command
 if [[ "$1" == "run" ]]; then
   begin
   setupBuildDir
@@ -168,18 +169,23 @@ if [[ "$1" == "run" ]]; then
   exit 0
 fi
 
-# If you want to compress a built binary.
+# Compress the built binary
 if [[ "$1" == "compress" ]]; then
   begin
   upxCompress $2
   exit 0
 fi
 
+# Show usage
 if [[ "$1" == "help" ]]; then
+  begin
   printUsage
   exit 0
 fi
 
-println "I don't understand the option or no option supplied '$1'. Usage:"
+if [[ "$1" != "" ]]; then
+  println "I don't understand the option '$1'."
+fi
+
 printUsage
 exit 1
