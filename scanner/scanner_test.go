@@ -12,6 +12,45 @@ func lex(tk token.Token, val string) token.Lexeme {
 	return token.Lexeme{Token: tk, Val: val}
 }
 
+func TestEscape_1(t *testing.T) {
+
+	in := `\#daft`
+	exp := [][]token.Lexeme{
+		[]token.Lexeme{
+			lex(token.TEXT, "#daft"),
+		},
+	}
+
+	act := ScanAll(in)
+	require.Equal(t, exp, act)
+}
+
+func TestEscape_2(t *testing.T) {
+
+	in := `\da\ft`
+	exp := [][]token.Lexeme{
+		[]token.Lexeme{
+			lex(token.TEXT, `daft`),
+		},
+	}
+
+	act := ScanAll(in)
+	require.Equal(t, exp, act)
+}
+
+func TestEscape_3(t *testing.T) {
+
+	in := `da\\ft`
+	exp := [][]token.Lexeme{
+		[]token.Lexeme{
+			lex(token.TEXT, `da\ft`),
+		},
+	}
+
+	act := ScanAll(in)
+	require.Equal(t, exp, act)
+}
+
 func TestTopic_1(t *testing.T) {
 
 	in := `  #  Topic  `

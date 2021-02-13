@@ -58,7 +58,7 @@ func (ls *lineScanner) scanNodes() []token.Lexeme {
 		lx := ls.scanNode()
 		r = append(r, lx)
 	}
-	return r
+	return normalise(r)
 }
 
 func (ls *lineScanner) scanNode() token.Lexeme {
@@ -174,4 +174,79 @@ func newNumPointMatcher() func(rune) bool {
 		}
 		return true
 	}
+}
+
+func normalise(lxs []token.Lexeme) []token.Lexeme {
+	if len(lxs) == 0 {
+		return lxs
+	}
+	lxs = applyEscaping(lxs)
+	return mergeLexemes(lxs)
+}
+
+// applyEscaping converts non-text tokens into text ones if they follow an
+// escape token.
+//
+// The following are some experimental documentation formats:
+//
+// Descriptive list definition of behaviour:
+// - input must not be empty
+// - the symbol immediately after an escape token is always converted to text
+// - a '\\' will be converted to the text '\'
+// - all escape symbols are discarded except escaped escape symbols
+// - a trailing '\' in the input will be discarded
+//
+// Axiomatic definition of behaviour:
+// - ANY := non-ESCAPE token
+// - ESCAPE ANY    -> TEXT(ANY)
+// - ESCAPE ESCAPE -> TEXT(ESCAPE)
+// - ESCAPE EOF    -> EOF
+func applyEscaping(in []token.Lexeme) []token.Lexeme {
+
+	size := len(in)
+	out := make([]token.Lexeme, 0, size)
+
+	for i := 0; i < size; i++ {
+		tk := in[i]
+
+		if tk.Token != token.ESCAPE {
+			out = append(out, tk)
+			continue
+		}
+
+		i++
+		if i < size {
+			tk = in[i]
+			tk.Token = token.TEXT
+			out = append(out, tk)
+		}
+	}
+
+	return out
+}
+
+// mergeLexemes merges lexemes where possible, i.e. merging sections of text
+// that appear next to each other in the input. Assumes the input is not empty.
+func mergeLexemes(in []token.Lexeme) []token.Lexeme {
+
+	size := len(in)
+	out := make([]token.Lexeme, 0, size)
+	tryMerge := func(lx token.Lexeme) bool {
+		last := len(out) - 1
+		if lx.Token == token.TEXT && out[last].Token == token.TEXT {
+			out[last].Val += lx.Val
+			return true
+		}
+		return false
+	}
+
+	out = append(out, in[0])
+	for i := 1; i < size; i++ {
+		lx := in[i]
+		if !tryMerge(lx) {
+			out = append(out, lx)
+		}
+	}
+
+	return out
 }
