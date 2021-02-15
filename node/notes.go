@@ -4,14 +4,17 @@ import (
 	"strings"
 )
 
-type Notes []Node
+type (
+	Notes       []Node
+	DescendFunc func(n Node, lineNum, depth, orderIdx int)
+)
 
-func RemoveExtraLines(n Notes) Notes {
+func RemoveExtraLines(notes Notes) Notes {
 
 	r := []Node{}
 	prevEmpty := false
 
-	for _, l := range n {
+	for _, l := range notes {
 		if prevEmpty {
 			if _, ok := l.(EmptyLine); ok {
 				continue
@@ -23,6 +26,29 @@ func RemoveExtraLines(n Notes) Notes {
 	}
 
 	return Notes(r)
+}
+
+func DescendNotes(notes Notes, f DescendFunc) {
+	for i, n := range notes {
+		descendNode(n, i+1, 0, 0, f)
+	}
+}
+
+func DecendNode(n Node, f DescendFunc) {
+	descendNode(n, 1, 0, 0, f)
+}
+
+func descendNode(n Node, lineNum, depth, orderIdx int, f DescendFunc) {
+	f(n, lineNum, depth, orderIdx)
+	if v, ok := n.(Parent); ok {
+		descendNodes(v.Nodes(), lineNum, depth+1, orderIdx, f)
+	}
+}
+
+func descendNodes(ns []Node, lineNum, depth, orderIdx int, f DescendFunc) {
+	for i, n := range ns {
+		descendNode(n, lineNum, depth, i, f)
+	}
 }
 
 func PlainString(notes Notes) string {

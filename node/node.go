@@ -7,7 +7,7 @@ import (
 type (
 	Node interface {
 		Text() string
-		node()
+		Name() string
 	}
 
 	Parent interface {
@@ -63,21 +63,6 @@ func MakePositive(nodes ...Node) Positive   { return Positive{M_Nodes: orEmpty(n
 func MakeNegative(nodes ...Node) Negative   { return Negative{M_Nodes: orEmpty(nodes)} }
 func MakeStrong(nodes ...Node) Strong       { return Strong{M_Nodes: orEmpty(nodes)} }
 
-func (n Phrase) node()    {}
-func (n EmptyLine) node() {}
-func (n Quote) node()     {}
-func (n Snippet) node()   {}
-func (n H1) node()        {}
-func (n H2) node()        {}
-func (n H3) node()        {}
-func (n FmtLine) node()   {}
-func (n BulPoint) node()  {}
-func (n NumPoint) node()  {}
-func (n KeyPhrase) node() {}
-func (n Positive) node()  {}
-func (n Negative) node()  {}
-func (n Strong) node()    {}
-
 func (n Phrase) Text() string    { return n.M_Text }
 func (n EmptyLine) Text() string { return "\n" }
 func (n Quote) Text() string     { return n.M_Text }
@@ -92,6 +77,21 @@ func (n KeyPhrase) Text() string { return joinTexts(n.M_Nodes) }
 func (n Positive) Text() string  { return joinTexts(n.M_Nodes) }
 func (n Negative) Text() string  { return joinTexts(n.M_Nodes) }
 func (n Strong) Text() string    { return joinTexts(n.M_Nodes) }
+
+func (n Phrase) Name() string    { return "Phrase" }
+func (n EmptyLine) Name() string { return "EmptyLine" }
+func (n Quote) Name() string     { return "Quote" }
+func (n Snippet) Name() string   { return "Snippet" }
+func (n H1) Name() string        { return "H1" }
+func (n H2) Name() string        { return "H2" }
+func (n H3) Name() string        { return "H3" }
+func (n FmtLine) Name() string   { return "FmtLine" }
+func (n BulPoint) Name() string  { return "BulPoint" }
+func (n NumPoint) Name() string  { return "NumPoint" }
+func (n KeyPhrase) Name() string { return "KeyPhrase" }
+func (n Positive) Name() string  { return "Positive" }
+func (n Negative) Name() string  { return "Negative" }
+func (n Strong) Name() string    { return "Strong" }
 
 func (n H1) Nodes() []Node        { return n.M_Nodes }
 func (n H2) Nodes() []Node        { return n.M_Nodes }

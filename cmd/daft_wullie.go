@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/PaulioRandall/daft-wullie-go/node"
 	"github.com/PaulioRandall/daft-wullie-go/parser"
@@ -9,9 +10,9 @@ import (
 )
 
 const example = `
-# H1
-## H2
-### H3
+# Heading 1
+## Heading 2
+### Heading 3
 . Bullet point
 1. Numbered point
 > Quote
@@ -20,13 +21,28 @@ const example = `
 +Positive
 -Negative
 *Strong
-` + "`Snippet"
+` + "`Snippet" + `
+
+*Strong*+Positive+-Negative-
+`
 
 func main() {
-	println("\nTODO: Handle symbol escaping")
-
 	tks := scanner.ScanAll(example)
 	notes := parser.ParseAll(tks)
-	s := node.FmtString(notes)
-	fmt.Println(s)
+
+	f := func(n node.Node, lineNum, depth, orderIdx int) {
+		fmt.Print(strings.Repeat("  ", depth))
+		switch n.(type) {
+		case node.EmptyLine:
+			// Ignore
+		case node.Phrase:
+			fmt.Println(`"` + strings.TrimSpace(n.Text()) + `"`)
+		case node.Quote:
+			fmt.Println(n.Name(), `"`+strings.TrimSpace(n.Text())+`"`)
+		default:
+			fmt.Println(n.Name())
+		}
+	}
+
+	node.DescendNotes(notes, f)
 }
