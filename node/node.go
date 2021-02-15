@@ -65,10 +65,11 @@ func MakeStrong(nodes ...Node) Strong       { return Strong{M_Nodes: orEmpty(nod
 
 func (n Phrase) node()    {}
 func (n EmptyLine) node() {}
+func (n Quote) node()     {}
+func (n Snippet) node()   {}
 func (n H1) node()        {}
 func (n H2) node()        {}
 func (n H3) node()        {}
-func (n Quote) node()     {}
 func (n FmtLine) node()   {}
 func (n BulPoint) node()  {}
 func (n NumPoint) node()  {}
@@ -76,7 +77,6 @@ func (n KeyPhrase) node() {}
 func (n Positive) node()  {}
 func (n Negative) node()  {}
 func (n Strong) node()    {}
-func (n Snippet) node()   {}
 
 func (n Phrase) Text() string    { return n.M_Text }
 func (n EmptyLine) Text() string { return "\n" }
@@ -93,6 +93,9 @@ func (n Positive) Text() string  { return joinTexts(n.M_Nodes) }
 func (n Negative) Text() string  { return joinTexts(n.M_Nodes) }
 func (n Strong) Text() string    { return joinTexts(n.M_Nodes) }
 
+func (n H1) Nodes() []Node        { return n.M_Nodes }
+func (n H2) Nodes() []Node        { return n.M_Nodes }
+func (n H3) Nodes() []Node        { return n.M_Nodes }
 func (n FmtLine) Nodes() []Node   { return n.M_Nodes }
 func (n BulPoint) Nodes() []Node  { return n.M_Nodes }
 func (n NumPoint) Nodes() []Node  { return n.M_Nodes }
@@ -119,11 +122,12 @@ func _enforceTypes() {
 	n = Phrase{}
 	n = EmptyLine{}
 
-	n = H1{}
-	n = H2{}
-	n = H3{}
+	n, p = H1{}, H1{}
+	n, p = H2{}, H2{}
+	n, p = H3{}, H3{}
 
 	n = Quote{}
+	n = Snippet{}
 
 	n, p = FmtLine{}, FmtLine{}
 	n, p = BulPoint{}, BulPoint{}
@@ -133,7 +137,6 @@ func _enforceTypes() {
 	n, p = Positive{}, Positive{}
 	n, p = Negative{}, Negative{}
 	n, p = Strong{}, Strong{}
-	n = Snippet{}
 
 	_, _ = n, p
 }

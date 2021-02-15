@@ -2,7 +2,6 @@ package node
 
 import (
 	"strings"
-	//"unicode"
 )
 
 type Notes []Node
@@ -67,14 +66,18 @@ func fmtNodeString(sb *strings.Builder, n Node) {
 	switch v := n.(type) {
 	case Phrase:
 		writeGroup("", v, "")
+
+	case Quote:
+		writeGroup(">", v, "")
+	case Snippet:
+		writeGroup("`", v, "`")
+
 	case H1:
 		writeGroup("#", v, "")
 	case H2:
 		writeGroup("##", v, "")
 	case H3:
 		writeGroup("###", v, "")
-	case Quote:
-		writeGroup(">", v, "")
 
 	case FmtLine:
 		writeGroup("", v, "")
@@ -91,7 +94,5 @@ func fmtNodeString(sb *strings.Builder, n Node) {
 		writeGroup("-", v, "-")
 	case Strong:
 		writeGroup("*", v, "*")
-	case Snippet:
-		writeGroup("`", v, "`")
 	}
 }
