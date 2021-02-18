@@ -9,7 +9,9 @@ import (
 	"github.com/PaulioRandall/daft-wullie-go/scanner"
 )
 
-const example = `
+func main() {
+
+	const example = `
 # Heading 1
 ## Heading 2
 ### Heading 3
@@ -17,16 +19,15 @@ const example = `
 1. Numbered point
 > Quote
 
-**Key phrase
-+Positive
--Negative
-*Strong
+**Keywords
++A positive sentence
+-A negative sentence
+*Some strong words
 ` + "`Snippet" + `
 
 *Strong*+Positive+-Negative-
 `
 
-func main() {
 	tks := scanner.ScanAll(example)
 	notes := parser.ParseAll(tks)
 
@@ -36,7 +37,7 @@ func main() {
 		case node.EmptyLine:
 			// Ignore
 		case node.Phrase:
-			fmt.Println(`"` + strings.TrimSpace(n.Text()) + `"`)
+			fmt.Println(n.Name() + `("` + strings.TrimSpace(n.Text()) + `")`)
 		case node.Quote:
 			fmt.Println(n.Name(), `"`+strings.TrimSpace(n.Text())+`"`)
 		default:
