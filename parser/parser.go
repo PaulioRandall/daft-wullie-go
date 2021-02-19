@@ -59,7 +59,7 @@ func parseLine(r *tokenReader) node.Node {
 		return node.MakeH3(parseNodeLine(r)...)
 
 	case r.accept(token.QUOTE):
-		return node.MakeQuote(parseTextLine(r))
+		return node.MakeQuote(parseNodeLine(r)...)
 
 	case r.accept(token.BUL_POINT):
 		return node.MakeBulPoint(parseNodeLine(r)...)

@@ -41,7 +41,9 @@ func TestQuote_1(t *testing.T) {
 	}
 
 	exp := []node.Node{
-		node.MakeQuote("The Turtle Moves!"),
+		node.MakeQuote(
+			node.MakePhrase("The Turtle Moves!"),
+		),
 	}
 
 	act := ParseAll(in)
@@ -222,7 +224,9 @@ func TestScript_1(t *testing.T) {
 		node.MakeH1(
 			node.MakePhrase("Cheese"),
 		),
-		node.MakeQuote("Cheese is a dairy product, derived from milk and produced in wide ranges of flavors, textures and forms by coagulation of the milk protein casein."),
+		node.MakeQuote(
+			node.MakePhrase("Cheese is a dairy product, derived from milk and produced in wide ranges of flavors, textures and forms by coagulation of the milk protein casein."),
+		),
 		node.MakeFmtLine(
 			node.MakeStrong(
 				node.MakePhrase("Cheese is "),
