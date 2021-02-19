@@ -7,8 +7,11 @@ import (
 	"github.com/PaulioRandall/daft-wullie-go/token"
 )
 
+// ParseLine is function for recursively parsing scanned text lines,
+// represented by sets of lexemes, into ASTs.
 type ParseLine func() (node.Node, ParseLine)
 
+// NewParser creates an initial ParseLine function for parsing 'lines'.
 func NewParser(lines [][]token.Lexeme) ParseLine {
 	r := &lineReader{lines: lines}
 	if !r.more() {
@@ -17,6 +20,8 @@ func NewParser(lines [][]token.Lexeme) ParseLine {
 	return parser(r)
 }
 
+// ParseAll scans all 'lines' into a slice of ASTs, each representing a line of
+// annotated text.
 func ParseAll(lines [][]token.Lexeme) []node.Node {
 	var (
 		f = NewParser(lines)
@@ -156,11 +161,4 @@ func parseText(r *tokenReader) string {
 		sb.WriteString(s)
 	}
 	return sb.String()
-}
-
-// NUMBER := 0-9 {0-9}
-func parseNum(r *tokenReader) string {
-	n := r.read().Val
-	n = n[:len(n)-1] // Remove trailing dot '.'
-	return n
 }
