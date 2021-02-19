@@ -109,10 +109,10 @@ func TestBulletPoint_1(t *testing.T) {
 
 func TestNumberPoint_1(t *testing.T) {
 
-	in := `123. Point`
+	in := `! Point`
 	exp := [][]token.Lexeme{
 		[]token.Lexeme{
-			lex(token.NUM_POINT, "123."),
+			lex(token.NUM_POINT, "!"),
 			lex(token.TEXT, " Point"),
 		},
 	}

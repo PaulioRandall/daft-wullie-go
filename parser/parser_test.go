@@ -80,7 +80,6 @@ func TestNumPoint_1(t *testing.T) {
 
 	exp := []node.Node{
 		node.MakeNumPoint(
-			"9",
 			node.MakePhrase("The Turtle Moves!"),
 		),
 	}
@@ -183,9 +182,9 @@ func TestScript_1(t *testing.T) {
 		[]token.Lexeme{},
 
 		[]token.Lexeme{lex(token.H2, "##"), lex(token.TEXT, "Process")},
-		[]token.Lexeme{lex(token.NUM_POINT, "1."), lex(token.TEXT, "Curdling")},
-		[]token.Lexeme{lex(token.NUM_POINT, "2."), lex(token.TEXT, "Curd processing")},
-		[]token.Lexeme{lex(token.NUM_POINT, "3."), lex(token.TEXT, "Ripening")},
+		[]token.Lexeme{lex(token.NUM_POINT, "!"), lex(token.TEXT, "Curdling")},
+		[]token.Lexeme{lex(token.NUM_POINT, "!"), lex(token.TEXT, "Curd processing")},
+		[]token.Lexeme{lex(token.NUM_POINT, "!"), lex(token.TEXT, "Ripening")},
 		[]token.Lexeme{},
 
 		[]token.Lexeme{lex(token.H2, "##"), lex(token.TEXT, "Safety")},
@@ -266,9 +265,9 @@ func TestScript_1(t *testing.T) {
 		node.MakeH2(
 			node.MakePhrase("Process"),
 		),
-		node.MakeNumPoint("1", node.MakePhrase("Curdling")),
-		node.MakeNumPoint("2", node.MakePhrase("Curd processing")),
-		node.MakeNumPoint("3", node.MakePhrase("Ripening")),
+		node.MakeNumPoint(node.MakePhrase("Curdling")),
+		node.MakeNumPoint(node.MakePhrase("Curd processing")),
+		node.MakeNumPoint(node.MakePhrase("Ripening")),
 		node.MakeEmptyLine(),
 
 		node.MakeH2(

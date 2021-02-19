@@ -28,11 +28,8 @@ type (
 	H3       struct{ Nodes []Node }
 	FmtLine  struct{ Nodes []Node }
 	BulPoint struct{ Nodes []Node }
-	NumPoint struct {
-		Num   string
-		Nodes []Node
-	}
-	Quote struct{ Nodes []Node }
+	NumPoint struct{ Nodes []Node }
+	Quote    struct{ Nodes []Node }
 
 	KeyPhrase struct{ Nodes []Node }
 	Positive  struct{ Nodes []Node }
@@ -57,10 +54,8 @@ func MakeH2(nodes ...Node) H2             { return H2{Nodes: orEmpty(nodes)} }
 func MakeH3(nodes ...Node) H3             { return H3{Nodes: orEmpty(nodes)} }
 func MakeFmtLine(nodes ...Node) FmtLine   { return FmtLine{Nodes: orEmpty(nodes)} }
 func MakeBulPoint(nodes ...Node) BulPoint { return BulPoint{Nodes: orEmpty(nodes)} }
-func MakeNumPoint(num string, nodes ...Node) NumPoint {
-	return NumPoint{Num: num, Nodes: orEmpty(nodes)}
-}
-func MakeQuote(nodes ...Node) Quote { return Quote{Nodes: nodes} }
+func MakeNumPoint(nodes ...Node) NumPoint { return NumPoint{Nodes: orEmpty(nodes)} }
+func MakeQuote(nodes ...Node) Quote       { return Quote{Nodes: nodes} }
 
 func MakeKeyPhrase(nodes ...Node) KeyPhrase { return KeyPhrase{Nodes: orEmpty(nodes)} }
 func MakePositive(nodes ...Node) Positive   { return Positive{Nodes: orEmpty(nodes)} }

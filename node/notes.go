@@ -110,7 +110,7 @@ func fmtNodeString(sb *strings.Builder, n Node) {
 	case BulPoint:
 		writeGroup(".", v, "")
 	case NumPoint:
-		writeGroup(v.Num+".", v, "")
+		writeGroup("!", v, "")
 
 	case KeyPhrase:
 		writeGroup("**", v, "**")

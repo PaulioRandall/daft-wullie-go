@@ -44,8 +44,9 @@ func (ls *lineScanner) scanLine() []token.Lexeme {
 		r := []token.Lexeme{ls.slice(token.BUL_POINT, 1)}
 		return append(r, ls.scanNodes()...)
 
-	case ls.matchNumPoint():
-		return ls.scanNumPoint()
+	case ls.matchStr("!"):
+		r := []token.Lexeme{ls.slice(token.NUM_POINT, 1)}
+		return append(r, ls.scanNodes()...)
 
 	default:
 		return ls.scanNodes()
@@ -76,11 +77,6 @@ func (ls *lineScanner) scanTextLine() token.Lexeme {
 
 func (ls *lineScanner) scanText() token.Lexeme {
 	return ls.sliceBy(token.TEXT, nonKeyMatcher)
-}
-
-func (ls *lineScanner) scanNumPoint() []token.Lexeme {
-	r := []token.Lexeme{ls.sliceBy(token.NUM_POINT, newNumPointMatcher())}
-	return append(r, ls.scanNodes()...)
 }
 
 func (ls *lineScanner) at(i int) rune {
@@ -161,19 +157,6 @@ func spaceMatcher(ru rune) bool {
 
 func nonKeyMatcher(ru rune) bool {
 	return !matchAny(string(ru), key_symbols...)
-}
-
-func newNumPointMatcher() func(rune) bool {
-	done := false
-	return func(ru rune) bool {
-		if done {
-			return false
-		}
-		if ru == '.' {
-			done = true
-		}
-		return true
-	}
 }
 
 func normalise(lxs []token.Lexeme) []token.Lexeme {
