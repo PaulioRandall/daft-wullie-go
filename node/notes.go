@@ -41,7 +41,7 @@ func DecendNode(n Node, f DescendFunc) {
 func descendNode(n Node, lineNum, depth, orderIdx int, f DescendFunc) {
 	f(n, lineNum, depth, orderIdx)
 	if v, ok := n.(Parent); ok {
-		descendNodes(v.Nodes(), lineNum, depth+1, orderIdx, f)
+		descendNodes(v.Children(), lineNum, depth+1, orderIdx, f)
 	}
 }
 
@@ -81,7 +81,7 @@ func fmtNodeString(sb *strings.Builder, n Node) {
 	writeGroup := func(prefix string, v interface{}, suffix string) {
 		sb.WriteString(prefix)
 		if ns, ok := v.(Parent); ok {
-			hubString(ns.Nodes())
+			hubString(ns.Children())
 		} else {
 			s := v.(Node).Text()
 			sb.WriteString(s)

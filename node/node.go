@@ -5,35 +5,39 @@ import (
 )
 
 type (
+	// Node is satisfied by all concrete node types. It represents a single
+	// annotation in a tree of text annotations.
 	Node interface {
-		Text() string
-		Name() string
+		Text() string // Text joins all of the annotated text
+		Name() string // Name returns the name of the node type
 	}
 
+	// Parent is a node that contains other nodes.
 	Parent interface {
 		Node
-		Nodes() []Node
+		Children() []Node
 	}
 
-	Phrase    struct{ M_Text string }
+	Phrase    struct{ Txt string }
 	EmptyLine struct{}
 
-	Snippet struct{ M_Text string }
+	Snippet struct{ Txt string }
 
-	H1       struct{ M_Nodes []Node }
-	H2       struct{ M_Nodes []Node }
-	H3       struct{ M_Nodes []Node }
-	FmtLine  struct{ M_Nodes []Node }
-	BulPoint struct{ M_Nodes []Node }
+	H1       struct{ Nodes []Node }
+	H2       struct{ Nodes []Node }
+	H3       struct{ Nodes []Node }
+	FmtLine  struct{ Nodes []Node }
+	BulPoint struct{ Nodes []Node }
 	NumPoint struct {
-		Num     string
-		M_Nodes []Node
+		Num   string
+		Nodes []Node
 	}
-	Quote     struct{ M_Nodes []Node }
-	KeyPhrase struct{ M_Nodes []Node }
-	Positive  struct{ M_Nodes []Node }
-	Negative  struct{ M_Nodes []Node }
-	Strong    struct{ M_Nodes []Node }
+	Quote struct{ Nodes []Node }
+
+	KeyPhrase struct{ Nodes []Node }
+	Positive  struct{ Nodes []Node }
+	Negative  struct{ Nodes []Node }
+	Strong    struct{ Nodes []Node }
 )
 
 func orEmpty(nodes []Node) []Node {
@@ -43,40 +47,40 @@ func orEmpty(nodes []Node) []Node {
 	return nodes
 }
 
-func MakePhrase(text string) Phrase { return Phrase{M_Text: text} }
+func MakePhrase(text string) Phrase { return Phrase{Txt: text} }
 func MakeEmptyLine() EmptyLine      { return EmptyLine{} }
 
-func MakeSnippet(text string) Snippet { return Snippet{M_Text: text} }
+func MakeSnippet(text string) Snippet { return Snippet{Txt: text} }
 
-func MakeH1(nodes ...Node) H1             { return H1{M_Nodes: orEmpty(nodes)} }
-func MakeH2(nodes ...Node) H2             { return H2{M_Nodes: orEmpty(nodes)} }
-func MakeH3(nodes ...Node) H3             { return H3{M_Nodes: orEmpty(nodes)} }
-func MakeFmtLine(nodes ...Node) FmtLine   { return FmtLine{M_Nodes: orEmpty(nodes)} }
-func MakeBulPoint(nodes ...Node) BulPoint { return BulPoint{M_Nodes: orEmpty(nodes)} }
+func MakeH1(nodes ...Node) H1             { return H1{Nodes: orEmpty(nodes)} }
+func MakeH2(nodes ...Node) H2             { return H2{Nodes: orEmpty(nodes)} }
+func MakeH3(nodes ...Node) H3             { return H3{Nodes: orEmpty(nodes)} }
+func MakeFmtLine(nodes ...Node) FmtLine   { return FmtLine{Nodes: orEmpty(nodes)} }
+func MakeBulPoint(nodes ...Node) BulPoint { return BulPoint{Nodes: orEmpty(nodes)} }
 func MakeNumPoint(num string, nodes ...Node) NumPoint {
-	return NumPoint{Num: num, M_Nodes: orEmpty(nodes)}
+	return NumPoint{Num: num, Nodes: orEmpty(nodes)}
 }
-func MakeQuote(nodes ...Node) Quote { return Quote{M_Nodes: nodes} }
+func MakeQuote(nodes ...Node) Quote { return Quote{Nodes: nodes} }
 
-func MakeKeyPhrase(nodes ...Node) KeyPhrase { return KeyPhrase{M_Nodes: orEmpty(nodes)} }
-func MakePositive(nodes ...Node) Positive   { return Positive{M_Nodes: orEmpty(nodes)} }
-func MakeNegative(nodes ...Node) Negative   { return Negative{M_Nodes: orEmpty(nodes)} }
-func MakeStrong(nodes ...Node) Strong       { return Strong{M_Nodes: orEmpty(nodes)} }
+func MakeKeyPhrase(nodes ...Node) KeyPhrase { return KeyPhrase{Nodes: orEmpty(nodes)} }
+func MakePositive(nodes ...Node) Positive   { return Positive{Nodes: orEmpty(nodes)} }
+func MakeNegative(nodes ...Node) Negative   { return Negative{Nodes: orEmpty(nodes)} }
+func MakeStrong(nodes ...Node) Strong       { return Strong{Nodes: orEmpty(nodes)} }
 
-func (n Phrase) Text() string    { return n.M_Text }
+func (n Phrase) Text() string    { return n.Txt }
 func (n EmptyLine) Text() string { return "\n" }
-func (n Snippet) Text() string   { return n.M_Text }
-func (n H1) Text() string        { return joinTexts(n.M_Nodes) }
-func (n H2) Text() string        { return joinTexts(n.M_Nodes) }
-func (n H3) Text() string        { return joinTexts(n.M_Nodes) }
-func (n FmtLine) Text() string   { return joinTexts(n.M_Nodes) }
-func (n BulPoint) Text() string  { return joinTexts(n.M_Nodes) }
-func (n NumPoint) Text() string  { return joinTexts(n.M_Nodes) }
-func (n Quote) Text() string     { return joinTexts(n.M_Nodes) }
-func (n KeyPhrase) Text() string { return joinTexts(n.M_Nodes) }
-func (n Positive) Text() string  { return joinTexts(n.M_Nodes) }
-func (n Negative) Text() string  { return joinTexts(n.M_Nodes) }
-func (n Strong) Text() string    { return joinTexts(n.M_Nodes) }
+func (n Snippet) Text() string   { return n.Txt }
+func (n H1) Text() string        { return joinTexts(n.Nodes) }
+func (n H2) Text() string        { return joinTexts(n.Nodes) }
+func (n H3) Text() string        { return joinTexts(n.Nodes) }
+func (n FmtLine) Text() string   { return joinTexts(n.Nodes) }
+func (n BulPoint) Text() string  { return joinTexts(n.Nodes) }
+func (n NumPoint) Text() string  { return joinTexts(n.Nodes) }
+func (n Quote) Text() string     { return joinTexts(n.Nodes) }
+func (n KeyPhrase) Text() string { return joinTexts(n.Nodes) }
+func (n Positive) Text() string  { return joinTexts(n.Nodes) }
+func (n Negative) Text() string  { return joinTexts(n.Nodes) }
+func (n Strong) Text() string    { return joinTexts(n.Nodes) }
 
 func (n Phrase) Name() string    { return "Phrase" }
 func (n EmptyLine) Name() string { return "EmptyLine" }
@@ -93,17 +97,17 @@ func (n Positive) Name() string  { return "Positive" }
 func (n Negative) Name() string  { return "Negative" }
 func (n Strong) Name() string    { return "Strong" }
 
-func (n H1) Nodes() []Node        { return n.M_Nodes }
-func (n H2) Nodes() []Node        { return n.M_Nodes }
-func (n H3) Nodes() []Node        { return n.M_Nodes }
-func (n FmtLine) Nodes() []Node   { return n.M_Nodes }
-func (n BulPoint) Nodes() []Node  { return n.M_Nodes }
-func (n NumPoint) Nodes() []Node  { return n.M_Nodes }
-func (n Quote) Nodes() []Node     { return n.M_Nodes }
-func (n KeyPhrase) Nodes() []Node { return n.M_Nodes }
-func (n Positive) Nodes() []Node  { return n.M_Nodes }
-func (n Negative) Nodes() []Node  { return n.M_Nodes }
-func (n Strong) Nodes() []Node    { return n.M_Nodes }
+func (n H1) Children() []Node        { return n.Nodes }
+func (n H2) Children() []Node        { return n.Nodes }
+func (n H3) Children() []Node        { return n.Nodes }
+func (n FmtLine) Children() []Node   { return n.Nodes }
+func (n BulPoint) Children() []Node  { return n.Nodes }
+func (n NumPoint) Children() []Node  { return n.Nodes }
+func (n Quote) Children() []Node     { return n.Nodes }
+func (n KeyPhrase) Children() []Node { return n.Nodes }
+func (n Positive) Children() []Node  { return n.Nodes }
+func (n Negative) Children() []Node  { return n.Nodes }
+func (n Strong) Children() []Node    { return n.Nodes }
 
 func joinTexts(nodes []Node) string {
 	sb := strings.Builder{}

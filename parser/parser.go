@@ -107,7 +107,7 @@ func parseNode(r *tokenReader) node.Node {
 		return node.MakeSnippet(parseTextUntil(r, token.SNIPPET))
 
 	default:
-		return node.Phrase{M_Text: parseText(r)}
+		return node.Phrase{Txt: parseText(r)}
 	}
 }
 
