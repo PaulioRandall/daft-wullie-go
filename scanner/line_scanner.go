@@ -8,20 +8,6 @@ import (
 
 type lineScanner struct{ text []rune }
 
-var digits = []string{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"}
-var key_symbols = []string{"\\", "+", "-", "*", "`"}
-var key_tokens = []struct {
-	sym string
-	tk  token.Token
-}{
-	{"\\", token.ESCAPE},
-	{"**", token.KEY_PHRASE},
-	{"+", token.POSITIVE},
-	{"-", token.NEGATIVE},
-	{"*", token.STRONG},
-	{"`", token.SNIPPET},
-}
-
 func (ls *lineScanner) scanLine() []token.Lexeme {
 
 	ls.discardSpace()
@@ -63,11 +49,25 @@ func (ls *lineScanner) scanNodes() []token.Lexeme {
 }
 
 func (ls *lineScanner) scanNode() token.Lexeme {
-	for _, v := range key_tokens {
+
+	keyTokens := []struct {
+		sym string
+		tk  token.Token
+	}{
+		{"\\", token.ESCAPE},
+		{"**", token.KEY_PHRASE},
+		{"+", token.POSITIVE},
+		{"-", token.NEGATIVE},
+		{"*", token.STRONG},
+		{"`", token.SNIPPET},
+	}
+
+	for _, v := range keyTokens {
 		if ls.matchStr(v.sym) {
 			return ls.slice(v.tk, len(v.sym))
 		}
 	}
+
 	return ls.scanText()
 }
 
@@ -108,16 +108,6 @@ func (ls *lineScanner) matchAny(haystack ...string) bool {
 		matchAny(string(ls.at(0)), haystack...)
 }
 
-func (ls *lineScanner) matchNumPoint() bool {
-	i := 0
-	for ; ls.inRange(i); i++ {
-		if !matchAny(string(ls.at(i)), digits...) {
-			break
-		}
-	}
-	return i > 0 && ls.inRange(i) && ls.at(i) == '.'
-}
-
 func (ls *lineScanner) discardSpace() {
 	ls.sliceBy(token.UNDEFINED, spaceMatcher)
 }
@@ -156,7 +146,7 @@ func spaceMatcher(ru rune) bool {
 }
 
 func nonKeyMatcher(ru rune) bool {
-	return !matchAny(string(ru), key_symbols...)
+	return !matchAny(string(ru), "\\", "+", "-", "*", "`")
 }
 
 func normalise(lxs []token.Lexeme) []token.Lexeme {

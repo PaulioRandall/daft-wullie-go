@@ -6,8 +6,10 @@ import (
 	"github.com/PaulioRandall/daft-wullie-go/token"
 )
 
+// ScanLine is function for recursively scanning a body of text into lexemes.
 type ScanLine func() ([]token.Lexeme, ScanLine)
 
+// NewScanner creates an initial ScanLine function for the text 's'.
 func NewScanner(s string) ScanLine {
 	ss := &scriptScanner{lines: splitLines(s)}
 	if !ss.more() {
@@ -16,6 +18,8 @@ func NewScanner(s string) ScanLine {
 	return scanner(ss)
 }
 
+// ScanAll scans all lines in 's' into a slice of lexeme slices, each
+// representing a line of annotated text.
 func ScanAll(s string) [][]token.Lexeme {
 	var (
 		f   = NewScanner(s)
