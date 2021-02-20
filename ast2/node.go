@@ -37,11 +37,28 @@ func (n ParentNode) Text() string {
 
 func (n ParentNode) Nodes() []Node { return n.Children }
 
-func MakeTextNode(nt NodeType, s string) TextNode {
+func MakeEmptyLine() TextNode       { return makeTextNode(EmptyLine, "") }
+func MakeText(s string) TextNode    { return makeTextNode(Text, s) }
+func MakeSnippet(s string) TextNode { return makeTextNode(Snippet, s) }
+
+func MakeH1(ns ...Node) ParentNode       { return makeParentNode(H1, ns) }
+func MakeH2(ns ...Node) ParentNode       { return makeParentNode(H2, ns) }
+func MakeH3(ns ...Node) ParentNode       { return makeParentNode(H3, ns) }
+func MakeBulPoint(ns ...Node) ParentNode { return makeParentNode(BulPoint, ns) }
+func MakeNumPoint(ns ...Node) ParentNode { return makeParentNode(NumPoint, ns) }
+func MakeQuote(ns ...Node) ParentNode    { return makeParentNode(Quote, ns) }
+func MakeTextLine(ns ...Node) ParentNode { return makeParentNode(TextLine, ns) }
+
+func MakeKeyPhrase(ns ...Node) ParentNode { return makeParentNode(KeyPhrase, ns) }
+func MakePositive(ns ...Node) ParentNode  { return makeParentNode(Positive, ns) }
+func MakeNegative(ns ...Node) ParentNode  { return makeParentNode(Negative, ns) }
+func MakeStrong(ns ...Node) ParentNode    { return makeParentNode(Strong, ns) }
+
+func makeTextNode(nt NodeType, s string) TextNode {
 	return TextNode{NodeType: nt, Txt: s}
 }
 
-func MakeParentNode(nt NodeType, ns ...Node) ParentNode {
+func makeParentNode(nt NodeType, ns []Node) ParentNode {
 	if ns == nil {
 		return ParentNode{NodeType: nt, Children: []Node{}}
 	}

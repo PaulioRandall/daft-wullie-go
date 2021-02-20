@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/PaulioRandall/daft-wullie-go/ast"
+	"github.com/PaulioRandall/daft-wullie-go/ast2"
 	"github.com/PaulioRandall/daft-wullie-go/parser"
 	"github.com/PaulioRandall/daft-wullie-go/scanner"
 )
@@ -31,22 +31,22 @@ A sentence with a **keyword** in it
 	notes := parser.ParseAll(tks)
 
 	hCount, pCount, nCount := 0, 0, 0
-	f := func(n ast.Node, lineNum, depth, orderIdx int) {
-		switch n.(type) {
-		case ast.H1:
+	f := func(n ast2.Node, lineNum, depth, orderIdx int) {
+		switch n.Type() {
+		case ast2.H1:
 			hCount++
-		case ast.H2:
+		case ast2.H2:
 			hCount++
-		case ast.H3:
+		case ast2.H3:
 			hCount++
-		case ast.Positive:
+		case ast2.Positive:
 			pCount++
-		case ast.Negative:
+		case ast2.Negative:
 			nCount++
 		}
 	}
 
-	ast.DescendNotes(notes, f)
+	ast2.DescendNotes(notes, f)
 
 	fmt.Println()
 	fmt.Print("```")
