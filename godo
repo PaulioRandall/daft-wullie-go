@@ -50,7 +50,7 @@ printUsage() {
   println "\t" "./godo clean   " "\t" "Delete build directory"
   println "\t" "./godo build   " "\t" "Build -> format"
   println "\t" "./godo test    " "\t" "Build -> format -> test"
-  println "\t" "./godo run     " "\t" "Build -> format -> test -> run"
+  println "\t" "./godo run     " "\t" "Build -> format -> test -> run example"
   println "\t" "./godo compress" "\t" "Compress binary if 'upx' is installed"
 }
 
