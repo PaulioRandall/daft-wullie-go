@@ -63,13 +63,13 @@ func parseLine(r *tokenReader) node.Node {
 	case r.accept(token.H3):
 		return node.MakeH3(parseNodeLine(r)...)
 
-	case r.accept(token.QUOTE):
+	case r.accept(token.Quote):
 		return node.MakeQuote(parseNodeLine(r)...)
 
-	case r.accept(token.BUL_POINT):
+	case r.accept(token.BulPoint):
 		return node.MakeBulPoint(parseNodeLine(r)...)
 
-	case r.accept(token.NUM_POINT):
+	case r.accept(token.NumPoint):
 		return node.MakeNumPoint(parseNodeLine(r)...)
 
 	default:
@@ -95,20 +95,20 @@ func parseNodeLine(r *tokenReader) []node.Node {
 // NODE := TEXT_PHRASE
 func parseNode(r *tokenReader) node.Node {
 	switch {
-	case r.accept(token.KEY_PHRASE):
-		return node.MakeKeyPhrase(parseNodesUntil(r, token.KEY_PHRASE)...)
+	case r.accept(token.KeyPhrase):
+		return node.MakeKeyPhrase(parseNodesUntil(r, token.KeyPhrase)...)
 
-	case r.accept(token.POSITIVE):
-		return node.MakePositive(parseNodesUntil(r, token.POSITIVE)...)
+	case r.accept(token.Positive):
+		return node.MakePositive(parseNodesUntil(r, token.Positive)...)
 
-	case r.accept(token.NEGATIVE):
-		return node.MakeNegative(parseNodesUntil(r, token.NEGATIVE)...)
+	case r.accept(token.Negative):
+		return node.MakeNegative(parseNodesUntil(r, token.Negative)...)
 
-	case r.accept(token.STRONG):
-		return node.MakeStrong(parseNodesUntil(r, token.STRONG)...)
+	case r.accept(token.Strong):
+		return node.MakeStrong(parseNodesUntil(r, token.Strong)...)
 
-	case r.accept(token.SNIPPET):
-		return node.MakeSnippet(parseTextUntil(r, token.SNIPPET))
+	case r.accept(token.Snippet):
+		return node.MakeSnippet(parseTextUntil(r, token.Snippet))
 
 	default:
 		return node.Phrase{Txt: parseText(r)}
@@ -156,7 +156,7 @@ func parseTextLine(r *tokenReader) string {
 // TEXT_PHRASE := {TEXT}
 func parseText(r *tokenReader) string {
 	sb := strings.Builder{}
-	for r.more() && r.match(token.TEXT) {
+	for r.more() && r.match(token.Text) {
 		s := r.read().Val
 		sb.WriteString(s)
 	}

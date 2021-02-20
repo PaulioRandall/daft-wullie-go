@@ -1,7 +1,10 @@
 package token
 
 type (
-	Token  int
+	// Token represents a type of token in a text string.
+	Token int
+
+	// Lexeme couples a value from a text string with its token type.
 	Lexeme struct {
 		Token
 		Val string
@@ -9,27 +12,27 @@ type (
 )
 
 const (
-	UNDEFINED Token = iota
-	TEXT
+	Undefined Token = iota
+	Text
 	H1
 	H2
 	H3
-	BUL_POINT
-	NUM_POINT
-	QUOTE
-	ESCAPE
-	POSITIVE
-	NEGATIVE
-	STRONG
-	KEY_PHRASE
-	SNIPPET
-	QUESTION
+	BulPoint
+	NumPoint
+	Quote
+	Escape
+	KeyPhrase
+	Positive
+	Negative
+	Strong
+	Snippet
 )
 
+// String returns the token's human readable string representation.
 func (tk Token) String() string {
 	switch tk {
-	case TEXT:
-		return "TEXT"
+	case Text:
+		return "Text"
 
 	case H1:
 		return "H1"
@@ -38,31 +41,28 @@ func (tk Token) String() string {
 	case H3:
 		return "H3"
 
-	case BUL_POINT:
-		return "BUL_POINT"
-	case NUM_POINT:
-		return "NUM_POINT"
-	case QUOTE:
-		return "QUOTE"
+	case BulPoint:
+		return "BulPoint"
+	case NumPoint:
+		return "NumPoint"
+	case Quote:
+		return "Quote"
 
-	case ESCAPE:
-		return "ESCAPE"
+	case Escape:
+		return "Escape"
 
-	case KEY_PHRASE:
-		return "KEY_PHRASE"
-	case STRONG:
-		return "STRONG"
-	case POSITIVE:
-		return "POSITIVE"
-	case NEGATIVE:
-		return "NEGATIVE"
-	case SNIPPET:
-		return "SNIPPET"
-
-	case QUESTION:
-		return "QUESTION"
+	case KeyPhrase:
+		return "KeyPhrase"
+	case Positive:
+		return "Positive"
+	case Negative:
+		return "Negative"
+	case Strong:
+		return "Strong"
+	case Snippet:
+		return "Snippet"
 
 	default:
-		return "UNDEFINED"
+		return "Undefined"
 	}
 }

@@ -16,9 +16,9 @@ func lex(tk token.Token, val string) token.Lexeme {
 func TestHeadings_1(t *testing.T) {
 
 	in := [][]token.Lexeme{
-		[]token.Lexeme{lex(token.H1, "#"), lex(token.TEXT, "1")},
-		[]token.Lexeme{lex(token.H2, "##"), lex(token.TEXT, "2")},
-		[]token.Lexeme{lex(token.H3, "###"), lex(token.TEXT, "3")},
+		[]token.Lexeme{lex(token.H1, "#"), lex(token.Text, "1")},
+		[]token.Lexeme{lex(token.H2, "##"), lex(token.Text, "2")},
+		[]token.Lexeme{lex(token.H3, "###"), lex(token.Text, "3")},
 	}
 
 	exp := []node.Node{
@@ -35,8 +35,8 @@ func TestQuote_1(t *testing.T) {
 
 	in := [][]token.Lexeme{
 		[]token.Lexeme{
-			lex(token.QUOTE, ">"),
-			lex(token.TEXT, "The Turtle Moves!"),
+			lex(token.Quote, ">"),
+			lex(token.Text, "The Turtle Moves!"),
 		},
 	}
 
@@ -54,8 +54,8 @@ func TestBulPoint_1(t *testing.T) {
 
 	in := [][]token.Lexeme{
 		[]token.Lexeme{
-			lex(token.BUL_POINT, "."),
-			lex(token.TEXT, "The Turtle Moves!"),
+			lex(token.BulPoint, "."),
+			lex(token.Text, "The Turtle Moves!"),
 		},
 	}
 
@@ -73,8 +73,8 @@ func TestNumPoint_1(t *testing.T) {
 
 	in := [][]token.Lexeme{
 		[]token.Lexeme{
-			lex(token.NUM_POINT, "9."),
-			lex(token.TEXT, "The Turtle Moves!"),
+			lex(token.NumPoint, "9."),
+			lex(token.Text, "The Turtle Moves!"),
 		},
 	}
 
@@ -101,11 +101,11 @@ func TestNestableNodes_1(t *testing.T) {
 		require.Equal(t, expect, act)
 	}
 
-	doTest(lxs(token.KEY_PHRASE, "**"), node.MakeFmtLine(node.MakeKeyPhrase()))
-	doTest(lxs(token.POSITIVE, "+"), node.MakeFmtLine(node.MakePositive()))
-	doTest(lxs(token.NEGATIVE, "-"), node.MakeFmtLine(node.MakeNegative()))
-	doTest(lxs(token.STRONG, "*"), node.MakeFmtLine(node.MakeStrong()))
-	doTest(lxs(token.SNIPPET, "`"), node.MakeFmtLine(node.MakeSnippet("")))
+	doTest(lxs(token.KeyPhrase, "**"), node.MakeFmtLine(node.MakeKeyPhrase()))
+	doTest(lxs(token.Positive, "+"), node.MakeFmtLine(node.MakePositive()))
+	doTest(lxs(token.Negative, "-"), node.MakeFmtLine(node.MakeNegative()))
+	doTest(lxs(token.Strong, "*"), node.MakeFmtLine(node.MakeStrong()))
+	doTest(lxs(token.Snippet, "`"), node.MakeFmtLine(node.MakeSnippet("")))
 }
 
 func TestScript_1(t *testing.T) {
@@ -144,77 +144,77 @@ func TestScript_1(t *testing.T) {
 	in := [][]token.Lexeme{ // Lines
 		[]token.Lexeme{
 			lex(token.H1, "#"),
-			lex(token.TEXT, "Cheese"),
+			lex(token.Text, "Cheese"),
 		},
 		[]token.Lexeme{
-			lex(token.QUOTE, ">"),
-			lex(token.TEXT, "Cheese is a dairy product, derived from milk and produced in wide ranges of flavors, textures and forms by coagulation of the milk protein casein."),
+			lex(token.Quote, ">"),
+			lex(token.Text, "Cheese is a dairy product, derived from milk and produced in wide ranges of flavors, textures and forms by coagulation of the milk protein casein."),
 		},
 		[]token.Lexeme{
-			lex(token.STRONG, "*"),
-			lex(token.TEXT, "Cheese is "),
-			lex(token.POSITIVE, "+"),
-			lex(token.TEXT, "very tasty"),
-			lex(token.POSITIVE, "+"),
-			lex(token.TEXT, " but also quite "),
-			lex(token.NEGATIVE, "-"),
-			lex(token.TEXT, "smelly"),
-			lex(token.NEGATIVE, "-"),
-			lex(token.TEXT, ", "),
-			lex(token.POSITIVE, "+"),
-			lex(token.TEXT, "good on pizza"),
-			lex(token.POSITIVE, "+"),
-		},
-		[]token.Lexeme{},
-
-		[]token.Lexeme{lex(token.H2, "##"), lex(token.TEXT, "History")},
-		[]token.Lexeme{lex(token.TEXT, "Who knows.")},
-		[]token.Lexeme{},
-		[]token.Lexeme{},
-		[]token.Lexeme{},
-
-		[]token.Lexeme{lex(token.H2, "##"), lex(token.TEXT, "Types")},
-		[]token.Lexeme{lex(token.BUL_POINT, "."), lex(token.TEXT, "Chedder")},
-		[]token.Lexeme{lex(token.BUL_POINT, "."), lex(token.TEXT, "Brie")},
-		[]token.Lexeme{lex(token.BUL_POINT, "."), lex(token.TEXT, "Mozzarella")},
-		[]token.Lexeme{lex(token.BUL_POINT, "."), lex(token.TEXT, "Stilton")},
-		[]token.Lexeme{lex(token.BUL_POINT, "."), lex(token.TEXT, "etc")},
-		[]token.Lexeme{},
-
-		[]token.Lexeme{lex(token.H2, "##"), lex(token.TEXT, "Process")},
-		[]token.Lexeme{lex(token.NUM_POINT, "!"), lex(token.TEXT, "Curdling")},
-		[]token.Lexeme{lex(token.NUM_POINT, "!"), lex(token.TEXT, "Curd processing")},
-		[]token.Lexeme{lex(token.NUM_POINT, "!"), lex(token.TEXT, "Ripening")},
-		[]token.Lexeme{},
-
-		[]token.Lexeme{lex(token.H2, "##"), lex(token.TEXT, "Safety")},
-		[]token.Lexeme{lex(token.H3, "###"), lex(token.TEXT, "Bacteria")},
-		[]token.Lexeme{
-			lex(token.TEXT, "Milk used should be "),
-			lex(token.KEY_PHRASE, "**"),
-			lex(token.TEXT, "pasteurized"),
-			lex(token.KEY_PHRASE, "**"),
-			lex(token.TEXT, " to kill infectious diseases"),
+			lex(token.Strong, "*"),
+			lex(token.Text, "Cheese is "),
+			lex(token.Positive, "+"),
+			lex(token.Text, "very tasty"),
+			lex(token.Positive, "+"),
+			lex(token.Text, " but also quite "),
+			lex(token.Negative, "-"),
+			lex(token.Text, "smelly"),
+			lex(token.Negative, "-"),
+			lex(token.Text, ", "),
+			lex(token.Positive, "+"),
+			lex(token.Text, "good on pizza"),
+			lex(token.Positive, "+"),
 		},
 		[]token.Lexeme{},
 
-		[]token.Lexeme{lex(token.H3, "###"), lex(token.TEXT, "Heart disease")},
+		[]token.Lexeme{lex(token.H2, "##"), lex(token.Text, "History")},
+		[]token.Lexeme{lex(token.Text, "Who knows.")},
+		[]token.Lexeme{},
+		[]token.Lexeme{},
+		[]token.Lexeme{},
+
+		[]token.Lexeme{lex(token.H2, "##"), lex(token.Text, "Types")},
+		[]token.Lexeme{lex(token.BulPoint, "."), lex(token.Text, "Chedder")},
+		[]token.Lexeme{lex(token.BulPoint, "."), lex(token.Text, "Brie")},
+		[]token.Lexeme{lex(token.BulPoint, "."), lex(token.Text, "Mozzarella")},
+		[]token.Lexeme{lex(token.BulPoint, "."), lex(token.Text, "Stilton")},
+		[]token.Lexeme{lex(token.BulPoint, "."), lex(token.Text, "etc")},
+		[]token.Lexeme{},
+
+		[]token.Lexeme{lex(token.H2, "##"), lex(token.Text, "Process")},
+		[]token.Lexeme{lex(token.NumPoint, "!"), lex(token.Text, "Curdling")},
+		[]token.Lexeme{lex(token.NumPoint, "!"), lex(token.Text, "Curd processing")},
+		[]token.Lexeme{lex(token.NumPoint, "!"), lex(token.Text, "Ripening")},
+		[]token.Lexeme{},
+
+		[]token.Lexeme{lex(token.H2, "##"), lex(token.Text, "Safety")},
+		[]token.Lexeme{lex(token.H3, "###"), lex(token.Text, "Bacteria")},
 		[]token.Lexeme{
-			lex(token.NEGATIVE, "-"),
-			lex(token.TEXT, "Recommended that cheese consumption be minimised"),
+			lex(token.Text, "Milk used should be "),
+			lex(token.KeyPhrase, "**"),
+			lex(token.Text, "pasteurized"),
+			lex(token.KeyPhrase, "**"),
+			lex(token.Text, " to kill infectious diseases"),
+		},
+		[]token.Lexeme{},
+
+		[]token.Lexeme{lex(token.H3, "###"), lex(token.Text, "Heart disease")},
+		[]token.Lexeme{
+			lex(token.Negative, "-"),
+			lex(token.Text, "Recommended that cheese consumption be minimised"),
 		},
 		[]token.Lexeme{
-			lex(token.NEGATIVE, "-"),
-			lex(token.TEXT, "There isn't any "),
-			lex(token.STRONG, "*"),
-			lex(token.TEXT, "convincing"),
-			lex(token.STRONG, "*"),
-			lex(token.TEXT, " evidence that cheese lowers heart disease"),
+			lex(token.Negative, "-"),
+			lex(token.Text, "There isn't any "),
+			lex(token.Strong, "*"),
+			lex(token.Text, "convincing"),
+			lex(token.Strong, "*"),
+			lex(token.Text, " evidence that cheese lowers heart disease"),
 		},
 		[]token.Lexeme{},
 
 		[]token.Lexeme{
-			lex(token.TEXT, "Source [2021-02-06]: https://en.wikipedia.org/wiki/Cheese"),
+			lex(token.Text, "Source [2021-02-06]: https://en.wikipedia.org/wiki/Cheese"),
 		},
 		[]token.Lexeme{},
 	}

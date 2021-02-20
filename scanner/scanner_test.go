@@ -17,7 +17,7 @@ func TestEscape_1(t *testing.T) {
 	in := `\#daft`
 	exp := [][]token.Lexeme{
 		[]token.Lexeme{
-			lex(token.TEXT, "#daft"),
+			lex(token.Text, "#daft"),
 		},
 	}
 
@@ -30,7 +30,7 @@ func TestEscape_2(t *testing.T) {
 	in := `\da\ft`
 	exp := [][]token.Lexeme{
 		[]token.Lexeme{
-			lex(token.TEXT, `daft`),
+			lex(token.Text, `daft`),
 		},
 	}
 
@@ -43,7 +43,7 @@ func TestEscape_3(t *testing.T) {
 	in := `da\\ft`
 	exp := [][]token.Lexeme{
 		[]token.Lexeme{
-			lex(token.TEXT, `da\ft`),
+			lex(token.Text, `da\ft`),
 		},
 	}
 
@@ -57,7 +57,7 @@ func TestTopic_1(t *testing.T) {
 	exp := [][]token.Lexeme{
 		[]token.Lexeme{
 			lex(token.H1, "#"),
-			lex(token.TEXT, "  Topic  "),
+			lex(token.Text, "  Topic  "),
 		},
 	}
 
@@ -71,7 +71,7 @@ func TestSubTopic_1(t *testing.T) {
 	exp := [][]token.Lexeme{
 		[]token.Lexeme{
 			lex(token.H2, "##"),
-			lex(token.TEXT, " Sub topic"),
+			lex(token.Text, " Sub topic"),
 		},
 	}
 
@@ -85,7 +85,7 @@ func TestHeading_1(t *testing.T) {
 	exp := [][]token.Lexeme{
 		[]token.Lexeme{
 			lex(token.H3, "###"),
-			lex(token.TEXT, " Heading"),
+			lex(token.Text, " Heading"),
 		},
 	}
 
@@ -98,8 +98,8 @@ func TestBulletPoint_1(t *testing.T) {
 	in := `. Point`
 	exp := [][]token.Lexeme{
 		[]token.Lexeme{
-			lex(token.BUL_POINT, "."),
-			lex(token.TEXT, " Point"),
+			lex(token.BulPoint, "."),
+			lex(token.Text, " Point"),
 		},
 	}
 
@@ -112,8 +112,8 @@ func TestNumberPoint_1(t *testing.T) {
 	in := `! Point`
 	exp := [][]token.Lexeme{
 		[]token.Lexeme{
-			lex(token.NUM_POINT, "!"),
-			lex(token.TEXT, " Point"),
+			lex(token.NumPoint, "!"),
+			lex(token.Text, " Point"),
 		},
 	}
 
@@ -126,8 +126,8 @@ func TestQuote_1(t *testing.T) {
 	in := `> Fly high through apocalypse skies`
 	exp := [][]token.Lexeme{
 		[]token.Lexeme{
-			lex(token.QUOTE, ">"),
-			lex(token.TEXT, " Fly high through apocalypse skies"),
+			lex(token.Quote, ">"),
+			lex(token.Text, " Fly high through apocalypse skies"),
 		},
 	}
 
@@ -140,11 +140,11 @@ func TestNodes_1(t *testing.T) {
 	in := "**+-*`"
 	exp := [][]token.Lexeme{
 		[]token.Lexeme{
-			lex(token.KEY_PHRASE, "**"),
-			lex(token.POSITIVE, "+"),
-			lex(token.NEGATIVE, "-"),
-			lex(token.STRONG, "*"),
-			lex(token.SNIPPET, "`"),
+			lex(token.KeyPhrase, "**"),
+			lex(token.Positive, "+"),
+			lex(token.Negative, "-"),
+			lex(token.Strong, "*"),
+			lex(token.Snippet, "`"),
 		},
 	}
 
@@ -157,17 +157,17 @@ func TestNodes_2(t *testing.T) {
 	in := "* +positive+ and -negative- *"
 	exp := [][]token.Lexeme{
 		[]token.Lexeme{
-			lex(token.STRONG, "*"),
-			lex(token.TEXT, " "),
-			lex(token.POSITIVE, "+"),
-			lex(token.TEXT, "positive"),
-			lex(token.POSITIVE, "+"),
-			lex(token.TEXT, " and "),
-			lex(token.NEGATIVE, "-"),
-			lex(token.TEXT, "negative"),
-			lex(token.NEGATIVE, "-"),
-			lex(token.TEXT, " "),
-			lex(token.STRONG, "*"),
+			lex(token.Strong, "*"),
+			lex(token.Text, " "),
+			lex(token.Positive, "+"),
+			lex(token.Text, "positive"),
+			lex(token.Positive, "+"),
+			lex(token.Text, " and "),
+			lex(token.Negative, "-"),
+			lex(token.Text, "negative"),
+			lex(token.Negative, "-"),
+			lex(token.Text, " "),
+			lex(token.Strong, "*"),
 		},
 	}
 
@@ -193,33 +193,33 @@ func TestLines_1(t *testing.T) {
 		emptyLine(),
 		line(
 			lex(token.H3, "###"),
-			lex(token.TEXT, " Trees:"),
+			lex(token.Text, " Trees:"),
 		),
 		emptyLine(),
 		emptyLine(),
 		line(
-			lex(token.BUL_POINT, "."),
-			lex(token.TEXT, " Burnable "),
-			lex(token.NEGATIVE, "-"),
-			lex(token.TEXT, "(Wildfires)"),
-			lex(token.NEGATIVE, "-"),
+			lex(token.BulPoint, "."),
+			lex(token.Text, " Burnable "),
+			lex(token.Negative, "-"),
+			lex(token.Text, "(Wildfires)"),
+			lex(token.Negative, "-"),
 		),
 		line(
-			lex(token.BUL_POINT, "."),
-			lex(token.TEXT, " Central to "),
-			lex(token.STRONG, "*"),
-			lex(token.TEXT, "ecosystems"),
-			lex(token.STRONG, "*"),
+			lex(token.BulPoint, "."),
+			lex(token.Text, " Central to "),
+			lex(token.Strong, "*"),
+			lex(token.Text, "ecosystems"),
+			lex(token.Strong, "*"),
 		),
 		line(
-			lex(token.BUL_POINT, "."),
-			lex(token.POSITIVE, "+"),
-			lex(token.TEXT, " Fun to climb"),
+			lex(token.BulPoint, "."),
+			lex(token.Positive, "+"),
+			lex(token.Text, " Fun to climb"),
 		),
 		line(
-			lex(token.BUL_POINT, "."),
-			lex(token.NEGATIVE, "-"),
-			lex(token.TEXT, " Can fall over"),
+			lex(token.BulPoint, "."),
+			lex(token.Negative, "-"),
+			lex(token.Text, " Can fall over"),
 		),
 		emptyLine(),
 	}
@@ -240,11 +240,11 @@ A quote by whom?
 	exp := [][]token.Lexeme{
 		emptyLine(),
 		line(
-			lex(token.QUOTE, ">"),
-			lex(token.TEXT, " I aten't ded"),
+			lex(token.Quote, ">"),
+			lex(token.Text, " I aten't ded"),
 		),
 		line(
-			lex(token.TEXT, "A quote by whom?"),
+			lex(token.Text, "A quote by whom?"),
 		),
 		emptyLine(),
 	}

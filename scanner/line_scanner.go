@@ -23,15 +23,15 @@ func (ls *lineScanner) scanLine() []token.Lexeme {
 		return []token.Lexeme{ls.slice(token.H1, 1), ls.scanTextLine()}
 
 	case ls.matchStr(">"):
-		r := []token.Lexeme{ls.slice(token.QUOTE, 1)}
+		r := []token.Lexeme{ls.slice(token.Quote, 1)}
 		return append(r, ls.scanNodes()...)
 
 	case ls.matchStr("."):
-		r := []token.Lexeme{ls.slice(token.BUL_POINT, 1)}
+		r := []token.Lexeme{ls.slice(token.BulPoint, 1)}
 		return append(r, ls.scanNodes()...)
 
 	case ls.matchStr("!"):
-		r := []token.Lexeme{ls.slice(token.NUM_POINT, 1)}
+		r := []token.Lexeme{ls.slice(token.NumPoint, 1)}
 		return append(r, ls.scanNodes()...)
 
 	default:
@@ -54,12 +54,12 @@ func (ls *lineScanner) scanNode() token.Lexeme {
 		sym string
 		tk  token.Token
 	}{
-		{"\\", token.ESCAPE},
-		{"**", token.KEY_PHRASE},
-		{"+", token.POSITIVE},
-		{"-", token.NEGATIVE},
-		{"*", token.STRONG},
-		{"`", token.SNIPPET},
+		{"\\", token.Escape},
+		{"**", token.KeyPhrase},
+		{"+", token.Positive},
+		{"-", token.Negative},
+		{"*", token.Strong},
+		{"`", token.Snippet},
 	}
 
 	for _, v := range keyTokens {
@@ -72,11 +72,11 @@ func (ls *lineScanner) scanNode() token.Lexeme {
 }
 
 func (ls *lineScanner) scanTextLine() token.Lexeme {
-	return ls.sliceBy(token.TEXT, anyMatcher)
+	return ls.sliceBy(token.Text, anyMatcher)
 }
 
 func (ls *lineScanner) scanText() token.Lexeme {
-	return ls.sliceBy(token.TEXT, nonKeyMatcher)
+	return ls.sliceBy(token.Text, nonKeyMatcher)
 }
 
 func (ls *lineScanner) at(i int) rune {
@@ -109,7 +109,7 @@ func (ls *lineScanner) matchAny(haystack ...string) bool {
 }
 
 func (ls *lineScanner) discardSpace() {
-	ls.sliceBy(token.UNDEFINED, spaceMatcher)
+	ls.sliceBy(token.Undefined, spaceMatcher)
 }
 
 func (ls *lineScanner) slice(tk token.Token, n int) token.Lexeme {
@@ -171,8 +171,8 @@ func normalise(lxs []token.Lexeme) []token.Lexeme {
 //
 // Axiomatic definition of behaviour:
 // - ANY := non-ESCAPE token
-// - ESCAPE ANY      -> TEXT(ANY)
-// - ESCAPE1 ESCAPE2 -> TEXT(ESCAPE2)
+// - ESCAPE ANY      -> Text(ANY)
+// - ESCAPE1 ESCAPE2 -> Text(ESCAPE2)
 // - ESCAPE EOF      -> EOF
 func applyEscaping(in []token.Lexeme) []token.Lexeme {
 
@@ -182,7 +182,7 @@ func applyEscaping(in []token.Lexeme) []token.Lexeme {
 	for i := 0; i < size; i++ {
 		tk := in[i]
 
-		if tk.Token != token.ESCAPE {
+		if tk.Token != token.Escape {
 			out = append(out, tk)
 			continue
 		}
@@ -190,7 +190,7 @@ func applyEscaping(in []token.Lexeme) []token.Lexeme {
 		i++
 		if i < size {
 			tk = in[i]
-			tk.Token = token.TEXT
+			tk.Token = token.Text
 			out = append(out, tk)
 		}
 	}
@@ -220,7 +220,7 @@ func mergeLexemes(in []token.Lexeme) []token.Lexeme {
 	for i := 1; i < size; i++ {
 		lx := in[i]
 
-		if lx.Token == token.TEXT && out[last].Token == token.TEXT {
+		if lx.Token == token.Text && out[last].Token == token.Text {
 			out[last].Val += lx.Val // Merge
 			continue
 		}
