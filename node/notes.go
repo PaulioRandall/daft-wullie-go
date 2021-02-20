@@ -39,8 +39,11 @@ func DecendNode(n Node, f DescendFunc) {
 }
 
 func descendNode(n Node, lineNum, depth, orderIdx int, f DescendFunc) {
+	type par interface {
+		Children() []Node
+	}
 	f(n, lineNum, depth, orderIdx)
-	if v, ok := n.(Parent); ok {
+	if v, ok := n.(par); ok {
 		descendNodes(v.Children(), lineNum, depth+1, orderIdx, f)
 	}
 }
@@ -105,7 +108,7 @@ func fmtNodeString(sb *strings.Builder, n Node) {
 	case H3:
 		writeGroup("###", v, "")
 
-	case FmtLine:
+	case TextLine:
 		writeGroup("", v, "")
 	case BulPoint:
 		writeGroup(".", v, "")
