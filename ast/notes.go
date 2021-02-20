@@ -5,53 +5,46 @@ import (
 )
 
 type (
-	Notes       []LineNode
+	Notes       []Node
 	DescendFunc func(n Node, lineNum, depth, orderIdx int)
 )
 
-func RemoveExtraLines(notes Notes) Notes {
-
-	r := []LineNode{}
-	prevEmpty := false
-
-	for _, l := range notes {
-		if prevEmpty {
-			if _, ok := l.(EmptyLine); ok {
-				continue
-			}
-		}
-
-		r = append(r, l)
-		_, prevEmpty = l.(EmptyLine)
-	}
-
-	return Notes(r)
-}
-
-func DescendNotes(notes Notes, f DescendFunc) {
-	for i, n := range notes {
-		descendNode(n, i+1, 0, 0, f)
-	}
+func DescendNotes(n Notes, f DescendFunc) {
+	descendNodes(n, 1, 0, f)
 }
 
 func DecendNode(n Node, f DescendFunc) {
 	descendNode(n, 1, 0, 0, f)
 }
 
-func descendNode(n Node, lineNum, depth, orderIdx int, f DescendFunc) {
-	type par interface {
-		Children() []PhraseNode
-	}
-	f(n, lineNum, depth, orderIdx)
-	if v, ok := n.(par); ok {
-		descendPhraseNodes(v.Children(), lineNum, depth+1, orderIdx, f)
-	}
-}
-
-func descendPhraseNodes(ns []PhraseNode, lineNum, depth, orderIdx int, f DescendFunc) {
+func descendNodes(ns []Node, lineNum, depth int, f DescendFunc) {
 	for i, n := range ns {
 		descendNode(n, lineNum, depth, i, f)
 	}
+}
+
+func descendNode(n Node, lineNum, depth, orderIdx int, f DescendFunc) {
+	f(n, lineNum, depth, orderIdx)
+	if v, ok := n.(Parent); ok {
+		descendNodes(v.Nodes(), lineNum, depth+1, f)
+	}
+}
+
+func RemoveExtraLines(notes Notes) Notes {
+
+	r := []Node{}
+	prevEmpty := false
+
+	for _, n := range notes {
+		currEmpty := n.Type() == EmptyLine
+
+		if !prevEmpty || !currEmpty {
+			r = append(r, n)
+			prevEmpty = currEmpty
+		}
+	}
+
+	return Notes(r)
 }
 
 func PlainString(notes Notes) string {
@@ -75,49 +68,52 @@ func FmtString(notes Notes) string {
 
 func fmtNodeString(sb *strings.Builder, n Node) {
 
-	writeGroup := func(prefix string, v interface{}, suffix string) {
+	writeGroup := func(prefix string, n Node, suffix string) {
 		sb.WriteString(prefix)
-		if ns, ok := v.(Parent); ok {
-			for _, sub := range ns.Children() {
+
+		if p, ok := n.(ParentNode); ok {
+			for _, sub := range p.Nodes() {
 				fmtNodeString(sb, sub)
 			}
 		} else {
-			s := v.(Node).Text()
+			s := n.Text()
 			sb.WriteString(s)
 		}
+
 		sb.WriteString(suffix)
 	}
 
-	switch v := n.(type) {
-	case Phrase:
-		writeGroup("", v, "")
-
-	case Quote:
-		writeGroup(">", v, "")
-	case Snippet:
-		writeGroup("`", v, "`")
+	switch n.Type() {
+	case Text:
+		writeGroup("", n, "")
 
 	case H1:
-		writeGroup("#", v, "")
+		writeGroup("#", n, "")
 	case H2:
-		writeGroup("##", v, "")
+		writeGroup("##", n, "")
 	case H3:
-		writeGroup("###", v, "")
+		writeGroup("###", n, "")
 
-	case TextLine:
-		writeGroup("", v, "")
 	case BulPoint:
-		writeGroup(".", v, "")
+		writeGroup(".", n, "")
 	case NumPoint:
-		writeGroup("!", v, "")
+		writeGroup("!", n, "")
+
+	case Quote:
+		writeGroup(">", n, "")
+	case Snippet:
+		writeGroup("`", n, "`")
+
+	case TextLine, EmptyLine:
+		writeGroup("", n, "")
 
 	case KeyPhrase:
-		writeGroup("**", v, "**")
+		writeGroup("**", n, "**")
 	case Positive:
-		writeGroup("+", v, "+")
+		writeGroup("+", n, "+")
 	case Negative:
-		writeGroup("-", v, "-")
+		writeGroup("-", n, "-")
 	case Strong:
-		writeGroup("*", v, "*")
+		writeGroup("*", n, "*")
 	}
 }

@@ -3,7 +3,7 @@ package parser
 import (
 	"testing"
 
-	"github.com/PaulioRandall/daft-wullie-go/ast2"
+	"github.com/PaulioRandall/daft-wullie-go/ast"
 	"github.com/PaulioRandall/daft-wullie-go/token"
 
 	"github.com/stretchr/testify/require"
@@ -21,10 +21,10 @@ func TestHeadings_1(t *testing.T) {
 		[]token.Lexeme{lex(token.H3, "###"), lex(token.Text, "3")},
 	}
 
-	exp := []ast2.Node{
-		ast2.MakeH1(ast2.MakeText("1")),
-		ast2.MakeH2(ast2.MakeText("2")),
-		ast2.MakeH3(ast2.MakeText("3")),
+	exp := []ast.Node{
+		ast.MakeH1(ast.MakeText("1")),
+		ast.MakeH2(ast.MakeText("2")),
+		ast.MakeH3(ast.MakeText("3")),
 	}
 
 	act := ParseAll(in)
@@ -40,9 +40,9 @@ func TestQuote_1(t *testing.T) {
 		},
 	}
 
-	exp := []ast2.Node{
-		ast2.MakeQuote(
-			ast2.MakeText("The Turtle Moves!"),
+	exp := []ast.Node{
+		ast.MakeQuote(
+			ast.MakeText("The Turtle Moves!"),
 		),
 	}
 
@@ -59,9 +59,9 @@ func TestBulPoint_1(t *testing.T) {
 		},
 	}
 
-	exp := []ast2.Node{
-		ast2.MakeBulPoint(
-			ast2.MakeText("The Turtle Moves!"),
+	exp := []ast.Node{
+		ast.MakeBulPoint(
+			ast.MakeText("The Turtle Moves!"),
 		),
 	}
 
@@ -78,9 +78,9 @@ func TestNumPoint_1(t *testing.T) {
 		},
 	}
 
-	exp := []ast2.Node{
-		ast2.MakeNumPoint(
-			ast2.MakeText("The Turtle Moves!"),
+	exp := []ast.Node{
+		ast.MakeNumPoint(
+			ast.MakeText("The Turtle Moves!"),
 		),
 	}
 
@@ -94,18 +94,18 @@ func TestNestableNodes_1(t *testing.T) {
 		return []token.Lexeme{lex(tk, v), lex(tk, v)}
 	}
 
-	doTest := func(in []token.Lexeme, exp ast2.Node) {
+	doTest := func(in []token.Lexeme, exp ast.Node) {
 		input := [][]token.Lexeme{in}
-		expect := []ast2.Node{exp}
+		expect := []ast.Node{exp}
 		act := ParseAll(input)
 		require.Equal(t, expect, act)
 	}
 
-	doTest(lxs(token.KeyPhrase, "**"), ast2.MakeTextLine(ast2.MakeKeyPhrase()))
-	doTest(lxs(token.Positive, "+"), ast2.MakeTextLine(ast2.MakePositive()))
-	doTest(lxs(token.Negative, "-"), ast2.MakeTextLine(ast2.MakeNegative()))
-	doTest(lxs(token.Strong, "*"), ast2.MakeTextLine(ast2.MakeStrong()))
-	doTest(lxs(token.Snippet, "`"), ast2.MakeTextLine(ast2.MakeSnippet("")))
+	doTest(lxs(token.KeyPhrase, "**"), ast.MakeTextLine(ast.MakeKeyPhrase()))
+	doTest(lxs(token.Positive, "+"), ast.MakeTextLine(ast.MakePositive()))
+	doTest(lxs(token.Negative, "-"), ast.MakeTextLine(ast.MakeNegative()))
+	doTest(lxs(token.Strong, "*"), ast.MakeTextLine(ast.MakeStrong()))
+	doTest(lxs(token.Snippet, "`"), ast.MakeTextLine(ast.MakeSnippet("")))
 }
 
 func TestScript_1(t *testing.T) {
@@ -219,91 +219,91 @@ func TestScript_1(t *testing.T) {
 		[]token.Lexeme{},
 	}
 
-	exp := []ast2.Node{ // Lines
-		ast2.MakeH1(
-			ast2.MakeText("Cheese"),
+	exp := []ast.Node{ // Lines
+		ast.MakeH1(
+			ast.MakeText("Cheese"),
 		),
-		ast2.MakeQuote(
-			ast2.MakeText("Cheese is a dairy product, derived from milk and produced in wide ranges of flavors, textures and forms by coagulation of the milk protein casein."),
+		ast.MakeQuote(
+			ast.MakeText("Cheese is a dairy product, derived from milk and produced in wide ranges of flavors, textures and forms by coagulation of the milk protein casein."),
 		),
-		ast2.MakeTextLine(
-			ast2.MakeStrong(
-				ast2.MakeText("Cheese is "),
-				ast2.MakePositive(
-					ast2.MakeText("very tasty"),
+		ast.MakeTextLine(
+			ast.MakeStrong(
+				ast.MakeText("Cheese is "),
+				ast.MakePositive(
+					ast.MakeText("very tasty"),
 				),
-				ast2.MakeText(" but also quite "),
-				ast2.MakeNegative(
-					ast2.MakeText("smelly"),
+				ast.MakeText(" but also quite "),
+				ast.MakeNegative(
+					ast.MakeText("smelly"),
 				),
-				ast2.MakeText(", "),
-				ast2.MakePositive(
-					ast2.MakeText("good on pizza"),
+				ast.MakeText(", "),
+				ast.MakePositive(
+					ast.MakeText("good on pizza"),
 				),
 			),
 		),
-		ast2.MakeEmptyLine(),
+		ast.MakeEmptyLine(),
 
-		ast2.MakeH2(
-			ast2.MakeText("History"),
+		ast.MakeH2(
+			ast.MakeText("History"),
 		),
-		ast2.MakeTextLine(ast2.MakeText("Who knows.")),
-		ast2.MakeEmptyLine(),
-		ast2.MakeEmptyLine(),
-		ast2.MakeEmptyLine(),
+		ast.MakeTextLine(ast.MakeText("Who knows.")),
+		ast.MakeEmptyLine(),
+		ast.MakeEmptyLine(),
+		ast.MakeEmptyLine(),
 
-		ast2.MakeH2(
-			ast2.MakeText("Types"),
+		ast.MakeH2(
+			ast.MakeText("Types"),
 		),
-		ast2.MakeBulPoint(ast2.MakeText("Chedder")),
-		ast2.MakeBulPoint(ast2.MakeText("Brie")),
-		ast2.MakeBulPoint(ast2.MakeText("Mozzarella")),
-		ast2.MakeBulPoint(ast2.MakeText("Stilton")),
-		ast2.MakeBulPoint(ast2.MakeText("etc")),
-		ast2.MakeEmptyLine(),
+		ast.MakeBulPoint(ast.MakeText("Chedder")),
+		ast.MakeBulPoint(ast.MakeText("Brie")),
+		ast.MakeBulPoint(ast.MakeText("Mozzarella")),
+		ast.MakeBulPoint(ast.MakeText("Stilton")),
+		ast.MakeBulPoint(ast.MakeText("etc")),
+		ast.MakeEmptyLine(),
 
-		ast2.MakeH2(
-			ast2.MakeText("Process"),
+		ast.MakeH2(
+			ast.MakeText("Process"),
 		),
-		ast2.MakeNumPoint(ast2.MakeText("Curdling")),
-		ast2.MakeNumPoint(ast2.MakeText("Curd processing")),
-		ast2.MakeNumPoint(ast2.MakeText("Ripening")),
-		ast2.MakeEmptyLine(),
+		ast.MakeNumPoint(ast.MakeText("Curdling")),
+		ast.MakeNumPoint(ast.MakeText("Curd processing")),
+		ast.MakeNumPoint(ast.MakeText("Ripening")),
+		ast.MakeEmptyLine(),
 
-		ast2.MakeH2(
-			ast2.MakeText("Safety"),
+		ast.MakeH2(
+			ast.MakeText("Safety"),
 		),
-		ast2.MakeH3(
-			ast2.MakeText("Bacteria"),
+		ast.MakeH3(
+			ast.MakeText("Bacteria"),
 		),
-		ast2.MakeTextLine(
-			ast2.MakeText("Milk used should be "),
-			ast2.MakeKeyPhrase(ast2.MakeText("pasteurized")),
-			ast2.MakeText(" to kill infectious diseases"),
+		ast.MakeTextLine(
+			ast.MakeText("Milk used should be "),
+			ast.MakeKeyPhrase(ast.MakeText("pasteurized")),
+			ast.MakeText(" to kill infectious diseases"),
 		),
-		ast2.MakeEmptyLine(),
+		ast.MakeEmptyLine(),
 
-		ast2.MakeH3(
-			ast2.MakeText("Heart disease"),
+		ast.MakeH3(
+			ast.MakeText("Heart disease"),
 		),
-		ast2.MakeTextLine(
-			ast2.MakeNegative(
-				ast2.MakeText("Recommended that cheese consumption be minimised"),
+		ast.MakeTextLine(
+			ast.MakeNegative(
+				ast.MakeText("Recommended that cheese consumption be minimised"),
 			),
 		),
-		ast2.MakeTextLine(
-			ast2.MakeNegative(
-				ast2.MakeText("There isn't any "),
-				ast2.MakeStrong(ast2.MakeText("convincing")),
-				ast2.MakeText(" evidence that cheese lowers heart disease"),
+		ast.MakeTextLine(
+			ast.MakeNegative(
+				ast.MakeText("There isn't any "),
+				ast.MakeStrong(ast.MakeText("convincing")),
+				ast.MakeText(" evidence that cheese lowers heart disease"),
 			),
 		),
-		ast2.MakeEmptyLine(),
+		ast.MakeEmptyLine(),
 
-		ast2.MakeTextLine(
-			ast2.MakeText("Source [2021-02-06]: https://en.wikipedia.org/wiki/Cheese"),
+		ast.MakeTextLine(
+			ast.MakeText("Source [2021-02-06]: https://en.wikipedia.org/wiki/Cheese"),
 		),
-		ast2.MakeEmptyLine(),
+		ast.MakeEmptyLine(),
 	}
 
 	act := ParseAll(in)

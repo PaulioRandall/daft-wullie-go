@@ -5,13 +5,13 @@ package parser
 import (
 	"strings"
 
-	"github.com/PaulioRandall/daft-wullie-go/ast2"
+	"github.com/PaulioRandall/daft-wullie-go/ast"
 	"github.com/PaulioRandall/daft-wullie-go/token"
 )
 
 // ParseLine is function for recursively parsing scanned text lines,
 // represented by sets of lexemes, into ASTs.
-type ParseLine func() (ast2.Node, ParseLine)
+type ParseLine func() (ast.Node, ParseLine)
 
 // NewParser creates an initial ParseLine function for parsing 'lines'.
 func NewParser(lines [][]token.Lexeme) ParseLine {
@@ -24,11 +24,11 @@ func NewParser(lines [][]token.Lexeme) ParseLine {
 
 // ParseAll scans all 'lines' into a slice of ASTs, each representing a line of
 // annotated text.
-func ParseAll(lines [][]token.Lexeme) []ast2.Node {
+func ParseAll(lines [][]token.Lexeme) []ast.Node {
 	var (
 		f = NewParser(lines)
-		r = []ast2.Node{}
-		n ast2.Node
+		r = []ast.Node{}
+		n ast.Node
 	)
 	for f != nil {
 		n, f = f()
@@ -38,7 +38,7 @@ func ParseAll(lines [][]token.Lexeme) []ast2.Node {
 }
 
 func parser(r *lineReader) ParseLine {
-	return func() (ast2.Node, ParseLine) {
+	return func() (ast.Node, ParseLine) {
 		lr := r.nextLine()
 		ns := parseLine(lr)
 		if r.more() {
@@ -51,37 +51,37 @@ func parser(r *lineReader) ParseLine {
 // LINE := *Nothing/empty*
 // LINE := (H1 | H2 | H3 | QUOTE) TEXT_LINE
 // LINE := [BUL_POINT | NUM_POINT] NODE_LINE
-func parseLine(r *tokenReader) ast2.Node {
+func parseLine(r *tokenReader) ast.Node {
 	switch {
 	case !r.more():
-		return ast2.MakeEmptyLine()
+		return ast.MakeEmptyLine()
 
 	case r.accept(token.H1):
-		return ast2.MakeH1(parseNodes(r)...)
+		return ast.MakeH1(parseNodes(r)...)
 
 	case r.accept(token.H2):
-		return ast2.MakeH2(parseNodes(r)...)
+		return ast.MakeH2(parseNodes(r)...)
 
 	case r.accept(token.H3):
-		return ast2.MakeH3(parseNodes(r)...)
+		return ast.MakeH3(parseNodes(r)...)
 
 	case r.accept(token.Quote):
-		return ast2.MakeQuote(parseNodes(r)...)
+		return ast.MakeQuote(parseNodes(r)...)
 
 	case r.accept(token.BulPoint):
-		return ast2.MakeBulPoint(parseNodes(r)...)
+		return ast.MakeBulPoint(parseNodes(r)...)
 
 	case r.accept(token.NumPoint):
-		return ast2.MakeNumPoint(parseNodes(r)...)
+		return ast.MakeNumPoint(parseNodes(r)...)
 
 	default:
-		return ast2.MakeTextLine(parseNodes(r)...)
+		return ast.MakeTextLine(parseNodes(r)...)
 	}
 }
 
 // NODE_LINE := {NODE} *EOF*
-func parseNodes(r *tokenReader) []ast2.Node {
-	ns := []ast2.Node{}
+func parseNodes(r *tokenReader) []ast.Node {
+	ns := []ast.Node{}
 	for r.more() {
 		n := parseNode(r)
 		ns = append(ns, n)
@@ -95,25 +95,25 @@ func parseNodes(r *tokenReader) []ast2.Node {
 // NODE := STRONG     {NODE} [STRONG]
 // NODE := SNIPPET    {NODE} [SNIPPET]
 // NODE := TEXT_PHRASE
-func parseNode(r *tokenReader) ast2.Node {
+func parseNode(r *tokenReader) ast.Node {
 	switch {
 	case r.accept(token.KeyPhrase):
-		return ast2.MakeKeyPhrase(parseNodesUntil(r, token.KeyPhrase)...)
+		return ast.MakeKeyPhrase(parseNodesUntil(r, token.KeyPhrase)...)
 
 	case r.accept(token.Positive):
-		return ast2.MakePositive(parseNodesUntil(r, token.Positive)...)
+		return ast.MakePositive(parseNodesUntil(r, token.Positive)...)
 
 	case r.accept(token.Negative):
-		return ast2.MakeNegative(parseNodesUntil(r, token.Negative)...)
+		return ast.MakeNegative(parseNodesUntil(r, token.Negative)...)
 
 	case r.accept(token.Strong):
-		return ast2.MakeStrong(parseNodesUntil(r, token.Strong)...)
+		return ast.MakeStrong(parseNodesUntil(r, token.Strong)...)
 
 	case r.accept(token.Snippet):
-		return ast2.MakeSnippet(parseTextUntil(r, token.Snippet))
+		return ast.MakeSnippet(parseTextUntil(r, token.Snippet))
 
 	default:
-		return ast2.MakeText(parseText(r))
+		return ast.MakeText(parseText(r))
 	}
 }
 
@@ -124,8 +124,8 @@ func parseNode(r *tokenReader) ast2.Node {
 // Note: nesting may occur but only when the parent and child nodes are of
 // different types. E.g. no point having strong text decoration within strong
 // text decoration unless some intermidiate node negates the affect.
-func parseNodesUntil(r *tokenReader, delim token.Token) []ast2.Node {
-	ns := []ast2.Node{}
+func parseNodesUntil(r *tokenReader, delim token.Token) []ast.Node {
+	ns := []ast.Node{}
 	for r.more() && !r.accept(delim) {
 		n := parseNode(r)
 		ns = append(ns, n)

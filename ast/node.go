@@ -1,6 +1,6 @@
 // Package ast defines node and its types that may appear in an abstract syntax
 // tree of a line of text.
-package ast2
+package ast
 
 import (
 	"strings"
@@ -10,6 +10,11 @@ type (
 	Node interface {
 		Type() NodeType
 		Text() string
+	}
+
+	Parent interface {
+		Node
+		Nodes() []Node
 	}
 
 	TextNode struct {
