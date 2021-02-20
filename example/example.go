@@ -16,7 +16,7 @@ func main() {
 ### Heading 3
 
 . Bullet point
-1. Numbered point
+! Numbered point
 > Quote with a +positive+ point
 
 There is only text here as the control symbol '\*' has been escaped
