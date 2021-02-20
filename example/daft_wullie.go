@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/PaulioRandall/daft-wullie-go/node"
+	"github.com/PaulioRandall/daft-wullie-go/ast"
 	"github.com/PaulioRandall/daft-wullie-go/parser"
 	"github.com/PaulioRandall/daft-wullie-go/scanner"
 )
@@ -31,19 +31,19 @@ func main() {
 	tks := scanner.ScanAll(example)
 	notes := parser.ParseAll(tks)
 
-	f := func(n node.Node, lineNum, depth, orderIdx int) {
+	f := func(n ast.Node, lineNum, depth, orderIdx int) {
 		fmt.Print(strings.Repeat("  ", depth))
 		switch n.(type) {
-		case node.EmptyLine:
+		case ast.EmptyLine:
 			// Ignore
-		case node.Phrase:
+		case ast.Phrase:
 			fmt.Println(n.Name() + `("` + strings.TrimSpace(n.Text()) + `")`)
-		case node.Quote:
+		case ast.Quote:
 			fmt.Println(n.Name(), `"`+strings.TrimSpace(n.Text())+`"`)
 		default:
 			fmt.Println(n.Name())
 		}
 	}
 
-	node.DescendNotes(notes, f)
+	ast.DescendNotes(notes, f)
 }

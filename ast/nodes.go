@@ -1,25 +1,25 @@
-// ast package defines the node types that may appear in an abstract syntax
+// Package ast defines the node types that may appear in an abstract syntax
 // tree of a line of text.
-//
-// There are two types of node. A line node represents the root of a tree while
-// phrase nodes are the nodes nested within line nodes.
-package node
+package ast
 
 import (
 	"strings"
 )
 
 type (
+	// Node represents node in an AST.
 	Node interface {
 		Text() string
 		Name() string
 	}
 
+	// LineNode represents the root of an AST.
 	LineNode interface {
 		Node
 		lineNode()
 	}
 
+	// PhraseNode represents any node not at the root of an AST.
 	PhraseNode interface {
 		Node
 		phraseNode()
@@ -114,9 +114,7 @@ func (n Strong) Name() string    { return "Strong" }
 
 func _enforceTypes() {
 
-	type par interface {
-		Children() []Node
-	}
+	type par interface{ Children() []Node }
 
 	var (
 		ln LineNode
@@ -125,19 +123,18 @@ func _enforceTypes() {
 	)
 
 	ln = EmptyLine{}
+	pn = Phrase{}
+	ln = Snippet{}
 
 	ln, p = H1{}, H1{}
 	ln, p = H2{}, H2{}
 	ln, p = H3{}, H3{}
-
-	ln = Snippet{}
 
 	ln, p = TextLine{}, TextLine{}
 	ln, p = BulPoint{}, BulPoint{}
 	ln, p = NumPoint{}, NumPoint{}
 	ln, p = Quote{}, Quote{}
 
-	pn = Phrase{}
 	pn, p = KeyPhrase{}, KeyPhrase{}
 	pn, p = Positive{}, Positive{}
 	pn, p = Negative{}, Negative{}

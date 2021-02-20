@@ -1,3 +1,5 @@
+// Package scanner provides scanning of text into lexemes which includes their
+// evaluated token type.
 package scanner
 
 import (
