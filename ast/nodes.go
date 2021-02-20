@@ -29,7 +29,7 @@ type (
 	Phrase    struct{ Txt string }
 	Snippet   struct{ Txt string }
 
-	Parent struct{ Nodes []Node }
+	Parent struct{ Nodes []PhraseNode }
 
 	H1        struct{ Parent }
 	H2        struct{ Parent }
@@ -48,28 +48,27 @@ func MakeEmptyLine() EmptyLine        { return EmptyLine{} }
 func MakePhrase(text string) Phrase   { return Phrase{text} }
 func MakeSnippet(text string) Snippet { return Snippet{text} }
 
-func MakeH1(nodes ...Node) H1             { return H1{makeParent(nodes)} }
-func MakeH2(nodes ...Node) H2             { return H2{makeParent(nodes)} }
-func MakeH3(nodes ...Node) H3             { return H3{makeParent(nodes)} }
-func MakeTextLine(nodes ...Node) TextLine { return TextLine{makeParent(nodes)} }
-func MakeBulPoint(nodes ...Node) BulPoint { return BulPoint{makeParent(nodes)} }
-func MakeNumPoint(nodes ...Node) NumPoint { return NumPoint{makeParent(nodes)} }
-func MakeQuote(nodes ...Node) Quote       { return Quote{makeParent(nodes)} }
+func MakeH1(nodes ...PhraseNode) H1             { return H1{makeParent(nodes)} }
+func MakeH2(nodes ...PhraseNode) H2             { return H2{makeParent(nodes)} }
+func MakeH3(nodes ...PhraseNode) H3             { return H3{makeParent(nodes)} }
+func MakeTextLine(nodes ...PhraseNode) TextLine { return TextLine{makeParent(nodes)} }
+func MakeBulPoint(nodes ...PhraseNode) BulPoint { return BulPoint{makeParent(nodes)} }
+func MakeNumPoint(nodes ...PhraseNode) NumPoint { return NumPoint{makeParent(nodes)} }
+func MakeQuote(nodes ...PhraseNode) Quote       { return Quote{makeParent(nodes)} }
 
-func MakeKeyPhrase(nodes ...Node) KeyPhrase { return KeyPhrase{makeParent(nodes)} }
-func MakePositive(nodes ...Node) Positive   { return Positive{makeParent(nodes)} }
-func MakeNegative(nodes ...Node) Negative   { return Negative{makeParent(nodes)} }
-func MakeStrong(nodes ...Node) Strong       { return Strong{makeParent(nodes)} }
+func MakeKeyPhrase(nodes ...PhraseNode) KeyPhrase { return KeyPhrase{makeParent(nodes)} }
+func MakePositive(nodes ...PhraseNode) Positive   { return Positive{makeParent(nodes)} }
+func MakeNegative(nodes ...PhraseNode) Negative   { return Negative{makeParent(nodes)} }
+func MakeStrong(nodes ...PhraseNode) Strong       { return Strong{makeParent(nodes)} }
 
-func makeParent(nodes []Node) Parent {
+func makeParent(nodes []PhraseNode) Parent {
 	if nodes == nil {
-		return Parent{Nodes: []Node{}}
+		return Parent{Nodes: []PhraseNode{}}
 	}
 	return Parent{Nodes: nodes}
 }
 
 func (n EmptyLine) lineNode() {}
-func (n Snippet) lineNode()   {}
 func (n H1) lineNode()        {}
 func (n H2) lineNode()        {}
 func (n H3) lineNode()        {}
@@ -78,6 +77,7 @@ func (n BulPoint) lineNode()  {}
 func (n NumPoint) lineNode()  {}
 func (n Quote) lineNode()     {}
 
+func (n Snippet) phraseNode()   {}
 func (n Phrase) phraseNode()    {}
 func (n KeyPhrase) phraseNode() {}
 func (n Positive) phraseNode()  {}
@@ -95,7 +95,7 @@ func (n Parent) Text() string {
 	return sb.String()
 }
 
-func (n Parent) Children() []Node { return n.Nodes }
+func (n Parent) Children() []PhraseNode { return n.Nodes }
 
 func (n EmptyLine) Name() string { return "EmptyLine" }
 func (n Phrase) Name() string    { return "Phrase" }
@@ -114,7 +114,7 @@ func (n Strong) Name() string    { return "Strong" }
 
 func _enforceTypes() {
 
-	type par interface{ Children() []Node }
+	type par interface{ Children() []PhraseNode }
 
 	var (
 		ln LineNode
@@ -124,7 +124,7 @@ func _enforceTypes() {
 
 	ln = EmptyLine{}
 	pn = Phrase{}
-	ln = Snippet{}
+	pn = Snippet{}
 
 	ln, p = H1{}, H1{}
 	ln, p = H2{}, H2{}

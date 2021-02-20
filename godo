@@ -5,7 +5,7 @@ BUILD_DIR="build"
 
 EXE_NAME="daft-wullie"
 EXE_FILE="$BUILD_DIR/$EXE_NAME"
-GO_MAIN="example/daft_wullie.go"
+GO_MAIN="example/example.go"
 
 BUILD_FLAGS=""
 #BUILD_FLAGS=-gcflags -m -ldflags "-s -w"

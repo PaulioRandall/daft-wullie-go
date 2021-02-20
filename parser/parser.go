@@ -57,33 +57,33 @@ func parseLine(r *tokenReader) ast.LineNode {
 		return ast.MakeEmptyLine()
 
 	case r.accept(token.H1):
-		return ast.MakeH1(parseNodeLine(r)...)
+		return ast.MakeH1(parsePhraseNodes(r)...)
 
 	case r.accept(token.H2):
-		return ast.MakeH2(parseNodeLine(r)...)
+		return ast.MakeH2(parsePhraseNodes(r)...)
 
 	case r.accept(token.H3):
-		return ast.MakeH3(parseNodeLine(r)...)
+		return ast.MakeH3(parsePhraseNodes(r)...)
 
 	case r.accept(token.Quote):
-		return ast.MakeQuote(parseNodeLine(r)...)
+		return ast.MakeQuote(parsePhraseNodes(r)...)
 
 	case r.accept(token.BulPoint):
-		return ast.MakeBulPoint(parseNodeLine(r)...)
+		return ast.MakeBulPoint(parsePhraseNodes(r)...)
 
 	case r.accept(token.NumPoint):
-		return ast.MakeNumPoint(parseNodeLine(r)...)
+		return ast.MakeNumPoint(parsePhraseNodes(r)...)
 
 	default:
-		return ast.MakeTextLine(parseNodeLine(r)...)
+		return ast.MakeTextLine(parsePhraseNodes(r)...)
 	}
 }
 
 // NODE_LINE := {NODE} *EOF*
-func parseNodeLine(r *tokenReader) []ast.Node {
-	ns := []ast.Node{}
+func parsePhraseNodes(r *tokenReader) []ast.PhraseNode {
+	ns := []ast.PhraseNode{}
 	for r.more() {
-		n := parseNode(r)
+		n := parsePhraseNode(r)
 		ns = append(ns, n)
 	}
 	return ns
@@ -95,19 +95,19 @@ func parseNodeLine(r *tokenReader) []ast.Node {
 // NODE := STRONG     {NODE} [STRONG]
 // NODE := SNIPPET    {NODE} [SNIPPET]
 // NODE := TEXT_PHRASE
-func parseNode(r *tokenReader) ast.Node {
+func parsePhraseNode(r *tokenReader) ast.PhraseNode {
 	switch {
 	case r.accept(token.KeyPhrase):
-		return ast.MakeKeyPhrase(parseNodesUntil(r, token.KeyPhrase)...)
+		return ast.MakeKeyPhrase(parsePhraseNodesUntil(r, token.KeyPhrase)...)
 
 	case r.accept(token.Positive):
-		return ast.MakePositive(parseNodesUntil(r, token.Positive)...)
+		return ast.MakePositive(parsePhraseNodesUntil(r, token.Positive)...)
 
 	case r.accept(token.Negative):
-		return ast.MakeNegative(parseNodesUntil(r, token.Negative)...)
+		return ast.MakeNegative(parsePhraseNodesUntil(r, token.Negative)...)
 
 	case r.accept(token.Strong):
-		return ast.MakeStrong(parseNodesUntil(r, token.Strong)...)
+		return ast.MakeStrong(parsePhraseNodesUntil(r, token.Strong)...)
 
 	case r.accept(token.Snippet):
 		return ast.MakeSnippet(parseTextUntil(r, token.Snippet))
@@ -117,17 +117,17 @@ func parseNode(r *tokenReader) ast.Node {
 	}
 }
 
-// parseNodesUntil parses child nodes until the end of the line or the
+// parsePhraseNodesUntil parses child nodes until the end of the line or the
 // specified 'delim' is encountered. Upon which, the delim is read and
 // discarded before the children are returned.
 //
 // Note: nesting may occur but only when the parent and child nodes are of
 // different types. E.g. no point having strong text decoration within strong
 // text decoration unless some intermidiate node negates the affect.
-func parseNodesUntil(r *tokenReader, delim token.Token) []ast.Node {
-	ns := []ast.Node{}
+func parsePhraseNodesUntil(r *tokenReader, delim token.Token) []ast.PhraseNode {
+	ns := []ast.PhraseNode{}
 	for r.more() && !r.accept(delim) {
-		n := parseNode(r)
+		n := parsePhraseNode(r)
 		ns = append(ns, n)
 	}
 	return ns

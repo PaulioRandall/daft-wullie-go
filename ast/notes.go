@@ -40,15 +40,15 @@ func DecendNode(n Node, f DescendFunc) {
 
 func descendNode(n Node, lineNum, depth, orderIdx int, f DescendFunc) {
 	type par interface {
-		Children() []Node
+		Children() []PhraseNode
 	}
 	f(n, lineNum, depth, orderIdx)
 	if v, ok := n.(par); ok {
-		descendNodes(v.Children(), lineNum, depth+1, orderIdx, f)
+		descendPhraseNodes(v.Children(), lineNum, depth+1, orderIdx, f)
 	}
 }
 
-func descendNodes(ns []Node, lineNum, depth, orderIdx int, f DescendFunc) {
+func descendPhraseNodes(ns []PhraseNode, lineNum, depth, orderIdx int, f DescendFunc) {
 	for i, n := range ns {
 		descendNode(n, lineNum, depth, i, f)
 	}
@@ -75,16 +75,12 @@ func FmtString(notes Notes) string {
 
 func fmtNodeString(sb *strings.Builder, n Node) {
 
-	hubString := func(ns []Node) {
-		for _, sub := range ns {
-			fmtNodeString(sb, sub)
-		}
-	}
-
 	writeGroup := func(prefix string, v interface{}, suffix string) {
 		sb.WriteString(prefix)
 		if ns, ok := v.(Parent); ok {
-			hubString(ns.Children())
+			for _, sub := range ns.Children() {
+				fmtNodeString(sb, sub)
+			}
 		} else {
 			s := v.(Node).Text()
 			sb.WriteString(s)
