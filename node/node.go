@@ -1,3 +1,8 @@
+// ast package defines the node types that may appear in an abstract syntax
+// tree of a line of text.
+//
+// There are two types of node. A line node represents the root of a tree while
+// phrase nodes are the nodes nested within line nodes.
 package node
 
 import (
@@ -5,43 +10,48 @@ import (
 )
 
 type (
-	// Node is satisfied by all concrete node types. It represents a single
-	// annotation in a tree of text annotations.
 	Node interface {
-		Text() string // Text joins all of the annotated text
-		Name() string // Name returns the name of the node type
+		Text() string
+		Name() string
 	}
 
-	// Parent is a node that contains other nodes.
+	LineNode interface {
+		Node
+		lineNode()
+	}
+
+	PhraseNode interface {
+		Node
+		phraseNode()
+	}
+
+	EmptyLine struct{}
+	Phrase    struct{ Txt string }
+	Snippet   struct{ Txt string }
+
 	Parent struct{ Nodes []Node }
 
-	Phrase    struct{ Txt string }
-	EmptyLine struct{}
-
-	Snippet struct{ Txt string }
-
-	H1       struct{ Parent }
-	H2       struct{ Parent }
-	H3       struct{ Parent }
-	TextLine struct{ Parent }
-	BulPoint struct{ Parent }
-	NumPoint struct{ Parent }
-	Quote    struct{ Parent }
-
+	H1        struct{ Parent }
+	H2        struct{ Parent }
+	H3        struct{ Parent }
+	BulPoint  struct{ Parent }
+	NumPoint  struct{ Parent }
+	Quote     struct{ Parent }
+	TextLine  struct{ Parent }
 	KeyPhrase struct{ Parent }
 	Positive  struct{ Parent }
 	Negative  struct{ Parent }
 	Strong    struct{ Parent }
 )
 
-func MakePhrase(text string) Phrase   { return Phrase{Txt: text} }
 func MakeEmptyLine() EmptyLine        { return EmptyLine{} }
-func MakeSnippet(text string) Snippet { return Snippet{Txt: text} }
+func MakePhrase(text string) Phrase   { return Phrase{text} }
+func MakeSnippet(text string) Snippet { return Snippet{text} }
 
 func MakeH1(nodes ...Node) H1             { return H1{makeParent(nodes)} }
 func MakeH2(nodes ...Node) H2             { return H2{makeParent(nodes)} }
 func MakeH3(nodes ...Node) H3             { return H3{makeParent(nodes)} }
-func MakeFmtLine(nodes ...Node) TextLine  { return TextLine{makeParent(nodes)} }
+func MakeTextLine(nodes ...Node) TextLine { return TextLine{makeParent(nodes)} }
 func MakeBulPoint(nodes ...Node) BulPoint { return BulPoint{makeParent(nodes)} }
 func MakeNumPoint(nodes ...Node) NumPoint { return NumPoint{makeParent(nodes)} }
 func MakeQuote(nodes ...Node) Quote       { return Quote{makeParent(nodes)} }
@@ -58,8 +68,24 @@ func makeParent(nodes []Node) Parent {
 	return Parent{Nodes: nodes}
 }
 
-func (n Phrase) Text() string    { return n.Txt }
+func (n EmptyLine) lineNode() {}
+func (n Snippet) lineNode()   {}
+func (n H1) lineNode()        {}
+func (n H2) lineNode()        {}
+func (n H3) lineNode()        {}
+func (n TextLine) lineNode()  {}
+func (n BulPoint) lineNode()  {}
+func (n NumPoint) lineNode()  {}
+func (n Quote) lineNode()     {}
+
+func (n Phrase) phraseNode()    {}
+func (n KeyPhrase) phraseNode() {}
+func (n Positive) phraseNode()  {}
+func (n Negative) phraseNode()  {}
+func (n Strong) phraseNode()    {}
+
 func (n EmptyLine) Text() string { return "\n" }
+func (n Phrase) Text() string    { return n.Txt }
 func (n Snippet) Text() string   { return n.Txt }
 func (n Parent) Text() string {
 	sb := strings.Builder{}
@@ -71,8 +97,8 @@ func (n Parent) Text() string {
 
 func (n Parent) Children() []Node { return n.Nodes }
 
-func (n Phrase) Name() string    { return "Phrase" }
 func (n EmptyLine) Name() string { return "EmptyLine" }
+func (n Phrase) Name() string    { return "Phrase" }
 func (n Snippet) Name() string   { return "Snippet" }
 func (n H1) Name() string        { return "H1" }
 func (n H2) Name() string        { return "H2" }
@@ -93,28 +119,29 @@ func _enforceTypes() {
 	}
 
 	var (
-		n Node
-		p par
+		ln LineNode
+		pn PhraseNode
+		p  par
 	)
 
-	n = Phrase{}
-	n = EmptyLine{}
+	ln = EmptyLine{}
 
-	n, p = H1{}, H1{}
-	n, p = H2{}, H2{}
-	n, p = H3{}, H3{}
+	ln, p = H1{}, H1{}
+	ln, p = H2{}, H2{}
+	ln, p = H3{}, H3{}
 
-	n = Snippet{}
+	ln = Snippet{}
 
-	n, p = TextLine{}, TextLine{}
-	n, p = BulPoint{}, BulPoint{}
-	n, p = NumPoint{}, NumPoint{}
-	n, p = Quote{}, Quote{}
+	ln, p = TextLine{}, TextLine{}
+	ln, p = BulPoint{}, BulPoint{}
+	ln, p = NumPoint{}, NumPoint{}
+	ln, p = Quote{}, Quote{}
 
-	n, p = KeyPhrase{}, KeyPhrase{}
-	n, p = Positive{}, Positive{}
-	n, p = Negative{}, Negative{}
-	n, p = Strong{}, Strong{}
+	pn = Phrase{}
+	pn, p = KeyPhrase{}, KeyPhrase{}
+	pn, p = Positive{}, Positive{}
+	pn, p = Negative{}, Negative{}
+	pn, p = Strong{}, Strong{}
 
-	_, _ = n, p
+	_, _, _ = ln, pn, p
 }

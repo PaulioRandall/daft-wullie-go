@@ -5,13 +5,13 @@ import (
 )
 
 type (
-	Notes       []Node
+	Notes       []LineNode
 	DescendFunc func(n Node, lineNum, depth, orderIdx int)
 )
 
 func RemoveExtraLines(notes Notes) Notes {
 
-	r := []Node{}
+	r := []LineNode{}
 	prevEmpty := false
 
 	for _, l := range notes {

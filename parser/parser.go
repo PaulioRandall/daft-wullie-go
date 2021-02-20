@@ -9,7 +9,7 @@ import (
 
 // ParseLine is function for recursively parsing scanned text lines,
 // represented by sets of lexemes, into ASTs.
-type ParseLine func() (node.Node, ParseLine)
+type ParseLine func() (node.LineNode, ParseLine)
 
 // NewParser creates an initial ParseLine function for parsing 'lines'.
 func NewParser(lines [][]token.Lexeme) ParseLine {
@@ -22,11 +22,11 @@ func NewParser(lines [][]token.Lexeme) ParseLine {
 
 // ParseAll scans all 'lines' into a slice of ASTs, each representing a line of
 // annotated text.
-func ParseAll(lines [][]token.Lexeme) []node.Node {
+func ParseAll(lines [][]token.Lexeme) []node.LineNode {
 	var (
 		f = NewParser(lines)
-		r = []node.Node{}
-		n node.Node
+		r = []node.LineNode{}
+		n node.LineNode
 	)
 	for f != nil {
 		n, f = f()
@@ -36,7 +36,7 @@ func ParseAll(lines [][]token.Lexeme) []node.Node {
 }
 
 func parser(r *lineReader) ParseLine {
-	return func() (node.Node, ParseLine) {
+	return func() (node.LineNode, ParseLine) {
 		lr := r.nextLine()
 		ns := parseLine(lr)
 		if r.more() {
@@ -49,7 +49,7 @@ func parser(r *lineReader) ParseLine {
 // LINE := *Nothing/empty*
 // LINE := (H1 | H2 | H3 | QUOTE) TEXT_LINE
 // LINE := [BUL_POINT | NUM_POINT] NODE_LINE
-func parseLine(r *tokenReader) node.Node {
+func parseLine(r *tokenReader) node.LineNode {
 	switch {
 	case !r.more():
 		return node.MakeEmptyLine()
@@ -73,7 +73,7 @@ func parseLine(r *tokenReader) node.Node {
 		return node.MakeNumPoint(parseNodeLine(r)...)
 
 	default:
-		return node.MakeFmtLine(parseNodeLine(r)...)
+		return node.MakeTextLine(parseNodeLine(r)...)
 	}
 }
 

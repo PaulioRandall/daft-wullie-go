@@ -21,7 +21,7 @@ func TestHeadings_1(t *testing.T) {
 		[]token.Lexeme{lex(token.H3, "###"), lex(token.Text, "3")},
 	}
 
-	exp := []node.Node{
+	exp := []node.LineNode{
 		node.MakeH1(node.MakePhrase("1")),
 		node.MakeH2(node.MakePhrase("2")),
 		node.MakeH3(node.MakePhrase("3")),
@@ -40,7 +40,7 @@ func TestQuote_1(t *testing.T) {
 		},
 	}
 
-	exp := []node.Node{
+	exp := []node.LineNode{
 		node.MakeQuote(
 			node.MakePhrase("The Turtle Moves!"),
 		),
@@ -59,7 +59,7 @@ func TestBulPoint_1(t *testing.T) {
 		},
 	}
 
-	exp := []node.Node{
+	exp := []node.LineNode{
 		node.MakeBulPoint(
 			node.MakePhrase("The Turtle Moves!"),
 		),
@@ -78,7 +78,7 @@ func TestNumPoint_1(t *testing.T) {
 		},
 	}
 
-	exp := []node.Node{
+	exp := []node.LineNode{
 		node.MakeNumPoint(
 			node.MakePhrase("The Turtle Moves!"),
 		),
@@ -94,18 +94,18 @@ func TestNestableNodes_1(t *testing.T) {
 		return []token.Lexeme{lex(tk, v), lex(tk, v)}
 	}
 
-	doTest := func(in []token.Lexeme, exp node.Node) {
+	doTest := func(in []token.Lexeme, exp node.LineNode) {
 		input := [][]token.Lexeme{in}
-		expect := []node.Node{exp}
+		expect := []node.LineNode{exp}
 		act := ParseAll(input)
 		require.Equal(t, expect, act)
 	}
 
-	doTest(lxs(token.KeyPhrase, "**"), node.MakeFmtLine(node.MakeKeyPhrase()))
-	doTest(lxs(token.Positive, "+"), node.MakeFmtLine(node.MakePositive()))
-	doTest(lxs(token.Negative, "-"), node.MakeFmtLine(node.MakeNegative()))
-	doTest(lxs(token.Strong, "*"), node.MakeFmtLine(node.MakeStrong()))
-	doTest(lxs(token.Snippet, "`"), node.MakeFmtLine(node.MakeSnippet("")))
+	doTest(lxs(token.KeyPhrase, "**"), node.MakeTextLine(node.MakeKeyPhrase()))
+	doTest(lxs(token.Positive, "+"), node.MakeTextLine(node.MakePositive()))
+	doTest(lxs(token.Negative, "-"), node.MakeTextLine(node.MakeNegative()))
+	doTest(lxs(token.Strong, "*"), node.MakeTextLine(node.MakeStrong()))
+	doTest(lxs(token.Snippet, "`"), node.MakeTextLine(node.MakeSnippet("")))
 }
 
 func TestScript_1(t *testing.T) {
@@ -219,14 +219,14 @@ func TestScript_1(t *testing.T) {
 		[]token.Lexeme{},
 	}
 
-	exp := []node.Node{ // Lines
+	exp := []node.LineNode{ // Lines
 		node.MakeH1(
 			node.MakePhrase("Cheese"),
 		),
 		node.MakeQuote(
 			node.MakePhrase("Cheese is a dairy product, derived from milk and produced in wide ranges of flavors, textures and forms by coagulation of the milk protein casein."),
 		),
-		node.MakeFmtLine(
+		node.MakeTextLine(
 			node.MakeStrong(
 				node.MakePhrase("Cheese is "),
 				node.MakePositive(
@@ -247,7 +247,7 @@ func TestScript_1(t *testing.T) {
 		node.MakeH2(
 			node.MakePhrase("History"),
 		),
-		node.MakeFmtLine(node.MakePhrase("Who knows.")),
+		node.MakeTextLine(node.MakePhrase("Who knows.")),
 		node.MakeEmptyLine(),
 		node.MakeEmptyLine(),
 		node.MakeEmptyLine(),
@@ -276,7 +276,7 @@ func TestScript_1(t *testing.T) {
 		node.MakeH3(
 			node.MakePhrase("Bacteria"),
 		),
-		node.MakeFmtLine(
+		node.MakeTextLine(
 			node.MakePhrase("Milk used should be "),
 			node.MakeKeyPhrase(node.MakePhrase("pasteurized")),
 			node.MakePhrase(" to kill infectious diseases"),
@@ -286,12 +286,12 @@ func TestScript_1(t *testing.T) {
 		node.MakeH3(
 			node.MakePhrase("Heart disease"),
 		),
-		node.MakeFmtLine(
+		node.MakeTextLine(
 			node.MakeNegative(
 				node.MakePhrase("Recommended that cheese consumption be minimised"),
 			),
 		),
-		node.MakeFmtLine(
+		node.MakeTextLine(
 			node.MakeNegative(
 				node.MakePhrase("There isn't any "),
 				node.MakeStrong(node.MakePhrase("convincing")),
@@ -300,7 +300,7 @@ func TestScript_1(t *testing.T) {
 		),
 		node.MakeEmptyLine(),
 
-		node.MakeFmtLine(
+		node.MakeTextLine(
 			node.MakePhrase("Source [2021-02-06]: https://en.wikipedia.org/wiki/Cheese"),
 		),
 		node.MakeEmptyLine(),
