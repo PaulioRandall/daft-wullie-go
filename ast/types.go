@@ -7,7 +7,6 @@ const (
 	_lineNodeTypes
 	H1
 	H2
-	H3
 	BulPoint
 	NumPoint
 	Quote
@@ -36,8 +35,6 @@ func (nt NodeType) String() string {
 		return "H1"
 	case H2:
 		return "H2"
-	case H3:
-		return "H3"
 	case BulPoint:
 		return "BulPoint"
 	case NumPoint:

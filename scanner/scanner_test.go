@@ -79,20 +79,6 @@ func TestSubTopic_1(t *testing.T) {
 	require.Equal(t, exp, act)
 }
 
-func TestHeading_1(t *testing.T) {
-
-	in := `### Heading`
-	exp := [][]token.Lexeme{
-		[]token.Lexeme{
-			lex(token.H3, "###"),
-			lex(token.Text, " Heading"),
-		},
-	}
-
-	act := ScanAll(in)
-	require.Equal(t, exp, act)
-}
-
 func TestBulletPoint_1(t *testing.T) {
 
 	in := `. Point`
@@ -181,7 +167,7 @@ func TestLines_1(t *testing.T) {
 	emptyLine := func() []token.Lexeme { return []token.Lexeme{} }
 
 	in := `
-### Trees:
+## Trees:
 
 
 . Burnable -(Wildfires)-
@@ -192,7 +178,7 @@ func TestLines_1(t *testing.T) {
 	exp := [][]token.Lexeme{
 		emptyLine(),
 		line(
-			lex(token.H3, "###"),
+			lex(token.H2, "##"),
 			lex(token.Text, " Trees:"),
 		),
 		emptyLine(),

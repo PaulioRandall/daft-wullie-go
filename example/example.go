@@ -13,7 +13,6 @@ func main() {
 	const example = `
 # Heading 1
 ## Heading 2
-### Heading 3
 
 . Bullet point
 ! Numbered point
@@ -33,11 +32,7 @@ A sentence with a **keyword** in it
 	hCount, pCount, nCount := 0, 0, 0
 	f := func(n ast.Node, lineNum, depth, orderIdx int) {
 		switch n.Type() {
-		case ast.H1:
-			hCount++
-		case ast.H2:
-			hCount++
-		case ast.H3:
+		case ast.H1, ast.H2:
 			hCount++
 		case ast.Positive:
 			pCount++

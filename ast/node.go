@@ -48,7 +48,6 @@ func MakeSnippet(s string) TextNode { return makeTextNode(Snippet, s) }
 
 func MakeH1(ns ...Node) ParentNode       { return makeParentNode(H1, ns) }
 func MakeH2(ns ...Node) ParentNode       { return makeParentNode(H2, ns) }
-func MakeH3(ns ...Node) ParentNode       { return makeParentNode(H3, ns) }
 func MakeBulPoint(ns ...Node) ParentNode { return makeParentNode(BulPoint, ns) }
 func MakeNumPoint(ns ...Node) ParentNode { return makeParentNode(NumPoint, ns) }
 func MakeQuote(ns ...Node) ParentNode    { return makeParentNode(Quote, ns) }

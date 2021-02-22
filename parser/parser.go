@@ -62,9 +62,6 @@ func parseLine(r *tokenReader) ast.Node {
 	case r.accept(token.H2):
 		return ast.MakeH2(parseNodes(r)...)
 
-	case r.accept(token.H3):
-		return ast.MakeH3(parseNodes(r)...)
-
 	case r.accept(token.Quote):
 		return ast.MakeQuote(parseNodes(r)...)
 

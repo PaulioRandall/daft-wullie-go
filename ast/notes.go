@@ -91,8 +91,6 @@ func fmtNodeString(sb *strings.Builder, n Node) {
 		writeGroup("#", n, "")
 	case H2:
 		writeGroup("##", n, "")
-	case H3:
-		writeGroup("###", n, "")
 
 	case BulPoint:
 		writeGroup(".", n, "")

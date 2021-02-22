@@ -18,13 +18,11 @@ func TestHeadings_1(t *testing.T) {
 	in := [][]token.Lexeme{
 		[]token.Lexeme{lex(token.H1, "#"), lex(token.Text, "1")},
 		[]token.Lexeme{lex(token.H2, "##"), lex(token.Text, "2")},
-		[]token.Lexeme{lex(token.H3, "###"), lex(token.Text, "3")},
 	}
 
 	exp := []ast.Node{
 		ast.MakeH1(ast.MakeText("1")),
 		ast.MakeH2(ast.MakeText("2")),
-		ast.MakeH3(ast.MakeText("3")),
 	}
 
 	act := ParseAll(in)
@@ -131,11 +129,10 @@ func TestScript_1(t *testing.T) {
 	// ! Curd processing
 	// ! Ripening
 	//
-	// ## Safety
-	// ### Bacteria
+	// ## Bacteria
 	// Milk used should be **pasteurized** to kill infectious diseases
 	//
-	// ### Heart disease
+	// ## Heart disease
 	// -Recommended that cheese consumption be minimised
 	// -There isn't any *convincing* evidence that cheese lowers heart disease
 	//
@@ -187,8 +184,7 @@ func TestScript_1(t *testing.T) {
 		[]token.Lexeme{lex(token.NumPoint, "!"), lex(token.Text, "Ripening")},
 		[]token.Lexeme{},
 
-		[]token.Lexeme{lex(token.H2, "##"), lex(token.Text, "Safety")},
-		[]token.Lexeme{lex(token.H3, "###"), lex(token.Text, "Bacteria")},
+		[]token.Lexeme{lex(token.H2, "##"), lex(token.Text, "Bacteria")},
 		[]token.Lexeme{
 			lex(token.Text, "Milk used should be "),
 			lex(token.KeyPhrase, "**"),
@@ -198,7 +194,7 @@ func TestScript_1(t *testing.T) {
 		},
 		[]token.Lexeme{},
 
-		[]token.Lexeme{lex(token.H3, "###"), lex(token.Text, "Heart disease")},
+		[]token.Lexeme{lex(token.H2, "##"), lex(token.Text, "Heart disease")},
 		[]token.Lexeme{
 			lex(token.Negative, "-"),
 			lex(token.Text, "Recommended that cheese consumption be minimised"),
@@ -271,9 +267,6 @@ func TestScript_1(t *testing.T) {
 		ast.MakeEmptyLine(),
 
 		ast.MakeH2(
-			ast.MakeText("Safety"),
-		),
-		ast.MakeH3(
 			ast.MakeText("Bacteria"),
 		),
 		ast.MakeTextLine(
@@ -283,7 +276,7 @@ func TestScript_1(t *testing.T) {
 		),
 		ast.MakeEmptyLine(),
 
-		ast.MakeH3(
+		ast.MakeH2(
 			ast.MakeText("Heart disease"),
 		),
 		ast.MakeTextLine(

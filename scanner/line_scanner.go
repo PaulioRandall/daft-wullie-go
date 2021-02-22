@@ -13,9 +13,6 @@ func (ls *lineScanner) scanLine() []token.Lexeme {
 	ls.discardSpace()
 
 	switch {
-	case ls.matchStr("###"):
-		return []token.Lexeme{ls.slice(token.H3, 3), ls.scanTextLine()}
-
 	case ls.matchStr("##"):
 		return []token.Lexeme{ls.slice(token.H2, 2), ls.scanTextLine()}
 

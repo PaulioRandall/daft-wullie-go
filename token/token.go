@@ -16,7 +16,6 @@ const (
 	Text
 	H1
 	H2
-	H3
 	BulPoint
 	NumPoint
 	Quote
@@ -38,16 +37,14 @@ func (tk Token) String() string {
 		return "H1"
 	case H2:
 		return "H2"
-	case H3:
-		return "H3"
 
 	case BulPoint:
 		return "BulPoint"
 	case NumPoint:
 		return "NumPoint"
-	case Quote:
-		return "Quote"
 
+	case Snippet:
+		return "Snippet"
 	case Escape:
 		return "Escape"
 
@@ -59,8 +56,8 @@ func (tk Token) String() string {
 		return "Negative"
 	case Strong:
 		return "Strong"
-	case Snippet:
-		return "Snippet"
+	case Quote:
+		return "Quote"
 
 	default:
 		return "Undefined"
