@@ -11,8 +11,8 @@ import (
 func main() {
 
 	const example = `
-# Heading 1
-## Heading 2
+# Topic
+## Sub Topic
 
 . Bullet point
 ! Numbered point
@@ -32,7 +32,7 @@ A sentence with a **keyword** in it
 	hCount, pCount, nCount := 0, 0, 0
 	f := func(n ast.Node, lineNum, depth, orderIdx int) {
 		switch n.Type() {
-		case ast.H1, ast.H2:
+		case ast.Topic, ast.SubTopic:
 			hCount++
 		case ast.Positive:
 			pCount++
@@ -49,7 +49,7 @@ A sentence with a **keyword** in it
 	fmt.Println("```")
 	fmt.Println()
 	fmt.Println("The text above contains:")
-	fmt.Println(hCount, "header lines (any kind)")
+	fmt.Println(hCount, "Topic & sub topic lines")
 	fmt.Println(pCount, "positive points")
 	fmt.Println(nCount, "negative points")
 }

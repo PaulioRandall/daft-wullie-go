@@ -46,8 +46,8 @@ func MakeEmptyLine() TextNode       { return makeTextNode(EmptyLine, "") }
 func MakeText(s string) TextNode    { return makeTextNode(Text, s) }
 func MakeSnippet(s string) TextNode { return makeTextNode(Snippet, s) }
 
-func MakeH1(ns ...Node) ParentNode       { return makeParentNode(H1, ns) }
-func MakeH2(ns ...Node) ParentNode       { return makeParentNode(H2, ns) }
+func MakeTopic(ns ...Node) ParentNode    { return makeParentNode(Topic, ns) }
+func MakeSubTopic(ns ...Node) ParentNode { return makeParentNode(SubTopic, ns) }
 func MakeBulPoint(ns ...Node) ParentNode { return makeParentNode(BulPoint, ns) }
 func MakeNumPoint(ns ...Node) ParentNode { return makeParentNode(NumPoint, ns) }
 func MakeQuote(ns ...Node) ParentNode    { return makeParentNode(Quote, ns) }

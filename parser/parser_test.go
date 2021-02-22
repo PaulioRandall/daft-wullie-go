@@ -16,13 +16,13 @@ func lex(tk token.Token, val string) token.Lexeme {
 func TestHeadings_1(t *testing.T) {
 
 	in := [][]token.Lexeme{
-		[]token.Lexeme{lex(token.H1, "#"), lex(token.Text, "1")},
-		[]token.Lexeme{lex(token.H2, "##"), lex(token.Text, "2")},
+		[]token.Lexeme{lex(token.Topic, "#"), lex(token.Text, "1")},
+		[]token.Lexeme{lex(token.SubTopic, "##"), lex(token.Text, "2")},
 	}
 
 	exp := []ast.Node{
-		ast.MakeH1(ast.MakeText("1")),
-		ast.MakeH2(ast.MakeText("2")),
+		ast.MakeTopic(ast.MakeText("1")),
+		ast.MakeSubTopic(ast.MakeText("2")),
 	}
 
 	act := ParseAll(in)
@@ -140,7 +140,7 @@ func TestScript_1(t *testing.T) {
 
 	in := [][]token.Lexeme{ // Lines
 		[]token.Lexeme{
-			lex(token.H1, "#"),
+			lex(token.Topic, "#"),
 			lex(token.Text, "Cheese"),
 		},
 		[]token.Lexeme{
@@ -164,13 +164,13 @@ func TestScript_1(t *testing.T) {
 		},
 		[]token.Lexeme{},
 
-		[]token.Lexeme{lex(token.H2, "##"), lex(token.Text, "History")},
+		[]token.Lexeme{lex(token.SubTopic, "##"), lex(token.Text, "History")},
 		[]token.Lexeme{lex(token.Text, "Who knows.")},
 		[]token.Lexeme{},
 		[]token.Lexeme{},
 		[]token.Lexeme{},
 
-		[]token.Lexeme{lex(token.H2, "##"), lex(token.Text, "Types")},
+		[]token.Lexeme{lex(token.SubTopic, "##"), lex(token.Text, "Types")},
 		[]token.Lexeme{lex(token.BulPoint, "."), lex(token.Text, "Chedder")},
 		[]token.Lexeme{lex(token.BulPoint, "."), lex(token.Text, "Brie")},
 		[]token.Lexeme{lex(token.BulPoint, "."), lex(token.Text, "Mozzarella")},
@@ -178,13 +178,13 @@ func TestScript_1(t *testing.T) {
 		[]token.Lexeme{lex(token.BulPoint, "."), lex(token.Text, "etc")},
 		[]token.Lexeme{},
 
-		[]token.Lexeme{lex(token.H2, "##"), lex(token.Text, "Process")},
+		[]token.Lexeme{lex(token.SubTopic, "##"), lex(token.Text, "Process")},
 		[]token.Lexeme{lex(token.NumPoint, "!"), lex(token.Text, "Curdling")},
 		[]token.Lexeme{lex(token.NumPoint, "!"), lex(token.Text, "Curd processing")},
 		[]token.Lexeme{lex(token.NumPoint, "!"), lex(token.Text, "Ripening")},
 		[]token.Lexeme{},
 
-		[]token.Lexeme{lex(token.H2, "##"), lex(token.Text, "Bacteria")},
+		[]token.Lexeme{lex(token.SubTopic, "##"), lex(token.Text, "Bacteria")},
 		[]token.Lexeme{
 			lex(token.Text, "Milk used should be "),
 			lex(token.KeyPhrase, "**"),
@@ -194,7 +194,7 @@ func TestScript_1(t *testing.T) {
 		},
 		[]token.Lexeme{},
 
-		[]token.Lexeme{lex(token.H2, "##"), lex(token.Text, "Heart disease")},
+		[]token.Lexeme{lex(token.SubTopic, "##"), lex(token.Text, "Heart disease")},
 		[]token.Lexeme{
 			lex(token.Negative, "-"),
 			lex(token.Text, "Recommended that cheese consumption be minimised"),
@@ -216,7 +216,7 @@ func TestScript_1(t *testing.T) {
 	}
 
 	exp := []ast.Node{ // Lines
-		ast.MakeH1(
+		ast.MakeTopic(
 			ast.MakeText("Cheese"),
 		),
 		ast.MakeQuote(
@@ -240,7 +240,7 @@ func TestScript_1(t *testing.T) {
 		),
 		ast.MakeEmptyLine(),
 
-		ast.MakeH2(
+		ast.MakeSubTopic(
 			ast.MakeText("History"),
 		),
 		ast.MakeTextLine(ast.MakeText("Who knows.")),
@@ -248,7 +248,7 @@ func TestScript_1(t *testing.T) {
 		ast.MakeEmptyLine(),
 		ast.MakeEmptyLine(),
 
-		ast.MakeH2(
+		ast.MakeSubTopic(
 			ast.MakeText("Types"),
 		),
 		ast.MakeBulPoint(ast.MakeText("Chedder")),
@@ -258,7 +258,7 @@ func TestScript_1(t *testing.T) {
 		ast.MakeBulPoint(ast.MakeText("etc")),
 		ast.MakeEmptyLine(),
 
-		ast.MakeH2(
+		ast.MakeSubTopic(
 			ast.MakeText("Process"),
 		),
 		ast.MakeNumPoint(ast.MakeText("Curdling")),
@@ -266,7 +266,7 @@ func TestScript_1(t *testing.T) {
 		ast.MakeNumPoint(ast.MakeText("Ripening")),
 		ast.MakeEmptyLine(),
 
-		ast.MakeH2(
+		ast.MakeSubTopic(
 			ast.MakeText("Bacteria"),
 		),
 		ast.MakeTextLine(
@@ -276,7 +276,7 @@ func TestScript_1(t *testing.T) {
 		),
 		ast.MakeEmptyLine(),
 
-		ast.MakeH2(
+		ast.MakeSubTopic(
 			ast.MakeText("Heart disease"),
 		),
 		ast.MakeTextLine(

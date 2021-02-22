@@ -5,8 +5,8 @@ type NodeType int
 const (
 	Undefined NodeType = iota
 	_lineNodeTypes
-	H1
-	H2
+	Topic
+	SubTopic
 	BulPoint
 	NumPoint
 	Quote
@@ -31,10 +31,10 @@ func (nt NodeType) IsPhraseNode() bool {
 
 func (nt NodeType) String() string {
 	switch nt {
-	case H1:
-		return "H1"
-	case H2:
-		return "H2"
+	case Topic:
+		return "Topic"
+	case SubTopic:
+		return "SubTopic"
 	case BulPoint:
 		return "BulPoint"
 	case NumPoint:

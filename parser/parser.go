@@ -49,18 +49,18 @@ func parser(r *lineReader) ParseLine {
 }
 
 // LINE := *Nothing/empty*
-// LINE := (H1 | H2 | H3 | QUOTE) TEXT_LINE
+// LINE := (TOPIC | SUB_TOPIC | QUOTE) TEXT_LINE
 // LINE := [BUL_POINT | NUM_POINT] NODE_LINE
 func parseLine(r *tokenReader) ast.Node {
 	switch {
 	case !r.more():
 		return ast.MakeEmptyLine()
 
-	case r.accept(token.H1):
-		return ast.MakeH1(parseNodes(r)...)
+	case r.accept(token.Topic):
+		return ast.MakeTopic(parseNodes(r)...)
 
-	case r.accept(token.H2):
-		return ast.MakeH2(parseNodes(r)...)
+	case r.accept(token.SubTopic):
+		return ast.MakeSubTopic(parseNodes(r)...)
 
 	case r.accept(token.Quote):
 		return ast.MakeQuote(parseNodes(r)...)

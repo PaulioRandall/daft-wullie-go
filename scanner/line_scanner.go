@@ -14,10 +14,10 @@ func (ls *lineScanner) scanLine() []token.Lexeme {
 
 	switch {
 	case ls.matchStr("##"):
-		return []token.Lexeme{ls.slice(token.H2, 2), ls.scanTextLine()}
+		return []token.Lexeme{ls.slice(token.SubTopic, 2), ls.scanTextLine()}
 
 	case ls.matchStr("#"):
-		return []token.Lexeme{ls.slice(token.H1, 1), ls.scanTextLine()}
+		return []token.Lexeme{ls.slice(token.Topic, 1), ls.scanTextLine()}
 
 	case ls.matchStr(">"):
 		r := []token.Lexeme{ls.slice(token.Quote, 1)}
