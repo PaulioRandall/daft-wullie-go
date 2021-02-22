@@ -107,29 +107,16 @@ func TestNumberPoint_1(t *testing.T) {
 	require.Equal(t, exp, act)
 }
 
-func TestQuote_1(t *testing.T) {
-
-	in := `> Fly high through apocalypse skies`
-	exp := [][]token.Lexeme{
-		[]token.Lexeme{
-			lex(token.Quote, ">"),
-			lex(token.Text, " Fly high through apocalypse skies"),
-		},
-	}
-
-	act := ScanAll(in)
-	require.Equal(t, exp, act)
-}
-
 func TestNodes_1(t *testing.T) {
 
-	in := "**+-*`"
+	in := "**+-*\"`"
 	exp := [][]token.Lexeme{
 		[]token.Lexeme{
 			lex(token.KeyPhrase, "**"),
 			lex(token.Positive, "+"),
 			lex(token.Negative, "-"),
 			lex(token.Strong, "*"),
+			lex(token.Quote, `"`),
 			lex(token.Snippet, "`"),
 		},
 	}
@@ -220,17 +207,15 @@ func TestLines_2(t *testing.T) {
 	emptyLine := func() []token.Lexeme { return []token.Lexeme{} }
 
 	in := `
-> I aten't ded
-A quote by whom?
+"I aten't ded" Mistress Weatherwax
 `
 	exp := [][]token.Lexeme{
 		emptyLine(),
 		line(
-			lex(token.Quote, ">"),
-			lex(token.Text, " I aten't ded"),
-		),
-		line(
-			lex(token.Text, "A quote by whom?"),
+			lex(token.Quote, `"`),
+			lex(token.Text, "I aten't ded"),
+			lex(token.Quote, `"`),
+			lex(token.Text, " Mistress Weatherwax"),
 		),
 		emptyLine(),
 	}

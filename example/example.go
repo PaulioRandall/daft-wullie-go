@@ -16,7 +16,7 @@ func main() {
 
 . Bullet point
 ! Numbered point
-> Quote with a +positive+ point
+"Quote with a +positive+ point"
 
 There is only text here as the control symbol '\*' has been escaped
 

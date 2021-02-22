@@ -62,9 +62,6 @@ func parseLine(r *tokenReader) ast.Node {
 	case r.accept(token.SubTopic):
 		return ast.MakeSubTopic(parseNodes(r)...)
 
-	case r.accept(token.Quote):
-		return ast.MakeQuote(parseNodes(r)...)
-
 	case r.accept(token.BulPoint):
 		return ast.MakeBulPoint(parseNodes(r)...)
 
@@ -105,6 +102,9 @@ func parseNode(r *tokenReader) ast.Node {
 
 	case r.accept(token.Strong):
 		return ast.MakeStrong(parseNodesUntil(r, token.Strong)...)
+
+	case r.accept(token.Quote):
+		return ast.MakeQuote(parseNodesUntil(r, token.Quote)...)
 
 	case r.accept(token.Snippet):
 		return ast.MakeSnippet(parseTextUntil(r, token.Snippet))

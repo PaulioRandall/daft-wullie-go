@@ -50,13 +50,13 @@ func MakeTopic(ns ...Node) ParentNode    { return makeParentNode(Topic, ns) }
 func MakeSubTopic(ns ...Node) ParentNode { return makeParentNode(SubTopic, ns) }
 func MakeBulPoint(ns ...Node) ParentNode { return makeParentNode(BulPoint, ns) }
 func MakeNumPoint(ns ...Node) ParentNode { return makeParentNode(NumPoint, ns) }
-func MakeQuote(ns ...Node) ParentNode    { return makeParentNode(Quote, ns) }
 func MakeTextLine(ns ...Node) ParentNode { return makeParentNode(TextLine, ns) }
 
 func MakeKeyPhrase(ns ...Node) ParentNode { return makeParentNode(KeyPhrase, ns) }
 func MakePositive(ns ...Node) ParentNode  { return makeParentNode(Positive, ns) }
 func MakeNegative(ns ...Node) ParentNode  { return makeParentNode(Negative, ns) }
 func MakeStrong(ns ...Node) ParentNode    { return makeParentNode(Strong, ns) }
+func MakeQuote(ns ...Node) ParentNode     { return makeParentNode(Quote, ns) }
 
 func makeTextNode(nt NodeType, s string) TextNode {
 	return TextNode{NodeType: nt, Txt: s}

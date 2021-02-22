@@ -29,25 +29,6 @@ func TestHeadings_1(t *testing.T) {
 	require.Equal(t, exp, act)
 }
 
-func TestQuote_1(t *testing.T) {
-
-	in := [][]token.Lexeme{
-		[]token.Lexeme{
-			lex(token.Quote, ">"),
-			lex(token.Text, "The Turtle Moves!"),
-		},
-	}
-
-	exp := []ast.Node{
-		ast.MakeQuote(
-			ast.MakeText("The Turtle Moves!"),
-		),
-	}
-
-	act := ParseAll(in)
-	require.Equal(t, exp, act)
-}
-
 func TestBulPoint_1(t *testing.T) {
 
 	in := [][]token.Lexeme{
@@ -103,13 +84,14 @@ func TestNestableNodes_1(t *testing.T) {
 	doTest(lxs(token.Positive, "+"), ast.MakeTextLine(ast.MakePositive()))
 	doTest(lxs(token.Negative, "-"), ast.MakeTextLine(ast.MakeNegative()))
 	doTest(lxs(token.Strong, "*"), ast.MakeTextLine(ast.MakeStrong()))
+	doTest(lxs(token.Quote, `"`), ast.MakeTextLine(ast.MakeQuote()))
 	doTest(lxs(token.Snippet, "`"), ast.MakeTextLine(ast.MakeSnippet("")))
 }
 
 func TestScript_1(t *testing.T) {
 
 	// # Cheese
-	// > Cheese is a dairy product, derived from milk and produced in wide ranges of flavors, textures and forms by coagulation of the milk protein casein.
+	// "Cheese is a dairy product, derived from milk and produced in wide ranges of flavors, textures and forms by coagulation of the milk protein casein.
 	// *Cheese is +very tasty+ but also quite -smelly-, +good on pizza+
 	//
 	// ## History
@@ -144,7 +126,7 @@ func TestScript_1(t *testing.T) {
 			lex(token.Text, "Cheese"),
 		},
 		[]token.Lexeme{
-			lex(token.Quote, ">"),
+			lex(token.Quote, `"`),
 			lex(token.Text, "Cheese is a dairy product, derived from milk and produced in wide ranges of flavors, textures and forms by coagulation of the milk protein casein."),
 		},
 		[]token.Lexeme{
@@ -219,8 +201,10 @@ func TestScript_1(t *testing.T) {
 		ast.MakeTopic(
 			ast.MakeText("Cheese"),
 		),
-		ast.MakeQuote(
-			ast.MakeText("Cheese is a dairy product, derived from milk and produced in wide ranges of flavors, textures and forms by coagulation of the milk protein casein."),
+		ast.MakeTextLine(
+			ast.MakeQuote(
+				ast.MakeText("Cheese is a dairy product, derived from milk and produced in wide ranges of flavors, textures and forms by coagulation of the milk protein casein."),
+			),
 		),
 		ast.MakeTextLine(
 			ast.MakeStrong(

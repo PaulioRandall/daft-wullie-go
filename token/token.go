@@ -18,13 +18,13 @@ const (
 	SubTopic        = "SubTopic"
 	BulPoint        = "BulPoint"
 	NumPoint        = "NumPoint"
-	Quote           = "Quote"
-	Escape          = "Escape"
 	KeyPhrase       = "KeyPhrase"
 	Positive        = "Positive"
 	Negative        = "Negative"
 	Strong          = "Strong"
 	Snippet         = "Snippet"
+	Quote           = "Quote"
+	Escape          = "Escape"
 )
 
 // String returns the token's human readable string representation.

@@ -19,10 +19,6 @@ func (ls *lineScanner) scanLine() []token.Lexeme {
 	case ls.matchStr("#"):
 		return []token.Lexeme{ls.slice(token.Topic, 1), ls.scanTextLine()}
 
-	case ls.matchStr(">"):
-		r := []token.Lexeme{ls.slice(token.Quote, 1)}
-		return append(r, ls.scanNodes()...)
-
 	case ls.matchStr("."):
 		r := []token.Lexeme{ls.slice(token.BulPoint, 1)}
 		return append(r, ls.scanNodes()...)
@@ -56,6 +52,7 @@ func (ls *lineScanner) scanNode() token.Lexeme {
 		{"+", token.Positive},
 		{"-", token.Negative},
 		{"*", token.Strong},
+		{`"`, token.Quote},
 		{"`", token.Snippet},
 	}
 
@@ -143,7 +140,7 @@ func spaceMatcher(ru rune) bool {
 }
 
 func nonKeyMatcher(ru rune) bool {
-	return !matchAny(string(ru), "\\", "+", "-", "*", "`")
+	return !matchAny(string(ru), "\\", "+", "-", "*", "`", `"`)
 }
 
 func normalise(lxs []token.Lexeme) []token.Lexeme {
