@@ -1,24 +1,24 @@
 package ast
 
-type NodeType int
+type NodeType string
 
 const (
-	Undefined NodeType = iota
-	_lineNodeTypes
-	Topic
-	SubTopic
-	BulPoint
-	NumPoint
-	Quote
-	Snippet
-	TextLine
-	EmptyLine
-	_phraseNodeTypes
-	Text
-	KeyPhrase
-	Positive
-	Negative
-	Strong
+	Undefined        NodeType = ""
+	_lineNodeTypes            = "_lineNodeTypes"
+	Topic                     = "Topic"
+	SubTopic                  = "SubTopic"
+	BulPoint                  = "BulPoint"
+	NumPoint                  = "NumPoint"
+	Quote                     = "Quote"
+	Snippet                   = "Snippet"
+	TextLine                  = "TextLine"
+	EmptyLine                 = "EmptyLine"
+	_phraseNodeTypes          = "_phraseNodeTypes"
+	Text                      = "Text"
+	KeyPhrase                 = "KeyPhrase"
+	Positive                  = "Positive"
+	Negative                  = "Negative"
+	Strong                    = "Strong"
 )
 
 func (nt NodeType) IsLineNode() bool {
@@ -30,34 +30,5 @@ func (nt NodeType) IsPhraseNode() bool {
 }
 
 func (nt NodeType) String() string {
-	switch nt {
-	case Topic:
-		return "Topic"
-	case SubTopic:
-		return "SubTopic"
-	case BulPoint:
-		return "BulPoint"
-	case NumPoint:
-		return "NumPoint"
-	case Quote:
-		return "Quote"
-	case Snippet:
-		return "Snippet"
-	case TextLine:
-		return "TextLine"
-	case EmptyLine:
-		return "EmptyLine"
-	case Text:
-		return "Text"
-	case KeyPhrase:
-		return "KeyPhrase"
-	case Positive:
-		return "Positive"
-	case Negative:
-		return "Negative"
-	case Strong:
-		return "Strong"
-	default:
-		return "Undefined"
-	}
+	return string(nt)
 }
