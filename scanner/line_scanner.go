@@ -61,6 +61,7 @@ func (ls *lineScanner) scanNode() token.Lexeme {
 		{"-", token.Negative},
 		{"*", token.Strong},
 		{`"`, token.Quote},
+		{"$", token.Artifact},
 		{"`", token.Snippet},
 	}
 
@@ -148,7 +149,7 @@ func spaceMatcher(ru rune) bool {
 }
 
 func nonKeyMatcher(ru rune) bool {
-	return !matchAny(string(ru), "\\", "+", "-", "*", "`", `"`)
+	return !matchAny(string(ru), "\\", "+", "-", "*", "`", "$", `"`)
 }
 
 func normalise(lxs []token.Lexeme) []token.Lexeme {

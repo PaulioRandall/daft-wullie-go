@@ -59,6 +59,7 @@ func MakePositive(ns ...Node) ParentNode  { return makeParentNode(Positive, ns) 
 func MakeNegative(ns ...Node) ParentNode  { return makeParentNode(Negative, ns) }
 func MakeStrong(ns ...Node) ParentNode    { return makeParentNode(Strong, ns) }
 func MakeQuote(ns ...Node) ParentNode     { return makeParentNode(Quote, ns) }
+func MakeArtifact(ns ...Node) ParentNode  { return makeParentNode(Artifact, ns) }
 
 func makeTextNode(nt NodeType, s string) TextNode {
 	return TextNode{NodeType: nt, Txt: s}

@@ -137,7 +137,7 @@ func TestNumberPoint_2(t *testing.T) {
 
 func TestNodes_1(t *testing.T) {
 
-	in := "**+-*\"`"
+	in := "**+-*\"$`"
 	exp := [][]token.Lexeme{
 		[]token.Lexeme{
 			lex(token.KeyPhrase, "**"),
@@ -145,6 +145,7 @@ func TestNodes_1(t *testing.T) {
 			lex(token.Negative, "-"),
 			lex(token.Strong, "*"),
 			lex(token.Quote, `"`),
+			lex(token.Artifact, "$"),
 			lex(token.Snippet, "`"),
 		},
 	}
@@ -235,7 +236,7 @@ func TestLines_2(t *testing.T) {
 	emptyLine := func() []token.Lexeme { return []token.Lexeme{} }
 
 	in := `
-"I aten't ded" Mistress Weatherwax
+"I aten't ded" $Mistress Weatherwax
 `
 	exp := [][]token.Lexeme{
 		emptyLine(),
@@ -243,7 +244,9 @@ func TestLines_2(t *testing.T) {
 			lex(token.Quote, `"`),
 			lex(token.Text, "I aten't ded"),
 			lex(token.Quote, `"`),
-			lex(token.Text, " Mistress Weatherwax"),
+			lex(token.Text, " "),
+			lex(token.Artifact, "$"),
+			lex(token.Text, "Mistress Weatherwax"),
 		),
 		emptyLine(),
 	}

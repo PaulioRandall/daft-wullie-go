@@ -18,7 +18,7 @@ func main() {
 .. Sub bullet point
 ! Numbered point
 !! Sub numbered point
-"Quote with a +positive+ point"
+"Quote with a +positive+ point" $By Me
 
 There is only text here as the control symbol '\*' has been escaped
 
@@ -52,7 +52,7 @@ A sentence with a **keyword** in it
 	fmt.Println("```")
 	fmt.Println()
 	fmt.Println("The text above contains:")
-	fmt.Println(hCount, "Topic & sub topic lines")
+	fmt.Println(hCount, "Topics or sub topics")
 	fmt.Println(pCount, "positive points")
 	fmt.Println(nCount, "negative points")
 }

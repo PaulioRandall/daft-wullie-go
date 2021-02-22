@@ -49,7 +49,7 @@ func parser(r *lineReader) ParseLine {
 }
 
 // LINE := *Nothing/empty*
-// LINE := (TOPIC | SUB_TOPIC | QUOTE) TEXT_LINE
+// LINE := (TOPIC | SUB_TOPIC) TEXT_LINE
 // LINE := [BUL_POINT | NUM_POINT] NODE_LINE
 func parseLine(r *tokenReader) ast.Node {
 	switch {
@@ -93,6 +93,8 @@ func parseNodes(r *tokenReader) []ast.Node {
 // NODE := POSITIVE   {NODE} [POSITIVE]
 // NODE := NEGATIVE   {NODE} [NEGATIVE]
 // NODE := STRONG     {NODE} [STRONG]
+// NODE := QUOTE      {NODE} [QUOTE]
+// NODE := ARTIFACT   {NODE} [ARTIFACT]
 // NODE := SNIPPET    {NODE} [SNIPPET]
 // NODE := TEXT_PHRASE
 func parseNode(r *tokenReader) ast.Node {
@@ -111,6 +113,9 @@ func parseNode(r *tokenReader) ast.Node {
 
 	case r.accept(token.Quote):
 		return ast.MakeQuote(parseNodesUntil(r, token.Quote)...)
+
+	case r.accept(token.Artifact):
+		return ast.MakeArtifact(parseNodesUntil(r, token.Artifact)...)
 
 	case r.accept(token.Snippet):
 		return ast.MakeSnippet(parseTextUntil(r, token.Snippet))

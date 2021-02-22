@@ -123,6 +123,7 @@ func TestNestableNodes_1(t *testing.T) {
 	doTest(lxs(token.Negative, "-"), ast.MakeTextLine(ast.MakeNegative()))
 	doTest(lxs(token.Strong, "*"), ast.MakeTextLine(ast.MakeStrong()))
 	doTest(lxs(token.Quote, `"`), ast.MakeTextLine(ast.MakeQuote()))
+	doTest(lxs(token.Artifact, "$"), ast.MakeTextLine(ast.MakeArtifact()))
 	doTest(lxs(token.Snippet, "`"), ast.MakeTextLine(ast.MakeSnippet("")))
 }
 
@@ -138,7 +139,7 @@ func TestScript_1(t *testing.T) {
 	//
 	//
 	// ## Types
-	// . Chedder
+	// . Chedder, always from $Chedder,Somerset,England
 	// . Brie
 	// . Mozzarella
 	// . Stilton
@@ -191,7 +192,11 @@ func TestScript_1(t *testing.T) {
 		[]token.Lexeme{},
 
 		[]token.Lexeme{lex(token.SubTopic, "##"), lex(token.Text, "Types")},
-		[]token.Lexeme{lex(token.BulPoint, "."), lex(token.Text, "Chedder")},
+		[]token.Lexeme{lex(token.BulPoint, "."),
+			lex(token.Text, "Chedder, always from "),
+			lex(token.Artifact, "$"),
+			lex(token.Text, "Chedder,Somerset,England"),
+		},
 		[]token.Lexeme{lex(token.BulPoint, "."), lex(token.Text, "Brie")},
 		[]token.Lexeme{lex(token.BulPoint, "."), lex(token.Text, "Mozzarella")},
 		[]token.Lexeme{lex(token.BulPoint, "."), lex(token.Text, "Stilton")},
@@ -273,7 +278,10 @@ func TestScript_1(t *testing.T) {
 		ast.MakeSubTopic(
 			ast.MakeText("Types"),
 		),
-		ast.MakeBulPoint(ast.MakeText("Chedder")),
+		ast.MakeBulPoint(
+			ast.MakeText("Chedder, always from "),
+			ast.MakeArtifact(ast.MakeText("Chedder,Somerset,England")),
+		),
 		ast.MakeBulPoint(ast.MakeText("Brie")),
 		ast.MakeBulPoint(ast.MakeText("Mozzarella")),
 		ast.MakeBulPoint(ast.MakeText("Stilton")),

@@ -26,6 +26,7 @@ const (
 	Strong            = "Strong"
 	Snippet           = "Snippet"
 	Quote             = "Quote"
+	Artifact          = "Artifact"
 	Escape            = "Escape"
 )
 

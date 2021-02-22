@@ -20,6 +20,7 @@ const (
 	Negative                  = "Negative"
 	Strong                    = "Strong"
 	Quote                     = "Quote"
+	Artifact                  = "Artifact"
 	Snippet                   = "Snippet"
 )
 
