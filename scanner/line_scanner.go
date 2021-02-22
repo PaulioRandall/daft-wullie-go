@@ -19,8 +19,16 @@ func (ls *lineScanner) scanLine() []token.Lexeme {
 	case ls.matchStr("#"):
 		return []token.Lexeme{ls.slice(token.Topic, 1), ls.scanTextLine()}
 
+	case ls.matchStr(".."):
+		r := []token.Lexeme{ls.slice(token.SubBulPoint, 2)}
+		return append(r, ls.scanNodes()...)
+
 	case ls.matchStr("."):
 		r := []token.Lexeme{ls.slice(token.BulPoint, 1)}
+		return append(r, ls.scanNodes()...)
+
+	case ls.matchStr("!!"):
+		r := []token.Lexeme{ls.slice(token.SubNumPoint, 2)}
 		return append(r, ls.scanNodes()...)
 
 	case ls.matchStr("!"):

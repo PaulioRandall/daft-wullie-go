@@ -94,13 +94,12 @@ func fmtNodeString(sb *strings.Builder, n Node) {
 
 	case BulPoint:
 		writeGroup(".", n, "")
+	case SubBulPoint:
+		writeGroup("..", n, "")
 	case NumPoint:
 		writeGroup("!", n, "")
-
-	case Quote:
-		writeGroup(">", n, "")
-	case Snippet:
-		writeGroup("`", n, "`")
+	case SubNumPoint:
+		writeGroup("!!", n, "")
 
 	case TextLine, EmptyLine:
 		writeGroup("", n, "")
@@ -113,5 +112,9 @@ func fmtNodeString(sb *strings.Builder, n Node) {
 		writeGroup("-", n, "-")
 	case Strong:
 		writeGroup("*", n, "*")
+	case Quote:
+		writeGroup(`"`, n, `"`)
+	case Snippet:
+		writeGroup("`", n, "`")
 	}
 }

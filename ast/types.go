@@ -8,9 +8,9 @@ const (
 	Topic                     = "Topic"
 	SubTopic                  = "SubTopic"
 	BulPoint                  = "BulPoint"
+	SubBulPoint               = "SubBulPoint"
 	NumPoint                  = "NumPoint"
-	Quote                     = "Quote"
-	Snippet                   = "Snippet"
+	SubNumPoint               = "SubNumPoint"
 	TextLine                  = "TextLine"
 	EmptyLine                 = "EmptyLine"
 	_phraseNodeTypes          = "_phraseNodeTypes"
@@ -19,6 +19,8 @@ const (
 	Positive                  = "Positive"
 	Negative                  = "Negative"
 	Strong                    = "Strong"
+	Quote                     = "Quote"
+	Snippet                   = "Snippet"
 )
 
 func (nt NodeType) IsLineNode() bool {

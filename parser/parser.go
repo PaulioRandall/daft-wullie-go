@@ -65,8 +65,14 @@ func parseLine(r *tokenReader) ast.Node {
 	case r.accept(token.BulPoint):
 		return ast.MakeBulPoint(parseNodes(r)...)
 
+	case r.accept(token.SubBulPoint):
+		return ast.MakeSubBulPoint(parseNodes(r)...)
+
 	case r.accept(token.NumPoint):
 		return ast.MakeNumPoint(parseNodes(r)...)
+
+	case r.accept(token.SubNumPoint):
+		return ast.MakeSubNumPoint(parseNodes(r)...)
 
 	default:
 		return ast.MakeTextLine(parseNodes(r)...)

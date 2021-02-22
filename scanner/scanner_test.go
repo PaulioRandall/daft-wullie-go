@@ -93,12 +93,40 @@ func TestBulletPoint_1(t *testing.T) {
 	require.Equal(t, exp, act)
 }
 
+func TestSubBulletPoint_1(t *testing.T) {
+
+	in := `.. Point`
+	exp := [][]token.Lexeme{
+		[]token.Lexeme{
+			lex(token.SubBulPoint, ".."),
+			lex(token.Text, " Point"),
+		},
+	}
+
+	act := ScanAll(in)
+	require.Equal(t, exp, act)
+}
+
 func TestNumberPoint_1(t *testing.T) {
 
 	in := `! Point`
 	exp := [][]token.Lexeme{
 		[]token.Lexeme{
 			lex(token.NumPoint, "!"),
+			lex(token.Text, " Point"),
+		},
+	}
+
+	act := ScanAll(in)
+	require.Equal(t, exp, act)
+}
+
+func TestNumberPoint_2(t *testing.T) {
+
+	in := `!! Point`
+	exp := [][]token.Lexeme{
+		[]token.Lexeme{
+			lex(token.SubNumPoint, "!!"),
 			lex(token.Text, " Point"),
 		},
 	}

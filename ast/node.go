@@ -46,11 +46,13 @@ func MakeEmptyLine() TextNode       { return makeTextNode(EmptyLine, "") }
 func MakeText(s string) TextNode    { return makeTextNode(Text, s) }
 func MakeSnippet(s string) TextNode { return makeTextNode(Snippet, s) }
 
-func MakeTopic(ns ...Node) ParentNode    { return makeParentNode(Topic, ns) }
-func MakeSubTopic(ns ...Node) ParentNode { return makeParentNode(SubTopic, ns) }
-func MakeBulPoint(ns ...Node) ParentNode { return makeParentNode(BulPoint, ns) }
-func MakeNumPoint(ns ...Node) ParentNode { return makeParentNode(NumPoint, ns) }
-func MakeTextLine(ns ...Node) ParentNode { return makeParentNode(TextLine, ns) }
+func MakeTopic(ns ...Node) ParentNode       { return makeParentNode(Topic, ns) }
+func MakeSubTopic(ns ...Node) ParentNode    { return makeParentNode(SubTopic, ns) }
+func MakeBulPoint(ns ...Node) ParentNode    { return makeParentNode(BulPoint, ns) }
+func MakeSubBulPoint(ns ...Node) ParentNode { return makeParentNode(SubBulPoint, ns) }
+func MakeNumPoint(ns ...Node) ParentNode    { return makeParentNode(NumPoint, ns) }
+func MakeSubNumPoint(ns ...Node) ParentNode { return makeParentNode(SubNumPoint, ns) }
+func MakeTextLine(ns ...Node) ParentNode    { return makeParentNode(TextLine, ns) }
 
 func MakeKeyPhrase(ns ...Node) ParentNode { return makeParentNode(KeyPhrase, ns) }
 func MakePositive(ns ...Node) ParentNode  { return makeParentNode(Positive, ns) }

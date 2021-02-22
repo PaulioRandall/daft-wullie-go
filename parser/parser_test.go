@@ -48,17 +48,55 @@ func TestBulPoint_1(t *testing.T) {
 	require.Equal(t, exp, act)
 }
 
+func TestSubBulPoint_1(t *testing.T) {
+
+	in := [][]token.Lexeme{
+		[]token.Lexeme{
+			lex(token.SubBulPoint, ".."),
+			lex(token.Text, "The Turtle Moves!"),
+		},
+	}
+
+	exp := []ast.Node{
+		ast.MakeSubBulPoint(
+			ast.MakeText("The Turtle Moves!"),
+		),
+	}
+
+	act := ParseAll(in)
+	require.Equal(t, exp, act)
+}
+
 func TestNumPoint_1(t *testing.T) {
 
 	in := [][]token.Lexeme{
 		[]token.Lexeme{
-			lex(token.NumPoint, "9."),
+			lex(token.NumPoint, "!"),
 			lex(token.Text, "The Turtle Moves!"),
 		},
 	}
 
 	exp := []ast.Node{
 		ast.MakeNumPoint(
+			ast.MakeText("The Turtle Moves!"),
+		),
+	}
+
+	act := ParseAll(in)
+	require.Equal(t, exp, act)
+}
+
+func TestSubNumPoint_1(t *testing.T) {
+
+	in := [][]token.Lexeme{
+		[]token.Lexeme{
+			lex(token.SubNumPoint, "!!"),
+			lex(token.Text, "The Turtle Moves!"),
+		},
+	}
+
+	exp := []ast.Node{
+		ast.MakeSubNumPoint(
 			ast.MakeText("The Turtle Moves!"),
 		),
 	}

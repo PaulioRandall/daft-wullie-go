@@ -15,7 +15,9 @@ func main() {
 ## Sub Topic
 
 . Bullet point
+.. Sub bullet point
 ! Numbered point
+!! Sub numbered point
 "Quote with a +positive+ point"
 
 There is only text here as the control symbol '\*' has been escaped
@@ -24,6 +26,7 @@ A sentence with a **keyword** in it
 +A positive sentence
 -A negative sentence
 *Some strong words
+"Quote
 ` + "`Snippet or literal sentence"
 
 	tks := scanner.ScanAll(example)
